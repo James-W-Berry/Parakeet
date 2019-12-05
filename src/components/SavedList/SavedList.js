@@ -1,5 +1,5 @@
 import React from "react";
-import { db } from "./firebase";
+import { db } from "../../firebase";
 
 class SavedList extends React.Component {
   constructor(props) {
@@ -21,12 +21,15 @@ class SavedList extends React.Component {
 
   render() {
     const { users } = this.state;
-    
-    return(
-      <div >
+
+    return (
+      <div>
         {users.map(user => (
           <div>
-            <div> {user.firstName} {user.lastName} </div>
+            <div>
+              {" "}
+              {user.firstName} {user.lastName}{" "}
+            </div>
             <div> {user.currentSong} </div>
           </div>
         ))}
