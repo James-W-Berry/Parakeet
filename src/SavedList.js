@@ -21,7 +21,6 @@ class SavedList extends React.Component {
 
   render() {
     const { users } = this.state;
-    
     return(
       <div >
         {users.map(user => (
