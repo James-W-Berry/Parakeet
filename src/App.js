@@ -1,8 +1,9 @@
 import React from 'react';
 import logo from './images/logo.png';
 import './App.css';
-import SavedList from "./SavedList";
-import Register from "./Register";
+import SavedList from "./components/SavedList/SavedList";
+import Register from "./components/Register/Register";
+import SplashScreen from "./components/SplashScreen/SplashScreen";
 
 function App() {
 
@@ -11,8 +12,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          <SavedList />
-          <Register />
+          <SplashScreen />
         </p>
         <a
           className="App-link"

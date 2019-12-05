@@ -1,5 +1,5 @@
 import React from "react";
-import { db } from "./firebase";
+import { db } from "../../firebase";
 
 class Register extends React.Component {
   constructor(props) {
