@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "../../images/logo.png";
 import "./SplashScreen.css";
 import FadeIn from "react-fade-in";
 import Lottie from "react-lottie";
