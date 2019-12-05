@@ -1,0 +1,11 @@
+.SplashScreen {
+  height: 100vh;
+  background: #090235;
+}
+
+.SplashScreen_text {
+  font-size: 120px;
+  text-align: center;
+  font-style: italic;
+  color: #efefef;
+}
