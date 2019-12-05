@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './images/logo.png';
 import './App.css';
 import SavedList from "./SavedList";
+import Register from "./Register";
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           <SavedList />
+          <Register />
         </p>
         <a
           className="App-link"
