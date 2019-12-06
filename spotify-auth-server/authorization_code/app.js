@@ -13,8 +13,8 @@ var cors = require("cors");
 var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 
-var client_id = process.env.REACT_APP_CLIENT_ID; // Your client id
-var client_secret = process.env.REACT_APP_SECRET; // Your secret
+var client_id = "3597256b8c344640b63934e97c4bc993"; // Your client id
+var client_secret = "9e1e2968df834edfb1c02cb12298bc7e"; // Your secret
 var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
 
 /**

@@ -5,27 +5,64 @@ import SearchForPerson from "../SearchForPerson/SearchForPerson";
 import LocalMap from "../LocalMap/LocalMap";
 import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
 import Flexbox from "flexbox-react";
+import { firebase } from "../../firebase";
+import uuid from "react-uuid";
+import Fab from "@material-ui/core/Fab";
+import PersonIcon from "@material-ui/icons/Person";
 
 class Main extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      mapHeight: "10vh"
+      mapHeight: "10vh",
+      users: [1, 2, 3, 4, 5, 6, 7, 8]
     };
+  }
+
+  componentDidMount() {
+    const db = firebase.firestore();
+    //TODO: ger nearby users
   }
 
   toggleMapHeight = () => {
     if (this.state.mapHeight === "10vh") {
       this.setState({
-        mapHeight: "75vh"
+        mapHeight: "75vh",
+        userBubblesVisible: true
       });
     } else {
       this.setState({
-        mapHeight: "10vh"
+        mapHeight: "10vh",
+        userBubblesVisible: false
       });
     }
   };
+
+  createNearbyUser(user) {
+    const x = Math.random() * 90;
+    const y = Math.random() * 70;
+    console.log(x);
+    console.log(y);
+
+    return (
+      <div
+        key={uuid()}
+        style={{
+          flexDirection: "column",
+          position: "absolute",
+          bottom: `${y}vh`,
+          left: `${x}vw`,
+          width: "60",
+          height: "60"
+        }}
+      >
+        <Fab color="primary" aria-label="add">
+          <PersonIcon />
+        </Fab>
+      </div>
+    );
+  }
 
   render() {
     return (
@@ -89,6 +126,17 @@ class Main extends Component {
             }}
           >
             <LocalMap slideCallback={this.toggleMapHeight} />
+            <div
+              style={{
+                display: "flex",
+                flexGrow: "1",
+                width: "90vw",
+                height: "90vh"
+              }}
+            >
+              {this.state.userBubblesVisible &&
+                this.state.users.map(user => this.createNearbyUser(user))}
+            </div>
           </div>
 
           <div
