@@ -31,11 +31,18 @@ class TrendingList extends Component {
   render() {
     // const classes = useStyles();
     console.log(this.props.orderedList);
-
+    let abrevList = [];
     if (this.props.orderedList !== undefined) {
+      if(this.props.orderedList.length > 5){
+        for (var i =0; i < this.props.orderedList.length && i <= 4; i++){
+          abrevList.push(this.props.orderedList[i]);
+        }
+      }else{
+        abrevList=this.props.orderedList
+      }
       return (
         <List>
-          {this.props.orderedList.map(song => this.createSongItem(song))}
+          {abrevList.map(song => this.createSongItem(song))}
         </List>
       );
     } else {
