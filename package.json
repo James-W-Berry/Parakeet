@@ -9,6 +9,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "bootstrap": "^4.4.1",
+    "dotenv": "^8.2.0",
     "firebase": "^7.5.0",
     "firebase-admin": "^8.8.0",
     "firebase-functions": "^3.3.0",
@@ -24,7 +25,8 @@
     "react-lottie": "^1.2.3",
     "react-notifications": "^1.4.3",
     "react-scripts": "3.3.0",
-    "react-uuid": "^1.0.2"
+    "react-uuid": "^1.0.2",
+    "spotify-web-api-js": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -3,8 +3,8 @@ import FadeIn from "react-fade-in";
 import Lottie from "react-lottie";
 import "bootstrap/dist/css/bootstrap.css";
 import * as spotispies from "./spotispies.json";
-import Main from "../Main/Main";
 import "./SplashScreen.css";
+import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer.js";
 
 const defaultOptions = {
   loop: true,
@@ -25,7 +25,7 @@ class SplashScreen extends Component {
       fetch("https://jsonplaceholder.typicode.com/posts")
         .then(response => response.json())
         .then(json => this.setState({ done: true }));
-    }, 0);
+    }, 3000);
   }
 
   render() {
@@ -44,7 +44,7 @@ class SplashScreen extends Component {
             </div>
           </FadeIn>
         ) : (
-          <Main />
+          <SpotifyPlayer />
         )}
       </div>
     );
