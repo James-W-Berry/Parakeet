@@ -1,5 +1,5 @@
 import React from "react";
-import { db } from "../../firebase";
+import { firebase } from "../../firebase";
 
 class Register extends React.Component {
   constructor(props) {
@@ -9,13 +9,13 @@ class Register extends React.Component {
         firstName: "",
         lastName: "",
         currentSong: "",
-        location: ["",""]
+        location: new firebase.firestore.GeoPoint(0,0)
       },
       formErrors: {
         firstName: "",
         lastName: "",
         currentSong: "",
-        location: ["",""]
+        location: new firebase.firestore.GeoPoint(0,0)
       },
       formValidity: {
         firstName: false,
@@ -32,6 +32,7 @@ class Register extends React.Component {
       ...this.state.formValues,
       uid: "1213144540"
     };
+    const db = firebase.firestore();
     db.collection("users")
       .doc(data.uid.toString())
       .set(data)
@@ -44,6 +45,8 @@ class Register extends React.Component {
     event.preventDefault();
     this.setState({ isSubmitting: true });
     const { formValues, formValidity } = this.state;
+    formValues.currentSong = "BANANA BREAD!"
+    formValues.location = new firebase.firestore.GeoPoint(1,-2);
     if (Object.values(formValidity).every(Boolean)) {
       this.addUser();
     } else {
@@ -86,6 +89,7 @@ class Register extends React.Component {
 
   render() {
     const { formValues, formErrors, isSubmitting } = this.state;
+
     return (
       <>
         <div className="row mb-5">

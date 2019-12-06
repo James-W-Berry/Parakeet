@@ -1,8 +1,6 @@
 import React from 'react';
 import logo from './images/logo.png';
 import './App.css';
-import SavedList from "./components/SavedList/SavedList";
-import Register from "./components/Register/Register";
 import SplashScreen from "./components/SplashScreen/SplashScreen";
 
 function App() {
