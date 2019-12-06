@@ -7,6 +7,26 @@ import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
 import Flexbox from "flexbox-react";
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      mapHeight: "10vh"
+    };
+  }
+
+  toggleMapHeight = () => {
+    if (this.state.mapHeight === "10vh") {
+      this.setState({
+        mapHeight: "75vh"
+      });
+    } else {
+      this.setState({
+        mapHeight: "10vh"
+      });
+    }
+  };
+
   render() {
     return (
       <Flexbox
@@ -64,11 +84,11 @@ class Main extends Component {
               bottom: "15vh",
               left: 0,
               width: "100vw",
-              height: "10vh",
+              height: this.state.mapHeight,
               background: "#112BBF"
             }}
           >
-            <LocalMap />
+            <LocalMap slideCallback={this.toggleMapHeight} />
           </div>
 
           <div
