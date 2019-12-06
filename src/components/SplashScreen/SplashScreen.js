@@ -4,7 +4,7 @@ import Lottie from "react-lottie";
 import "bootstrap/dist/css/bootstrap.css";
 import * as spotispies from "./spotispies.json";
 import "./SplashScreen.css";
-import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer.js";
+import Main from "../Main/Main.js";
 
 const defaultOptions = {
   loop: true,
@@ -44,7 +44,7 @@ class SplashScreen extends Component {
             </div>
           </FadeIn>
         ) : (
-          <SpotifyPlayer />
+          <Main />
         )}
       </div>
     );
