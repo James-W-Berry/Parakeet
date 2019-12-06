@@ -57,7 +57,9 @@ class WhatsTrendingController extends Component {
 
 
   componentWillMount(){
-    const db = firebase.firestore()
+    const db = firebase.firestore();
+    var curTime = Date.now();
+    var startTime = curTime-this.state.timescale;
     let doc = db.collection("pastSongs");
     doc.onSnapshot(docSnapshot => {
       let pastSongs = [];
@@ -125,7 +127,7 @@ class WhatsTrendingController extends Component {
           trending now at zenuity
         </div>
 
-        <div
+    {/*    <div
           style={{
             position: "absolute",
             display: "flex",
@@ -151,7 +153,7 @@ class WhatsTrendingController extends Component {
             </Select>
           </FormControl>
         </div>
-
+*/}
         <div
           style={{
             position: "absolute",
