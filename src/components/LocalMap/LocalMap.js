@@ -25,7 +25,6 @@ class LocalMap extends Component {
       <Fragment>
         <Fab
           style={{
-            background: "#191919",
             display: "flex",
             flexGrow: 1,
             position: "absolute",
@@ -34,11 +33,13 @@ class LocalMap extends Component {
           }}
           color="primary"
           aria-label="open map"
-          onClick={this.toggle}
+          onClick={() => {
+            this.props.slideCallback();
+          }}
         >
           <img src={map} alt="map" />
         </Fab>
-        <Dialog
+        {/* <Dialog
           open={this.state.open}
           TransitionComponent={Transition}
           keepMounted
@@ -54,7 +55,9 @@ class LocalMap extends Component {
           <DialogTitle id="alert-dialog-slide-title">
             {"Local map of listeners"}
           </DialogTitle>
-          <DialogContent>
+          <DialogContent
+            style={{ flex: 1, flexGrow: 1, height: "80vh", width: "100vw" }}
+          >
             <DialogContentText id="alert-dialog-slide-description">
               map goes here
             </DialogContentText>
@@ -64,7 +67,7 @@ class LocalMap extends Component {
               Close
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </Fragment>
     );
   }
