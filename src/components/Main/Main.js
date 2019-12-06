@@ -105,7 +105,7 @@ class Main extends Component {
               height: this.state.mapHeight,
               minHeight: "15vh",
               background: "#112BBF",
-              transition: "height 0.5s ease-in-out"
+              transition: "height 0.3s ease-in-out"
             }}
           >
             <LocalMapButton slideCallback={this.toggleMapHeight} />

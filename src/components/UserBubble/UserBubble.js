@@ -77,7 +77,7 @@ class UserBubble extends Component {
         style={this.state.style}
         onTransitionEnd={this.transitionEnd}
       >
-        <Fab color="primary" aria-label="add">
+        <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
           <PersonIcon />
         </Fab>
       </div>

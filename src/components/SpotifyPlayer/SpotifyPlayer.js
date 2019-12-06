@@ -74,19 +74,55 @@ class SpotifyPlayer extends Component {
         }}
       >
         <div className="App">
-          {/* <a href="http://spotispies-spotifyauthserver.firebaseapp.com:8888/login"> */}
-          <a href="http://localhost:8888/login"> Login to Spotify </a>
-          <div>Now Playing: {this.state.nowPlaying.name}</div>
-          <div>
-            <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }} />
-          </div>
-          <div>
-            {this.state.loggedIn && (
-              <button onClick={() => this.getNowPlaying()}>
-                Check Now Playing
-              </button>
-            )}
-          </div>
+          {!this.state.loggedIn && (
+            <a href="http://localhost:8888/login"> Login to Spotify </a>
+          )}
+
+          {this.state.loggedIn && (
+            //container div
+            <div style={{ display: "flex", direction: "row" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flexStart",
+                  position: "absolute",
+                  left: "10vw"
+                }}
+              >
+                <img
+                  src={this.state.nowPlaying.albumArt}
+                  style={{ height: 120 }}
+                  alt="album art"
+                />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  position: "absolute",
+                  left: "45vw",
+                  top: "3vh"
+                }}
+              >
+                Now Playing: {this.state.nowPlaying.name}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  position: "absolute",
+                  left: "25vw",
+                  top: "3vh"
+                }}
+              >
+                <button onClick={() => this.getNowPlaying()}>
+                  Check Now Playing
+                </button>
+              </div>
+            </div>
+          )}
           {this.state.loggedIn && (
             <button onClick={() => this.postPreviousSong()}>Prev Song</button>
           )}
