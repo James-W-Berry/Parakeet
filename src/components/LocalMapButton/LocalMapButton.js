@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import Fab from "@material-ui/core/Fab";
 import map from "../../images/map.png";
 
-class LocalMap extends Component {
+class LocalMapButton extends Component {
   state = { open: false };
 
   toggle = () => {
@@ -17,7 +17,7 @@ class LocalMap extends Component {
             display: "flex",
             flexGrow: 1,
             position: "absolute",
-            left: "49vw",
+            justifyContent: "center",
             top: -40
           }}
           color="primary"
@@ -33,4 +33,4 @@ class LocalMap extends Component {
   }
 }
 
-export default LocalMap;
+export default LocalMapButton;

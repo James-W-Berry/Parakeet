@@ -2,21 +2,21 @@ import React, { Component } from "react";
 import WhatsTrendingController from "../WhatsTrendingController/WhatsTrendingController";
 import Banner from "../Banner/Banner";
 import SearchForPerson from "../SearchForPerson/SearchForPerson";
-import LocalMap from "../LocalMap/LocalMap";
+import LocalMapButton from "../LocalMapButton/LocalMapButton";
 import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
 import Flexbox from "flexbox-react";
 import { firebase } from "../../firebase";
-import uuid from "react-uuid";
-import Fab from "@material-ui/core/Fab";
-import PersonIcon from "@material-ui/icons/Person";
+import UserBubble from "../UserBubble/UserBubble";
 
 class Main extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      mapHeight: "10vh",
-      users: [1, 2, 3, 4, 5, 6, 7, 8]
+      mapHeight: "15vh",
+      users: [1, 2, 3, 4, 5, 6, 7, 8],
+      userBubblesVisible: false,
+      userBubblesOpacity: 0
     };
   }
 
@@ -26,42 +26,23 @@ class Main extends Component {
   }
 
   toggleMapHeight = () => {
-    if (this.state.mapHeight === "10vh") {
+    if (this.state.mapHeight === "15vh") {
       this.setState({
-        mapHeight: "75vh",
-        userBubblesVisible: true
+        mapHeight: "85vh",
+        userBubblesVisible: true,
+        userBubblesOpacity: "1"
       });
     } else {
       this.setState({
-        mapHeight: "10vh",
-        userBubblesVisible: false
+        mapHeight: "15vh",
+        userBubblesVisible: false,
+        userBubblesOpacity: "0"
       });
     }
   };
 
   createNearbyUser(user) {
-    const x = Math.random() * 90;
-    const y = Math.random() * 70;
-    console.log(x);
-    console.log(y);
-
-    return (
-      <div
-        key={uuid()}
-        style={{
-          flexDirection: "column",
-          position: "absolute",
-          bottom: `${y}vh`,
-          left: `${x}vw`,
-          width: "60",
-          height: "60"
-        }}
-      >
-        <Fab color="primary" aria-label="add">
-          <PersonIcon />
-        </Fab>
-      </div>
-    );
+    return <UserBubble user={user} />;
   }
 
   render() {
@@ -118,25 +99,18 @@ class Main extends Component {
               justifyContent: "center",
               alignItems: "center",
               position: "absolute",
-              bottom: "15vh",
+              bottom: "5vh",
               left: 0,
               width: "100vw",
               height: this.state.mapHeight,
-              background: "#112BBF"
+              minHeight: "15vh",
+              background: "#112BBF",
+              transition: "height 0.5s ease-in-out"
             }}
           >
-            <LocalMap slideCallback={this.toggleMapHeight} />
-            <div
-              style={{
-                display: "flex",
-                flexGrow: "1",
-                width: "90vw",
-                height: "90vh"
-              }}
-            >
-              {this.state.userBubblesVisible &&
-                this.state.users.map(user => this.createNearbyUser(user))}
-            </div>
+            <LocalMapButton slideCallback={this.toggleMapHeight} />
+            {this.state.userBubblesVisible &&
+              this.state.users.map(user => this.createNearbyUser(user))}
           </div>
 
           <div
