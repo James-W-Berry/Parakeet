@@ -2,48 +2,44 @@ import React, { Component } from "react";
 import { firebase } from "../../firebase";
 import eye from "../../images/eye.png";
 import zenuity from "../../images/zenuity.png";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 import TrendingList from "../TrendingList/TrendingList";
 
 const handleChange = event => {
   console.log("selected time range");
 };
 
-export function orderList(songList, ts){
-  const tempList  = songList;
+export function orderList(songList, ts) {
+  const tempList = songList;
   var timerange = ts;
   var curTime = Date.now();
-  var startTime = curTime-timerange;
+  var startTime = curTime - timerange;
   var orderedList = [];
 
-  for(var i=0; i < tempList.length; i++){
+  for (var i = 0; i < tempList.length; i++) {
     var filteredList = orderedList.filter(item => {
       return item.songId === tempList[i].songId;
     });
-    if(filteredList.length === 0) {
-      orderedList.push({"songId" : tempList[i].songId, "playcount" : 1});
-    }else{
+    if (filteredList.length === 0) {
+      orderedList.push({ songId: tempList[i].songId, playcount: 1 });
+    } else {
       orderedList[orderedList.indexOf(filteredList[0])].playcount++;
     }
   }
 
   let swapped;
-  do{
+  do {
     swapped = false;
-    for(let i = 0; i < orderedList.length-1; i++){
-      if(orderedList[i].playcount < orderedList[i+1].playcount){
+    for (let i = 0; i < orderedList.length - 1; i++) {
+      if (orderedList[i].playcount < orderedList[i + 1].playcount) {
         var tmp = orderedList[i];
-        orderedList[i] = orderedList[i+1];
-        orderedList[i+1] = tmp;
+        orderedList[i] = orderedList[i + 1];
+        orderedList[i + 1] = tmp;
         swapped = true;
       }
     }
-  }while (swapped);
+  } while (swapped);
 
-  return (orderedList);
-
+  return orderedList;
 }
 
 class WhatsTrendingController extends Component {
@@ -55,30 +51,30 @@ class WhatsTrendingController extends Component {
     };
   }
 
-
-  componentWillMount(){
+  componentWillMount() {
     const db = firebase.firestore();
     var curTime = Date.now();
-    var startTime = curTime-this.state.timescale;
+    var startTime = curTime - this.state.timescale;
     let doc = db.collection("pastSongs");
-    doc.onSnapshot(docSnapshot => {
-      let pastSongs = [];
-      console.log("got a snappy");
-      docSnapshot.forEach(doc =>
-        pastSongs.push({ ...doc.data(), uid:doc.id}),
-      );
-      const orderedList = orderList(pastSongs, this.state.timescale);
-      this.setState({ songList : orderedList });
-    }, err => {
-      console.log("FUCK");
-    })
+    doc.onSnapshot(
+      docSnapshot => {
+        let pastSongs = [];
+        console.log("got a snappy");
+        docSnapshot.forEach(doc =>
+          pastSongs.push({ ...doc.data(), uid: doc.id })
+        );
+        const orderedList = orderList(pastSongs, this.state.timescale);
+        this.setState({ songList: orderedList });
+      },
+      err => {
+        console.log("FUCK");
+      }
+    );
   }
 
-
   render() {
-
     const { songList } = this.state;
-    console.log("SL",songList);
+    console.log("SL", songList);
     return (
       <div>
         <div
@@ -127,7 +123,7 @@ class WhatsTrendingController extends Component {
           trending now at zenuity
         </div>
 
-    {/*    <div
+        {/*    <div
           style={{
             position: "absolute",
             display: "flex",
