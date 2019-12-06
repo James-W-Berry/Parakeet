@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./SplashScreen.css";
 import FadeIn from "react-fade-in";
 import Lottie from "react-lottie";
 import "bootstrap/dist/css/bootstrap.css";
@@ -26,7 +25,7 @@ class SplashScreen extends Component {
       fetch("https://jsonplaceholder.typicode.com/posts")
         .then(response => response.json())
         .then(json => this.setState({ done: true }));
-    }, 3000);
+    }, 0);
   }
 
   render() {
