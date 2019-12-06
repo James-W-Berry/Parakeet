@@ -113,11 +113,12 @@ class WhatsTrendingController extends Component {
             position: "absolute",
             display: "flex",
             flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
             fontSize: 30,
             height: "10%",
             bottom: "10%",
-            left: "17%"
+            left: "calc(15vw + 15px)"
           }}
         >
           trending now at zenuity
@@ -158,7 +159,8 @@ class WhatsTrendingController extends Component {
             alignItems: "center",
             fontSize: 30,
             height: "10%",
-            right: "30%"
+            right: "25vw",
+            bottom: "45vh"
           }}
         >
           <TrendingList orderedList={songList} />

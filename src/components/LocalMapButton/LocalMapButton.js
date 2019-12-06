@@ -18,7 +18,8 @@ class LocalMapButton extends Component {
             flexGrow: 1,
             position: "absolute",
             justifyContent: "center",
-            top: -40
+            top: -40,
+            outline: "none"
           }}
           color="primary"
           aria-label="open map"
