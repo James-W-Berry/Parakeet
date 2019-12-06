@@ -1,5 +1,5 @@
 import React from "react";
-import { db } from "../../firebase";
+import { firebase } from "../../firebase";
 
 class SavedList extends React.Component {
   constructor(props) {
@@ -10,6 +10,7 @@ class SavedList extends React.Component {
   }
 
   componentDidMount() {
+    const db = firebase.firestore()
     db.collection("users")
       .get()
       .then(querySnapshot => {
