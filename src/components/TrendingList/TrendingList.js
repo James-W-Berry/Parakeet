@@ -1,22 +1,16 @@
 import React, { Component } from "react";
-import WhatsTrendingController from "../WhatsTrendingController/WhatsTrendingController";
 
 class TrendingList extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      songList: [],
-      timerange: 6.048e+8
-    };
-  }
-
   render() {
-  var trendingData = <WhatsTrendingController />;
+    console.log("tlprops ",this.props.orderedList);
+
     return (
       <div>
-      <br/><br/>
-      {trendingData}
-      <br/><br/>
+      {this.props.orderedList.map(song => (
+        <div>
+          <div> {song.songId} {song.playcount}</div>
+        </div>
+      ))}
       </div>
     );
   }
