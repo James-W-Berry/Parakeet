@@ -1,7 +1,17 @@
 import React, { Component, Fragment } from "react";
-import Expand from "react-expand-animated";
+import Slide from "@material-ui/core/Slide";
 import Fab from "@material-ui/core/Fab";
 import map from "../../images/map.png";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Button from "@material-ui/core/Button";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 class LocalMap extends Component {
   state = { open: false };
@@ -28,9 +38,33 @@ class LocalMap extends Component {
         >
           <img src={map} alt="map" />
         </Fab>
-        <Expand open={this.state.open}>
-          <div style={{ width: "100vw", height: "80vh" }}></div>
-        </Expand>
+        <Dialog
+          open={this.state.open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={this.toggle}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+          style={{
+            background: "#123891",
+            height: "80vh",
+            width: "100vw"
+          }}
+        >
+          <DialogTitle id="alert-dialog-slide-title">
+            {"Local map of listeners"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              map goes here
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.toggle} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Fragment>
     );
   }

@@ -25,7 +25,7 @@ class SplashScreen extends Component {
       fetch("https://jsonplaceholder.typicode.com/posts")
         .then(response => response.json())
         .then(json => this.setState({ done: true }));
-    }, 3000);
+    }, 0);
   }
 
   render() {
