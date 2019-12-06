@@ -74,10 +74,8 @@ class SpotifyPlayer extends Component {
         }}
       >
         <div className="App">
-          <a href="https://spotispies-spotifyauthserver.firebaseapp.com:8888/login">
-            {" "}
-            Login to Spotify{" "}
-          </a>
+          {/* <a href="http://spotispies-spotifyauthserver.firebaseapp.com:8888/login"> */}
+          <a href="http://localhost:8888/login"> Login to Spotify </a>
           <div>Now Playing: {this.state.nowPlaying.name}</div>
           <div>
             <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }} />

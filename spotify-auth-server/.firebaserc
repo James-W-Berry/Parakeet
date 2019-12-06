@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "zpotizpiez"
+  },
+  "targets": {
+    "zpotizpiez": {
+      "hosting": {
+        "authserver": [
+          "spotify-auth-server"
+        ]
+      }
+    }
+  }
+}
