@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./SplashScreen.css";
 import FadeIn from "react-fade-in";
 import Lottie from "react-lottie";
 import "bootstrap/dist/css/bootstrap.css";
