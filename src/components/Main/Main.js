@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import SavedList from "../SavedList/SavedList";
 import Banner from "../Banner/Banner";
 import SearchForPerson from "../SearchForPerson/SearchForPerson";
-import TrendingList from "../TrendingList/TrendingList";
+import WhatsTrendingController from "../WhatsTrendingController/WhatsTrendingController";
 import LocalMap from "../LocalMap/LocalMap";
 import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
 import Register from "../Register/Register";
@@ -13,7 +13,7 @@ class Main extends Component {
       <div>
         <Banner />
         <SearchForPerson />
-        <TrendingList />
+        <WhatsTrendingController />
         <LocalMap />
         <SpotifyPlayer />
         <SavedList />
