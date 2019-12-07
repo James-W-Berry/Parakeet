@@ -50,14 +50,14 @@ class SpotifyPlayer extends Component {
 
   getNowPlaying() {
     spotifyApi.getMyCurrentPlayingTrack().then(response => {
-      //console.log(response);
+      console.log(response);
       this.setState({
         progress: response.progress_ms
       });
     });
 
     spotifyApi.getMyCurrentPlaybackState().then(response => {
-      //console.log(response.item);
+      console.log(response.item);
       this.setState({
         nowPlaying: {
           song: response.item.name,
