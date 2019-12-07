@@ -1,6 +1,30 @@
 import React from "react";
 import { firebase } from "../../firebase";
 
+
+function uploadSong(song, userId){
+  var startTime = Date.now() - song.progress_ms;
+  var songuid = song.item.id + startTime.toString();
+
+
+  console.log(userId);
+  const data = {
+    songId: song.item.id,
+    listener: userId,
+    timestamp: startTime
+  }
+
+  const db = firebase.firestore();
+  db.collection("pastSongs")
+    .doc(data.songId.toString()+data.timestamp.toString())
+    .set(data)
+    .catch(error => {
+      console.log("There was an error uploading the song");
+    });
+
+};
+
+
 class Register extends React.Component {
   constructor(props) {
     super(props);
@@ -144,3 +168,4 @@ class Register extends React.Component {
 }
 
 export default Register;
+export { uploadSong };
