@@ -25,7 +25,8 @@ class SpotifyPlayer extends Component {
       loggedIn: token ? true : false,
       nowPlaying: { name: "Not Checked", albumArt: "" },
       playing: true,
-      volume: 50
+      volume: 50,
+      progress: 0
     };
   }
 
@@ -51,22 +52,26 @@ class SpotifyPlayer extends Component {
   getNowPlaying() {
     spotifyApi.getMyCurrentPlayingTrack().then(response => {
       console.log(response);
-      this.setState({
-        progress: response.progress_ms
-      });
+      if (response.progress_ms !== undefined) {
+        this.setState({
+          progress: response.progress_ms
+        });
+      }
     });
 
     spotifyApi.getMyCurrentPlaybackState().then(response => {
       console.log(response.item);
-      this.setState({
-        nowPlaying: {
-          song: response.item.name,
-          artist: response.item.artists[0].name,
-          album: response.item.album.name,
-          albumArt: response.item.album.images[0].url,
-          duration: response.item.duration_ms
-        }
-      });
+      if (response.item !== undefined) {
+        this.setState({
+          nowPlaying: {
+            song: response.item.name,
+            artist: response.item.artists[0].name,
+            album: response.item.album.name,
+            albumArt: response.item.album.images[0].url,
+            duration: response.item.duration_ms
+          }
+        });
+      }
     });
   }
 
