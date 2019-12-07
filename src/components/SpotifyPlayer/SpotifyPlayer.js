@@ -7,6 +7,7 @@ import volumeIcon from "../../images/volume.png";
 import { Line } from "rc-progress";
 import Slider from "react-rangeslider";
 import "../SpotifyPlayer/SpotifyPlayer.css";
+import { uploadSong } from "../Register/Register.js";
 
 var Marquee = require("react-marquee");
 
@@ -20,6 +21,7 @@ class SpotifyPlayer extends Component {
     if (token) {
       spotifyApi.setAccessToken(token);
       this.getNowPlaying();
+      this.getCurrentUser();
     }
     this.state = {
       loggedIn: token ? true : false,
@@ -50,14 +52,18 @@ class SpotifyPlayer extends Component {
 
   getNowPlaying() {
     spotifyApi.getMyCurrentPlayingTrack().then(response => {
-      console.log(response);
       this.setState({
         progress: response.progress_ms
       });
     });
 
+    //TODO put in catch for 'nothing' playing
     spotifyApi.getMyCurrentPlaybackState().then(response => {
-      console.log(response.item);
+      if(this.state.user !== undefined){
+        console.log("def");
+        uploadSong(response, this.state.user.id);
+      }
+      // uploadSong(response, this.state.user.id);
       this.setState({
         nowPlaying: {
           song: response.item.name,
@@ -67,6 +73,15 @@ class SpotifyPlayer extends Component {
           duration: response.item.duration_ms
         }
       });
+    });
+  }
+
+  getCurrentUser() {
+    spotifyApi.getMe().then(response => {
+      console.log(response);
+      this.setState({
+        user: response
+      })
     });
   }
 

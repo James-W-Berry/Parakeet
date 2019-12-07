@@ -4,6 +4,8 @@ import eye from "../../images/eye.png";
 import zenuity from "../../images/zenuity.png";
 import TrendingList from "../TrendingList/TrendingList";
 
+
+//TODO add apiCall to get song name and other info, to display on TrendingList
 const handleChange = event => {
   console.log("selected time range");
 };
