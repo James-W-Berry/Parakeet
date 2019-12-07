@@ -47,6 +47,7 @@ class SpotifyPlayer extends Component {
     this.setState({
       volume: value
     });
+    spotifyApi.setVolume(value);
   };
 
   getNowPlaying() {
@@ -115,7 +116,6 @@ class SpotifyPlayer extends Component {
           {!this.state.loggedIn && (
             <a href="http://localhost:8888/login"> Login to Spotify </a>
           )}
-
           {this.state.loggedIn && (
             <div style={{ display: "flex", direction: "row" }}>
               <div
