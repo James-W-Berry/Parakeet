@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import previousSong from "../../images/previousSong.png";
 import play from "../../images/play.png";
+import pause from "../../images/pause.png";
 import nextSong from "../../images/nextSong.png";
 import volumeIcon from "../../images/volume.png";
 import { Line } from "rc-progress";
@@ -24,7 +25,7 @@ class SpotifyPlayer extends Component {
     this.state = {
       loggedIn: token ? true : false,
       nowPlaying: { name: "Not Checked", albumArt: "" },
-      playing: true,
+      playing: false,
       volume: 50,
       progress: 0
     };
@@ -79,17 +80,24 @@ class SpotifyPlayer extends Component {
   postNextSong() {
     spotifyApi.skipToNext().then(() => {
       this.getNowPlaying();
+      this.setState({
+        playing: true
+      });
     });
   }
 
   postPreviousSong() {
     spotifyApi.skipToPrevious().then(() => {
       this.getNowPlaying();
+      this.setState({
+        playing: true
+      });
     });
   }
 
   postPlayPause() {
     this.state.playing ? spotifyApi.pause() : spotifyApi.play();
+    this.getNowPlaying();
     this.setState({
       playing: !this.state.playing
     });
@@ -185,20 +193,35 @@ class SpotifyPlayer extends Component {
                   }}
                   onClick={() => this.postPreviousSong()}
                 />
-                <img
-                  src={play}
-                  alt="previous song"
-                  style={{
-                    width: 30,
-                    height: 30,
-                    position: "absolute",
-                    left: "49vw"
-                  }}
-                  onClick={() => this.postPlayPause()}
-                />
+                {this.state.playing ? (
+                  <img
+                    src={pause}
+                    alt="play song"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      position: "absolute",
+                      left: "49vw"
+                    }}
+                    onClick={() => this.postPlayPause()}
+                  />
+                ) : (
+                  <img
+                    src={play}
+                    alt="pause song"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      position: "absolute",
+                      left: "49vw"
+                    }}
+                    onClick={() => this.postPlayPause()}
+                  />
+                )}
+
                 <img
                   src={nextSong}
-                  alt="previous song"
+                  alt="next song"
                   style={{
                     width: 30,
                     height: 30,
