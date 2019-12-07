@@ -1,5 +1,14 @@
 import React, { Component } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
+import previousSong from "../../images/previousSong.png";
+import play from "../../images/play.png";
+import nextSong from "../../images/nextSong.png";
+import volumeIcon from "../../images/volume.png";
+import { Line } from "rc-progress";
+import Slider from "react-rangeslider";
+import "../SpotifyPlayer/SpotifyPlayer.css";
+
+var Marquee = require("react-marquee");
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -10,11 +19,13 @@ class SpotifyPlayer extends Component {
     const token = params.access_token;
     if (token) {
       spotifyApi.setAccessToken(token);
+      this.getNowPlaying();
     }
     this.state = {
       loggedIn: token ? true : false,
       nowPlaying: { name: "Not Checked", albumArt: "" },
-      playing: true
+      playing: true,
+      volume: 50
     };
   }
 
@@ -31,43 +42,65 @@ class SpotifyPlayer extends Component {
     return hashParams;
   }
 
+  handleVolumeChange = value => {
+    this.setState({
+      volume: value
+    });
+  };
+
   getNowPlaying() {
+    spotifyApi.getMyCurrentPlayingTrack().then(response => {
+      //console.log(response);
+      this.setState({
+        progress: response.progress_ms
+      });
+    });
+
     spotifyApi.getMyCurrentPlaybackState().then(response => {
+      //console.log(response.item);
       this.setState({
         nowPlaying: {
-          name: response.item.name,
-          albumArt: response.item.album.images[0].url
+          song: response.item.name,
+          artist: response.item.artists[0].name,
+          album: response.item.album.name,
+          albumArt: response.item.album.images[0].url,
+          duration: response.item.duration_ms
         }
       });
     });
   }
 
   postNextSong() {
-    spotifyApi.skipToNext();
-    this.getNowPlaying();
+    spotifyApi.skipToNext().then(() => {
+      this.getNowPlaying();
+    });
   }
 
   postPreviousSong() {
-    spotifyApi.skipToPrevious();
-    this.getNowPlaying();
+    spotifyApi.skipToPrevious().then(() => {
+      this.getNowPlaying();
+    });
   }
 
   postPlayPause() {
-    if (this.playing) {
-      spotifyApi.pause();
-      this.playing = false;
-    } else {
-      spotifyApi.play();
-      this.playing = true;
-    }
+    this.state.playing ? spotifyApi.pause() : spotifyApi.play();
+    this.setState({
+      playing: !this.state.playing
+    });
   }
 
   render() {
+    let progressPercent = Math.round(
+      (this.state.progress / this.state.nowPlaying.duration) * 100
+    );
+
+    let { volume } = this.state;
+
     return (
       <div
         style={{
           background: "rgba(28,29,35, 0.6)",
-          height: "100%",
+          height: "20vh",
           textAlign: "center",
           border: "1px solid black",
           borderTopLeftRadius: "120px"
@@ -79,58 +112,150 @@ class SpotifyPlayer extends Component {
           )}
 
           {this.state.loggedIn && (
-            //container div
             <div style={{ display: "flex", direction: "row" }}>
               <div
                 style={{
                   display: "flex",
                   justifyContent: "flexStart",
                   position: "absolute",
-                  left: "10vw"
+                  left: "4vw",
+                  top: "4vh",
+                  borderRadius: "12px"
                 }}
               >
                 <img
                   src={this.state.nowPlaying.albumArt}
-                  style={{ height: 120 }}
+                  style={{
+                    height: 100,
+                    width: 100,
+                    borderRadius: "12px"
+                  }}
                   alt="album art"
                 />
               </div>
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "center",
-                  alignSelf: "center",
+                  justifyContent: "flexStart",
                   position: "absolute",
-                  left: "45vw",
-                  top: "3vh"
+                  left: "11vw",
+                  top: "7vh",
+                  fontWeight: "bold",
+                  fontSize: "16"
                 }}
               >
-                Now Playing: {this.state.nowPlaying.name}
+                {this.state.nowPlaying.song}
               </div>
+
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "center",
-                  alignSelf: "center",
+                  justifyContent: "flexStart",
                   position: "absolute",
-                  left: "25vw",
-                  top: "3vh"
+                  left: "11vw",
+                  top: "9vh",
+                  fontSize: "16",
+                  maxWidth: "20vw"
                 }}
               >
-                <button onClick={() => this.getNowPlaying()}>
-                  Check Now Playing
-                </button>
+                <Marquee
+                  text={`${this.state.nowPlaying.artist} • ${this.state.nowPlaying.album}`}
+                  hoverToStop={false}
+                  loop={false}
+                />
               </div>
             </div>
           )}
           {this.state.loggedIn && (
-            <button onClick={() => this.postPreviousSong()}>Prev Song</button>
-          )}
-          {this.state.loggedIn && (
-            <button onClick={() => this.postPlayPause()}>Pause/Play</button>
-          )}
-          {this.state.loggedIn && (
-            <button onClick={() => this.postNextSong()}>Next Song -></button>
+            <div>
+              <div style={{ position: "absolute", top: "3vw" }}>
+                <img
+                  src={previousSong}
+                  alt="previous song"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    position: "absolute",
+                    left: "39vw"
+                  }}
+                  onClick={() => this.postPreviousSong()}
+                />
+                <img
+                  src={play}
+                  alt="previous song"
+                  style={{
+                    width: 30,
+                    height: 30,
+                    position: "absolute",
+                    left: "49vw"
+                  }}
+                  onClick={() => this.postPlayPause()}
+                />
+                <img
+                  src={nextSong}
+                  alt="previous song"
+                  style={{
+                    width: 30,
+                    height: 30,
+                    position: "absolute",
+                    left: "59vw"
+                  }}
+                  onClick={() => this.postNextSong()}
+                />
+              </div>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "6vw",
+                  width: "30vw",
+                  left: "35vw"
+                }}
+              >
+                <Line
+                  percent={progressPercent}
+                  strokeWidth="1"
+                  strokeColor="#fff"
+                  trailColor="#A4A7B4"
+                />
+              </div>
+
+              <div
+                style={{
+                  width: 31,
+                  height: 24,
+                  position: "absolute",
+                  right: "15vw",
+                  top: "8vh"
+                }}
+              >
+                <img
+                  src={volumeIcon}
+                  alt="volume"
+                  style={{
+                    width: 31,
+                    height: 24
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  position: "absolute",
+                  right: "5vw",
+                  top: "6.8vh",
+                  width: "10vw",
+                  right: "4vw"
+                }}
+              >
+                <Slider
+                  value={volume}
+                  orientation="horizontal"
+                  min={0}
+                  max={100}
+                  onChange={this.handleVolumeChange}
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>
