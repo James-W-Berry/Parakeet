@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import previousSong from "../../images/previousSong.png";
 import play from "../../images/play.png";
+import pause from "../../images/pause.png";
 import nextSong from "../../images/nextSong.png";
 import volumeIcon from "../../images/volume.png";
 import { Line } from "rc-progress";
@@ -26,8 +27,9 @@ class SpotifyPlayer extends Component {
     this.state = {
       loggedIn: token ? true : false,
       nowPlaying: { name: "Not Checked", albumArt: "" },
-      playing: true,
-      volume: 50
+      playing: false,
+      volume: 50,
+      progress: 0
     };
   }
 
@@ -48,31 +50,34 @@ class SpotifyPlayer extends Component {
     this.setState({
       volume: value
     });
+    spotifyApi.setVolume(value);
   };
 
   getNowPlaying() {
     spotifyApi.getMyCurrentPlayingTrack().then(response => {
-      this.setState({
-        progress: response.progress_ms
-      });
+      console.log(response);
+      if (response.progress_ms !== undefined) {
+        this.setState({
+          progress: response.progress_ms
+        });
+      }
     });
 
     //TODO put in catch for 'nothing' playing
     spotifyApi.getMyCurrentPlaybackState().then(response => {
-      if(this.state.user !== undefined){
-        console.log("def");
-        uploadSong(response, this.state.user.id);
+      console.log(response.item);
+      if (response.item !== undefined) {
+      uploadSong(response, this.state.user.id);
+        this.setState({
+          nowPlaying: {
+            song: response.item.name,
+            artist: response.item.artists[0].name,
+            album: response.item.album.name,
+            albumArt: response.item.album.images[0].url,
+            duration: response.item.duration_ms
+          }
+        });
       }
-      // uploadSong(response, this.state.user.id);
-      this.setState({
-        nowPlaying: {
-          song: response.item.name,
-          artist: response.item.artists[0].name,
-          album: response.item.album.name,
-          albumArt: response.item.album.images[0].url,
-          duration: response.item.duration_ms
-        }
-      });
     });
   }
 
@@ -88,17 +93,24 @@ class SpotifyPlayer extends Component {
   postNextSong() {
     spotifyApi.skipToNext().then(() => {
       this.getNowPlaying();
+      this.setState({
+        playing: true
+      });
     });
   }
 
   postPreviousSong() {
     spotifyApi.skipToPrevious().then(() => {
       this.getNowPlaying();
+      this.setState({
+        playing: true
+      });
     });
   }
 
   postPlayPause() {
     this.state.playing ? spotifyApi.pause() : spotifyApi.play();
+    this.getNowPlaying();
     this.setState({
       playing: !this.state.playing
     });
@@ -125,7 +137,6 @@ class SpotifyPlayer extends Component {
           {!this.state.loggedIn && (
             <a href="http://localhost:8888/login"> Login to Spotify </a>
           )}
-
           {this.state.loggedIn && (
             <div style={{ display: "flex", direction: "row" }}>
               <div
@@ -195,20 +206,35 @@ class SpotifyPlayer extends Component {
                   }}
                   onClick={() => this.postPreviousSong()}
                 />
-                <img
-                  src={play}
-                  alt="previous song"
-                  style={{
-                    width: 30,
-                    height: 30,
-                    position: "absolute",
-                    left: "49vw"
-                  }}
-                  onClick={() => this.postPlayPause()}
-                />
+                {this.state.playing ? (
+                  <img
+                    src={pause}
+                    alt="play song"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      position: "absolute",
+                      left: "49vw"
+                    }}
+                    onClick={() => this.postPlayPause()}
+                  />
+                ) : (
+                  <img
+                    src={play}
+                    alt="pause song"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      position: "absolute",
+                      left: "49vw"
+                    }}
+                    onClick={() => this.postPlayPause()}
+                  />
+                )}
+
                 <img
                   src={nextSong}
-                  alt="previous song"
+                  alt="next song"
                   style={{
                     width: 30,
                     height: 30,
