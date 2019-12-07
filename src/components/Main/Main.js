@@ -13,7 +13,7 @@ class Main extends Component {
     super(props);
 
     this.state = {
-      mapHeight: "15vh",
+      mapHeight: "23vh",
       users: [1, 2, 3, 4, 5, 6, 7, 8],
       userBubblesVisible: false,
       userBubblesOpacity: 0
@@ -26,7 +26,7 @@ class Main extends Component {
   }
 
   toggleMapHeight = () => {
-    if (this.state.mapHeight === "15vh") {
+    if (this.state.mapHeight === "23vh") {
       this.setState({
         mapHeight: "85vh",
         userBubblesVisible: true,
@@ -34,7 +34,7 @@ class Main extends Component {
       });
     } else {
       this.setState({
-        mapHeight: "15vh",
+        mapHeight: "23vh",
         userBubblesVisible: false,
         userBubblesOpacity: "0"
       });
@@ -103,7 +103,7 @@ class Main extends Component {
               left: 0,
               width: "100vw",
               height: this.state.mapHeight,
-              minHeight: "15vh",
+              minHeight: "23vh",
               background: "#112BBF",
               transition: "height 0.3s ease-in-out"
             }}
@@ -119,7 +119,7 @@ class Main extends Component {
               bottom: 0,
               left: 0,
               width: "100vw",
-              height: "15vh",
+              height: "20vh",
               background: "#112BBF"
             }}
           >
