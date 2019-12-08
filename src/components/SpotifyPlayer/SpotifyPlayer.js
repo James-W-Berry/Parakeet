@@ -5,6 +5,7 @@ import play from "../../images/play.png";
 import pause from "../../images/pause.png";
 import nextSong from "../../images/nextSong.png";
 import volumeIcon from "../../images/volume.png";
+import spotify from "../../images/spotify.png";
 import { Line } from "rc-progress";
 import Slider from "react-rangeslider";
 import "../SpotifyPlayer/SpotifyPlayer.css";
@@ -19,18 +20,21 @@ class SpotifyPlayer extends Component {
     super();
     const params = this.getHashParams();
     const token = params.access_token;
+
     if (token) {
       spotifyApi.setAccessToken(token);
-      this.getNowPlaying();
       this.getCurrentUser();
     }
     this.state = {
       loggedIn: token ? true : false,
-      nowPlaying: { name: "Not Checked", albumArt: "" },
-      playing: false,
+      nowPlaying: { name: "", albumArt: "" },
       volume: 50,
       progress: 0
     };
+  }
+
+  componentDidMount() {
+    this.getNowPlaying();
   }
 
   getHashParams() {
@@ -54,20 +58,9 @@ class SpotifyPlayer extends Component {
   };
 
   getNowPlaying() {
-    spotifyApi.getMyCurrentPlayingTrack().then(response => {
-      console.log(response);
-      if (response.progress_ms !== undefined) {
-        this.setState({
-          progress: response.progress_ms
-        });
-      }
-    });
-
-    //TODO put in catch for 'nothing' playing
     spotifyApi.getMyCurrentPlaybackState().then(response => {
-      console.log(response.item);
       if (response.item !== undefined) {
-      uploadSong(response, this.state.user.id);
+        uploadSong(response, this.state.user.id);
         this.setState({
           nowPlaying: {
             song: response.item.name,
@@ -78,6 +71,14 @@ class SpotifyPlayer extends Component {
           }
         });
       }
+      spotifyApi.getMyCurrentPlayingTrack().then(response => {
+        if (response.progress_ms !== undefined) {
+          this.setState({
+            progress: response.progress_ms
+            // playing: response.is_playing
+          });
+        }
+      });
     });
   }
 
@@ -86,7 +87,8 @@ class SpotifyPlayer extends Component {
       console.log(response);
       this.setState({
         user: response
-      })
+      });
+      this.getNowPlaying();
     });
   }
 
@@ -123,6 +125,7 @@ class SpotifyPlayer extends Component {
 
     let { volume } = this.state;
 
+    console.log(this.state);
     return (
       <div
         style={{
@@ -135,9 +138,45 @@ class SpotifyPlayer extends Component {
       >
         <div className="App">
           {!this.state.loggedIn && (
-            <a href="http://localhost:8888/login"> Login to Spotify </a>
+            <div
+              style={{
+                justifyContent: "center",
+                position: "absolute",
+                height: "5vh",
+                width: "20vw",
+                top: "5vh",
+                left: "40vw"
+              }}
+            >
+              <a href="http://localhost:8888/login">
+                <img
+                  src={spotify}
+                  alt="login"
+                  style={{
+                    width: 60,
+                    height: 60,
+                    padding: "10px"
+                  }}
+                />
+                Login to Spotify
+              </a>
+            </div>
           )}
-          {this.state.loggedIn && (
+          {this.state.loggedIn && this.state.nowPlaying.song === undefined && (
+            <div
+              style={{
+                justifyContent: "center",
+                position: "absolute",
+                height: "5vh",
+                width: "30vw",
+                top: "5vh",
+                left: "35vw"
+              }}
+            >
+              Listen to your own music or spy on someone else's!
+            </div>
+          )}
+          {this.state.loggedIn && this.state.nowPlaying.song !== undefined && (
             <div style={{ display: "flex", direction: "row" }}>
               <div
                 style={{
@@ -170,7 +209,11 @@ class SpotifyPlayer extends Component {
                   fontSize: "16"
                 }}
               >
-                {this.state.nowPlaying.song}
+                <Marquee
+                  text={this.state.nowPlaying.song}
+                  hoverToStop={false}
+                  loop={false}
+                />
               </div>
 
               <div
@@ -190,111 +233,110 @@ class SpotifyPlayer extends Component {
                   loop={false}
                 />
               </div>
-            </div>
-          )}
-          {this.state.loggedIn && (
-            <div>
-              <div style={{ position: "absolute", top: "3vw" }}>
-                <img
-                  src={previousSong}
-                  alt="previous song"
-                  style={{
-                    width: 40,
-                    height: 40,
-                    position: "absolute",
-                    left: "39vw"
-                  }}
-                  onClick={() => this.postPreviousSong()}
-                />
-                {this.state.playing ? (
+
+              <div>
+                <div style={{ position: "absolute", top: "3vw" }}>
                   <img
-                    src={pause}
-                    alt="play song"
+                    src={previousSong}
+                    alt="previous song"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      position: "absolute",
+                      left: "39vw"
+                    }}
+                    onClick={() => this.postPreviousSong()}
+                  />
+                  {this.state.playing ? (
+                    <img
+                      src={pause}
+                      alt="play song"
+                      style={{
+                        width: 30,
+                        height: 30,
+                        position: "absolute",
+                        left: "49vw"
+                      }}
+                      onClick={() => this.postPlayPause()}
+                    />
+                  ) : (
+                    <img
+                      src={play}
+                      alt="pause song"
+                      style={{
+                        width: 30,
+                        height: 30,
+                        position: "absolute",
+                        left: "49vw"
+                      }}
+                      onClick={() => this.postPlayPause()}
+                    />
+                  )}
+
+                  <img
+                    src={nextSong}
+                    alt="next song"
                     style={{
                       width: 30,
                       height: 30,
                       position: "absolute",
-                      left: "49vw"
+                      left: "59vw"
                     }}
-                    onClick={() => this.postPlayPause()}
+                    onClick={() => this.postNextSong()}
                   />
-                ) : (
-                  <img
-                    src={play}
-                    alt="pause song"
-                    style={{
-                      width: 30,
-                      height: 30,
-                      position: "absolute",
-                      left: "49vw"
-                    }}
-                    onClick={() => this.postPlayPause()}
-                  />
-                )}
-
-                <img
-                  src={nextSong}
-                  alt="next song"
+                </div>
+                <div
                   style={{
-                    width: 30,
-                    height: 30,
                     position: "absolute",
-                    left: "59vw"
+                    top: "6vw",
+                    width: "30vw",
+                    left: "35vw"
                   }}
-                  onClick={() => this.postNextSong()}
-                />
-              </div>
-              <div
-                style={{
-                  position: "absolute",
-                  top: "6vw",
-                  width: "30vw",
-                  left: "35vw"
-                }}
-              >
-                <Line
-                  percent={progressPercent}
-                  strokeWidth="1"
-                  strokeColor="#fff"
-                  trailColor="#A4A7B4"
-                />
-              </div>
+                >
+                  <Line
+                    percent={progressPercent}
+                    strokeWidth="1"
+                    strokeColor="#fff"
+                    trailColor="#A4A7B4"
+                  />
+                </div>
 
-              <div
-                style={{
-                  width: 31,
-                  height: 24,
-                  position: "absolute",
-                  right: "15vw",
-                  top: "8vh"
-                }}
-              >
-                <img
-                  src={volumeIcon}
-                  alt="volume"
+                <div
                   style={{
                     width: 31,
-                    height: 24
+                    height: 24,
+                    position: "absolute",
+                    right: "15vw",
+                    top: "8vh"
                   }}
-                />
-              </div>
+                >
+                  <img
+                    src={volumeIcon}
+                    alt="volume"
+                    style={{
+                      width: 31,
+                      height: 24
+                    }}
+                  />
+                </div>
 
-              <div
-                style={{
-                  position: "absolute",
-                  right: "5vw",
-                  top: "6.8vh",
-                  width: "10vw",
-                  right: "4vw"
-                }}
-              >
-                <Slider
-                  value={volume}
-                  orientation="horizontal"
-                  min={0}
-                  max={100}
-                  onChange={this.handleVolumeChange}
-                />
+                <div
+                  style={{
+                    position: "absolute",
+                    right: "5vw",
+                    top: "6.8vh",
+                    width: "10vw",
+                    right: "4vw"
+                  }}
+                >
+                  <Slider
+                    value={volume}
+                    orientation="horizontal"
+                    min={0}
+                    max={100}
+                    onChange={this.handleVolumeChange}
+                  />
+                </div>
               </div>
             </div>
           )}
