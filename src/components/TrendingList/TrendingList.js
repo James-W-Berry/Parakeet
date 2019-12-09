@@ -9,7 +9,7 @@ import uuid from "react-uuid";
 
 class TrendingList extends Component {
   createSongItem(song) {
-    console.log(`creating a playlist entry from ${song}`);
+    console.log(song);
     if (song !== undefined) {
       return (
         <ListItem key={uuid()}>
@@ -20,7 +20,7 @@ class TrendingList extends Component {
           </ListItemAvatar>
           <ListItemText
             primary={song.songId}
-            secondary={`${song.currentSong} * ${song.lastName}`}
+            secondary={`${song.artist} * ${song.album}`}
           />
         </ListItem>
       );
