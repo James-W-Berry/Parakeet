@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { firebase } from "../../firebase";
-import eye from "../../images/eye.png";
-import zenuity from "../../images/zenuity.png";
+import trendingPic from "../../images/trending_pic.png";
+import trending from "../../images/trending.png";
 import TrendingList from "../TrendingList/TrendingList";
-
 
 //TODO add apiCall to get song name and other info, to display on TrendingList
 const handleChange = event => {
@@ -86,11 +85,12 @@ class WhatsTrendingController extends Component {
             backgroundPosition: "center",
             backgroundRepeat: "no-input",
             backgroundSize: "cover",
-            backgroundImage: `url(${eye})`,
+            backgroundImage: `url(${trendingPic})`,
             position: "absolute",
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
             alignItems: "center",
+            justifyContent: "center",
             fontSize: 40,
             left: "15vw",
             textAlign: "start",
@@ -98,32 +98,25 @@ class WhatsTrendingController extends Component {
             borderRadius: "30px"
           }}
         >
-          <div style={{ position: "absolute", top: "20%" }}>
-            zenuitian top hits
-          </div>
+          <div style={{ position: "absolute", top: "20%" }}>top hits</div>
           <img
-            src={zenuity}
+            src={trending}
             alt=""
             height="54"
             width="43"
             style={{ position: "absolute", top: "44%" }}
           />
-        </div>
 
-        <div
-          style={{
-            position: "absolute",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            fontSize: 30,
-            height: "10%",
-            bottom: "10%",
-            left: "calc(15vw + 15px)"
-          }}
-        >
-          trending now at zenuity
+          <div
+            style={{
+              position: "absolute",
+              fontSize: 30,
+              height: "10%",
+              bottom: "-10%"
+            }}
+          >
+            trending now near you
+          </div>
         </div>
 
         {/*    <div

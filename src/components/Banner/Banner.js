@@ -3,7 +3,7 @@ import logo from "../../images/logo.png";
 
 class Banner extends Component {
   render() {
-    return <img src={logo} alt="" height="80" width="140" />;
+    return <img src={logo} alt="" height="15" width="150" />;
   }
 }
 

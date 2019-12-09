@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import uuid from "react-uuid";
 import Fab from "@material-ui/core/Fab";
 import PersonIcon from "@material-ui/icons/Person";
+var Marquee = require("react-marquee");
 
 class UserBubble extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class UserBubble extends Component {
     this.state = {
       user: this.props.user,
       show: true,
+      expanded: false,
       style: {
         fontSize: 60,
         opacity: 0,
@@ -52,6 +54,24 @@ class UserBubble extends Component {
     });
   }
 
+  expandedStyle = () => {
+    this.setState({
+      expanded: !this.state.expanded,
+      style: {
+        flexDirection: "column",
+        position: "absolute",
+        bottom: this.state.y,
+        left: this.state.x,
+        width: "15vw",
+        height: "6vh",
+        border: "1px",
+        borderRadius: "12px",
+        opacity: 1,
+        transition: "all 2s ease"
+      }
+    });
+  };
+
   componentDidMount() {
     this.setState({
       x: `${5 + Math.random() * 90}vw`,
@@ -76,10 +96,62 @@ class UserBubble extends Component {
         key={this.state.id}
         style={this.state.style}
         onTransitionEnd={this.transitionEnd}
+        onClick={this.expandedStyle}
       >
-        <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
-          <PersonIcon />
-        </Fab>
+        {this.state.expanded ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flexStart",
+              position: "absolute",
+              fontWeight: "bold",
+              fontSize: "16"
+            }}
+          >
+            <Fab
+              color="primary"
+              aria-label="add"
+              style={{ outline: "none", background: "#EA3349" }}
+            >
+              <PersonIcon />
+            </Fab>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flexStart",
+                position: "absolute",
+                left: "65px",
+                top: "0.25vh",
+                fontWeight: "bold",
+                fontSize: "16"
+              }}
+            >
+              <Marquee text="Song" hoverToStop={false} loop={false} />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flexStart",
+                position: "absolute",
+                left: "65px",
+                top: "2.25vh",
+                fontSize: "16",
+                maxWidth: "20vw"
+              }}
+            >
+              <Marquee text="Artist • Album" hoverToStop={false} loop={false} />
+            </div>
+          </div>
+        ) : (
+          <Fab
+            color="primary"
+            aria-label="add"
+            style={{ outline: "none", background: "#091740" }}
+          >
+            <PersonIcon />
+          </Fab>
+        )}
       </div>
     );
   }
