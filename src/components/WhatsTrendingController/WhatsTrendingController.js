@@ -3,11 +3,9 @@ import { firebase } from "../../firebase";
 import trendingPic from "../../images/trending_pic.png";
 import trending from "../../images/trending.png";
 import TrendingList from "../TrendingList/TrendingList";
-
-//TODO add apiCall to get song name and other info, to display on TrendingList
-const handleChange = event => {
-  console.log("selected time range");
-};
+import { FormControl, Select } from "@material-ui/core";
+import { MenuItem } from "material-ui";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 export function orderList(songList, ts) {
   const tempList = songList;
@@ -52,6 +50,13 @@ class WhatsTrendingController extends Component {
     };
   }
 
+  handleTimescaleChange = event => {
+    console.log(event);
+    this.setState({
+      timescale: event.target.value
+    });
+  };
+
   componentWillMount() {
     const db = firebase.firestore();
     var curTime = Date.now();
@@ -60,24 +65,30 @@ class WhatsTrendingController extends Component {
     doc.onSnapshot(
       docSnapshot => {
         let pastSongs = [];
-        console.log("got a snappy");
         docSnapshot.forEach(doc =>
           pastSongs.push({ ...doc.data(), uid: doc.id })
         );
+
         const orderedList = orderList(pastSongs, this.state.timescale);
-        this.setState({ songList: orderedList });
+
+        this.setState({ songList: pastSongs });
       },
       err => {
-        console.log("FUCK");
+        console.log(err);
       }
     );
   }
 
   render() {
     const { songList } = this.state;
-    console.log("SL", songList);
+
     return (
-      <div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row"
+        }}
+      >
         <div
           style={{
             height: "80%",
@@ -98,7 +109,7 @@ class WhatsTrendingController extends Component {
             borderRadius: "30px"
           }}
         >
-          <div style={{ position: "absolute", top: "20%" }}>top hits</div>
+          <div style={{ position: "absolute", top: "20%" }}>Top Hits</div>
           <img
             src={trending}
             alt=""
@@ -115,47 +126,41 @@ class WhatsTrendingController extends Component {
               bottom: "-10%"
             }}
           >
-            trending now near you
+            Trending now near you
+          </div>
+
+          <div
+            style={{
+              position: "absolute",
+              fontSize: 30,
+              height: "10%",
+              bottom: "-25%"
+            }}
+          >
+            <MuiThemeProvider>
+              <FormControl>
+                <Select
+                  value={this.state.timescale}
+                  onChange={this.handleTimescaleChange}
+                  style={{ color: "#efefef" }}
+                >
+                  <MenuItem value={3600000}>Hour</MenuItem>
+                  <MenuItem value={86400000}>Day</MenuItem>
+                  <MenuItem value={604800000}>Week</MenuItem>
+                </Select>
+              </FormControl>
+            </MuiThemeProvider>
           </div>
         </div>
 
-        {/*    <div
-          style={{
-            position: "absolute",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            fontSize: 20,
-            height: "10%",
-            bottom: 0,
-            left: "20%",
-            color: "#efefef"
-          }}
-        >
-          <FormControl>
-            <Select
-              value={this.state.timescale}
-              onChange={handleChange}
-              displayEmpty
-              style={{ color: "#efefef" }}
-            >
-              <MenuItem value={1}>Hour</MenuItem>
-              <MenuItem value={24}>Day</MenuItem>
-              <MenuItem value={168}>Week</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
-*/}
         <div
           style={{
             position: "absolute",
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
             alignItems: "center",
-            fontSize: 30,
-            height: "10%",
-            right: "25vw",
-            bottom: "45vh"
+            justifyContent: "center",
+            right: "25vw"
           }}
         >
           <TrendingList orderedList={songList} />

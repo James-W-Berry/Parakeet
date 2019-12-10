@@ -74,8 +74,8 @@ class UserBubble extends Component {
 
   componentDidMount() {
     this.setState({
-      x: `${5 + Math.random() * 90}vw`,
-      y: `${15 + Math.random() * 60}vh`,
+      x: `${10 + Math.random() * 80}vw`,
+      y: `${20 + Math.random() * 60}vh`,
       id: uuid()
     });
     setTimeout(this.mountStyle, 10);

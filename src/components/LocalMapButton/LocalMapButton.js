@@ -11,27 +11,18 @@ class LocalMapButton extends Component {
 
   render() {
     return (
-      <Fragment>
-        <Fab
-          style={{
-            display: "flex",
+        
+          <img onClick={() => {
+            this.props.slideCallback();
+          }} style={{ display: "flex",
             flexGrow: 1,
             position: "absolute",
             justifyContent: "center",
             top: -40,
             outline: "none",
-            width: "74px",
-            height: "74px"
-          }}
-          color="primary"
-          aria-label="open map"
-          onClick={() => {
-            this.props.slideCallback();
-          }}
-        >
-          <img src={map} alt="map" />
-        </Fab>
-      </Fragment>
+            width: "85px",
+            height: "85px",
+            background: "rgba(0,0,0, 0)" }} src={map} alt="map" />
     );
   }
 }

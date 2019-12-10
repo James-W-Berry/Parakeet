@@ -1,29 +1,30 @@
 import React from "react";
 import { firebase } from "../../firebase";
+import { geolocated } from "react-geolocated";
 
+function uploadSong(song, user) {
+  console.log(song);
+  console.log(user);
 
-function uploadSong(song, userId){
-  var startTime = Date.now() - song.progress_ms;
-  var songuid = song.item.id + startTime.toString();
-
-
-  console.log(userId);
   const data = {
+    timestamp: song.timestamp,
+    listenerId: user.id,
+    listenerName: user.display_name,
     songId: song.item.id,
-    listener: userId,
-    timestamp: startTime
-  }
+    uri: song.item.uri,
+    songTitle: song.item.name,
+    artist: song.item.artists[0].name,
+    album: song.item.album.name
+  };
 
   const db = firebase.firestore();
   db.collection("pastSongs")
-    .doc(data.songId.toString()+data.timestamp.toString())
+    .doc(data.songId.toString() + data.timestamp.toString())
     .set(data)
     .catch(error => {
       console.log("There was an error uploading the song");
     });
-
-};
-
+}
 
 class Register extends React.Component {
   constructor(props) {
@@ -33,13 +34,13 @@ class Register extends React.Component {
         firstName: "",
         lastName: "",
         currentSong: "",
-        location: new firebase.firestore.GeoPoint(0,0)
+        location: new firebase.firestore.GeoPoint(0, 0)
       },
       formErrors: {
         firstName: "",
         lastName: "",
         currentSong: "",
-        location: new firebase.firestore.GeoPoint(0,0)
+        location: new firebase.firestore.GeoPoint(0, 0)
       },
       formValidity: {
         firstName: false,
@@ -69,8 +70,8 @@ class Register extends React.Component {
     event.preventDefault();
     this.setState({ isSubmitting: true });
     const { formValues, formValidity } = this.state;
-    formValues.currentSong = "BANANA BREAD!"
-    formValues.location = new firebase.firestore.GeoPoint(1,-2);
+    formValues.currentSong = "BANANA BREAD!";
+    formValues.location = new firebase.firestore.GeoPoint(1, -2);
     if (Object.values(formValidity).every(Boolean)) {
       this.addUser();
     } else {

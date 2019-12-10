@@ -7,6 +7,8 @@ import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
 import Flexbox from "flexbox-react";
 import { firebase } from "../../firebase";
 import UserBubble from "../UserBubble/UserBubble";
+import GeoLocation from "../Geolocation/GeoLocation";
+import { Modal } from "@material-ui/core";
 
 class Main extends Component {
   constructor(props) {
@@ -28,7 +30,7 @@ class Main extends Component {
   toggleMapHeight = () => {
     if (this.state.mapHeight === "23vh") {
       this.setState({
-        mapHeight: "85vh",
+        mapHeight: "90vh",
         userBubblesVisible: true,
         userBubblesOpacity: "1"
       });
@@ -51,7 +53,10 @@ class Main extends Component {
         flexDirection="column"
         minHeight="100vh"
         style={{
-          background: "linear-gradient(180deg, #091740 0%, #112bbf 100%)",
+          // background: "linear-gradient(180deg, #091740 0%, #112bbf 100%)",
+          background: "linear-gradient(180deg, #ee0979 0%, #ff6a00 100%)",
+
+          //background: "#efefef",
           color: "#efefef"
         }}
       >
@@ -99,16 +104,19 @@ class Main extends Component {
               justifyContent: "center",
               alignItems: "center",
               position: "absolute",
-              bottom: "5vh",
+              bottom: "0vh",
               left: 0,
               width: "100vw",
               height: this.state.mapHeight,
-              minHeight: "23vh",
-              background: "#112BBF",
+              minHeight: "27vh",
+              // background: "#112BBF",
+              background: "linear-gradient(180deg, #ED4264 0%, #FFEDBC 100%)",
               transition: "height 0.3s ease-in-out"
             }}
           >
             <LocalMapButton slideCallback={this.toggleMapHeight} />
+            {/* <GeoLocation /> */}
+
             {this.state.userBubblesVisible &&
               this.state.users.map(user => this.createNearbyUser(user))}
           </div>
@@ -120,7 +128,9 @@ class Main extends Component {
               left: 0,
               width: "100vw",
               height: "20vh",
-              background: "#112BBF"
+              // background: "#112BBF"
+              //background: "linear-gradient(180deg, #C02425 0%, #F0CB35 100%)"
+              // background: "rgba(225, 230, 225, 0.1)"
             }}
           >
             <SpotifyPlayer />
