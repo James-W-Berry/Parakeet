@@ -16,8 +16,8 @@ var Marquee = require("react-marquee");
 const spotifyApi = new SpotifyWebApi();
 
 class SpotifyPlayer extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     const params = this.getHashParams();
     const token = params.access_token;
 
@@ -117,12 +117,20 @@ class SpotifyPlayer extends Component {
     });
   }
 
+  playSong(uri) {
+    if (uri !== null) {
+      console.log(uri);
+      //figure out how to use Spotify web playback sdk to actually start song from uri
+      //spotifyApi.play(uri);
+    }
+  }
+
   render() {
     let progressPercent = Math.round(
       (this.state.progress / this.state.nowPlaying.duration) * 100
     );
-
     let { volume } = this.state;
+    this.playSong(this.props.selectedTrendingSong);
 
     return (
       <div

@@ -19,7 +19,14 @@ export function orderList(songList, ts) {
       return item.songId === tempList[i].songId;
     });
     if (filteredList.length === 0) {
-      orderedList.push({ songId: tempList[i].songId, playcount: 1 });
+      orderedList.push({
+        songId: tempList[i].songId,
+        playcount: 1,
+        songTitle: tempList[i].songTitle,
+        artist: tempList[i].artist,
+        album: tempList[i].album,
+        uri: tempList[i].uri
+      });
     } else {
       orderedList[orderedList.indexOf(filteredList[0])].playcount++;
     }
@@ -46,16 +53,24 @@ class WhatsTrendingController extends Component {
     super(props);
     this.state = {
       songList: [],
-      timescale: 604800000
+      timescale: 604800000,
+      callback: this.props.trendingSongSelected
     };
+
+    this.handleTrendingSongSelected = this.handleTrendingSongSelected.bind(
+      this
+    );
   }
 
   handleTimescaleChange = event => {
-    console.log(event);
     this.setState({
       timescale: event.target.value
     });
   };
+
+  handleTrendingSongSelected(uri) {
+    this.state.callback(uri);
+  }
 
   componentWillMount() {
     const db = firebase.firestore();
@@ -71,7 +86,7 @@ class WhatsTrendingController extends Component {
 
         const orderedList = orderList(pastSongs, this.state.timescale);
 
-        this.setState({ songList: pastSongs });
+        this.setState({ songList: orderedList });
       },
       err => {
         console.log(err);
@@ -163,7 +178,10 @@ class WhatsTrendingController extends Component {
             right: "25vw"
           }}
         >
-          <TrendingList orderedList={songList} />
+          <TrendingList
+            orderedList={songList}
+            handleTrendingSongSelected={this.handleTrendingSongSelected}
+          />
         </div>
       </div>
     );
