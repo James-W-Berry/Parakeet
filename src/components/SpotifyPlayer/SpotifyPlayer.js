@@ -34,7 +34,7 @@ class SpotifyPlayer extends Component {
   }
 
   componentDidMount() {
-    this.getNowPlaying();
+    // this.getNowPlaying();
   }
 
   getHashParams() {
@@ -60,7 +60,7 @@ class SpotifyPlayer extends Component {
   getNowPlaying() {
     spotifyApi.getMyCurrentPlaybackState().then(response => {
       if (response.item !== undefined) {
-        uploadSong(response, this.state.user.id);
+        uploadSong(response, this.state.user);
         this.setState({
           nowPlaying: {
             song: response.item.name,
@@ -84,7 +84,6 @@ class SpotifyPlayer extends Component {
 
   getCurrentUser() {
     spotifyApi.getMe().then(response => {
-      console.log(response);
       this.setState({
         user: response
       });
@@ -125,11 +124,12 @@ class SpotifyPlayer extends Component {
 
     let { volume } = this.state;
 
-    console.log(this.state);
     return (
       <div
         style={{
-          background: "rgba(28,29,35, 0.6)",
+          //background: "rgba(28,29,35, 0.6)",
+          background: "rgba(225, 230, 225, 0.5)",
+
           height: "20vh",
           textAlign: "center",
           border: "1px solid black",
@@ -323,7 +323,6 @@ class SpotifyPlayer extends Component {
                 <div
                   style={{
                     position: "absolute",
-                    right: "5vw",
                     top: "6.8vh",
                     width: "10vw",
                     right: "4vw"

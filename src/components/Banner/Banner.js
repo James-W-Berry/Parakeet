@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import logo from "../../images/logo.png";
+import spy from "../../images/mr_spy.png";
 
 class Banner extends Component {
   render() {
-    return <img src={logo} alt="" height="15" width="150" />;
+    return (
+      <img src={spy} alt="" height="50" width="50" style={{ position: "absolute", left: "2vw" }} />
+    );
   }
 }
 

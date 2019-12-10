@@ -6,6 +6,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import audio_wave from "../../images/audio_wave.png";
 import uuid from "react-uuid";
+import { Typography } from "@material-ui/core";
 
 class TrendingList extends Component {
   createSongItem(song) {
@@ -19,8 +20,17 @@ class TrendingList extends Component {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={song.songId}
-            secondary={`${song.artist} * ${song.album}`}
+            disableTypography
+            primary={
+              <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                {song.songTitle}
+              </Typography>
+            }
+            secondary={
+              <Typography variant="body2" style={{ color: "#FFFFFF" }}>
+                {`${song.artist} • ${song.album}`}
+              </Typography>
+            }
           />
         </ListItem>
       );
@@ -29,6 +39,7 @@ class TrendingList extends Component {
 
   render() {
     console.log(this.props.orderedList);
+
     let abrevList = [];
     if (this.props.orderedList !== undefined) {
       if (this.props.orderedList.length > 5) {
