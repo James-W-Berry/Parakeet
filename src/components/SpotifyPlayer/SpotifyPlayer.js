@@ -10,12 +10,13 @@ import { Line } from "rc-progress";
 import Slider from "react-rangeslider";
 import "../SpotifyPlayer/SpotifyPlayer.css";
 import { uploadSong } from "../Register/Register.js";
+import SpotifyPlayer from "react-spotify-web-playback";
 
 var Marquee = require("react-marquee");
 
 const spotifyApi = new SpotifyWebApi();
 
-class SpotifyPlayer extends Component {
+class SpotifyComponent extends Component {
   constructor(props) {
     super(props);
     const params = this.getHashParams();
@@ -27,8 +28,9 @@ class SpotifyPlayer extends Component {
     }
     this.state = {
       loggedIn: token ? true : false,
+      token: token,
       nowPlaying: { name: "", albumArt: "" },
-      volume: 50,
+      volume: 100,
       progress: 0
     };
   }
@@ -117,13 +119,16 @@ class SpotifyPlayer extends Component {
     });
   }
 
-  playSong(uri) {
+  playSong = uri => {
     if (uri !== null) {
+      // this.setState({
+      //   nowTrendingUri: uri
+      // });
       console.log(uri);
       //figure out how to use Spotify web playback sdk to actually start song from uri
       //spotifyApi.play(uri);
     }
-  }
+  };
 
   render() {
     let progressPercent = Math.round(
@@ -135,16 +140,14 @@ class SpotifyPlayer extends Component {
     return (
       <div
         style={{
-          //background: "rgba(28,29,35, 0.6)",
-          background: "rgba(225, 230, 225, 0.5)",
-
+          background: "#091740",
           height: "20vh",
           textAlign: "center",
           border: "1px solid black",
           borderTopLeftRadius: "120px"
         }}
       >
-        <div className="App">
+        <div>
           {!this.state.loggedIn && (
             <div
               style={{
@@ -308,7 +311,6 @@ class SpotifyPlayer extends Component {
                     trailColor="#A4A7B4"
                   />
                 </div>
-
                 <div
                   style={{
                     width: 31,
@@ -327,7 +329,6 @@ class SpotifyPlayer extends Component {
                     }}
                   />
                 </div>
-
                 <div
                   style={{
                     position: "absolute",
@@ -344,6 +345,13 @@ class SpotifyPlayer extends Component {
                     onChange={this.handleVolumeChange}
                   />
                 </div>
+
+                {this.props.selectedTrendingSong !== null ? (
+                  <SpotifyPlayer
+                    token={this.state.token}
+                    uris={[this.props.selectedTrendingSong]}
+                  />
+                ) : null}
               </div>
             </div>
           )}
@@ -353,4 +361,4 @@ class SpotifyPlayer extends Component {
   }
 }
 
-export default SpotifyPlayer;
+export default SpotifyComponent;

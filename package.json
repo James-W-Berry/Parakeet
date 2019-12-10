@@ -28,6 +28,7 @@
     "react-notifications": "^1.4.3",
     "react-rangeslider": "^2.2.0",
     "react-scripts": "3.3.0",
+    "react-spotify-web-playback": "^0.6.0",
     "react-uuid": "^1.0.2",
     "spotify-web-api-js": "^1.2.0"
   },

@@ -101,8 +101,6 @@ class UserBubble extends Component {
         {this.state.expanded ? (
           <div
             style={{
-              display: "flex",
-              justifyContent: "flexStart",
               position: "absolute",
               fontWeight: "bold",
               fontSize: "16"
@@ -111,7 +109,7 @@ class UserBubble extends Component {
             <Fab
               color="primary"
               aria-label="add"
-              style={{ outline: "none", background: "#EA3349" }}
+              style={{ outline: "none", background: "#ee0979" }}
             >
               <PersonIcon />
             </Fab>
@@ -144,13 +142,21 @@ class UserBubble extends Component {
             </div>
           </div>
         ) : (
-          <Fab
-            color="primary"
-            aria-label="add"
-            style={{ outline: "none", background: "#091740" }}
+          <div
+            style={{
+              position: "absolute",
+              fontWeight: "bold",
+              fontSize: "16"
+            }}
           >
-            <PersonIcon />
-          </Fab>
+            <Fab
+              color="primary"
+              aria-label="add"
+              style={{ outline: "none", background: "#091740" }}
+            >
+              <PersonIcon />
+            </Fab>
+          </div>
         )}
       </div>
     );
