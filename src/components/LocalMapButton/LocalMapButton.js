@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import Fab from "@material-ui/core/Fab";
-import map from "../../images/map.png";
+import map from "../../images/map.svg";
 
 class LocalMapButton extends Component {
   state = { open: false };
@@ -22,7 +22,7 @@ class LocalMapButton extends Component {
             outline: "none",
             width: "85px",
             height: "85px",
-            background: "rgba(0,0,0, 0)" }} src={map} alt="map" />
+            backgroundColor: "#efefef" }} src={map} alt="map" />
     );
   }
 }

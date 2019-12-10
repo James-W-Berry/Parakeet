@@ -7,13 +7,17 @@ import Avatar from "@material-ui/core/Avatar";
 import audio_wave from "../../images/audio_wave.png";
 import uuid from "react-uuid";
 import { Typography } from "@material-ui/core";
+import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
 
 class TrendingList extends Component {
   createSongItem(song) {
-    console.log(song);
     if (song !== undefined) {
       return (
-        <ListItem key={uuid()}>
+        <ListItem
+          key={uuid()}
+          button={true}
+          onClick={() => this.props.handleTrendingSongSelected(song.uri)}
+        >
           <ListItemAvatar>
             <Avatar>
               <img src={audio_wave} alt="" />
@@ -38,7 +42,7 @@ class TrendingList extends Component {
   }
 
   render() {
-    console.log(this.props.orderedList);
+    //console.log(this.props.orderedList);
 
     let abrevList = [];
     if (this.props.orderedList !== undefined) {
