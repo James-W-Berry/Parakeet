@@ -7,7 +7,7 @@ import Flexbox from "flexbox-react";
 import { firebase } from "../../firebase";
 import UserBubble from "../UserBubble/UserBubble";
 import GeoLocation from "../Geolocation/GeoLocation";
-import SpotifyComponent from "../SpotifyPlayer/SpotifyPlayer";
+import SpotifyPlayerUI from "../SpotifyPlayerUI/SpotifyPlayerUI";
 
 class Main extends Component {
   constructor(props) {
@@ -139,7 +139,7 @@ class Main extends Component {
               height: "20vh"
             }}
           >
-            <SpotifyComponent
+            <SpotifyPlayerUI
               selectedTrendingSong={this.state.selectedTrendingSong}
             />
           </div>

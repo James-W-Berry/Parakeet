@@ -18,10 +18,10 @@ class LocalMapButton extends Component {
           style={{
             position: "absolute",
             justifyContent: "center",
-            top: -80,
+            top: -60,
             outline: "none",
-            width: "74px",
-            height: "74px",
+            width: "50px",
+            height: "50px",
             background: "rgba(0,0,0,0.2)"
           }}
           aria-label="open map"

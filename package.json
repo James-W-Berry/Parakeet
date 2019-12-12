@@ -22,6 +22,7 @@
     "react-expand-animated": "^1.0.0",
     "react-fade-in": "^0.1.6",
     "react-geolocated": "^3.0.1",
+    "react-load-script": "0.0.6",
     "react-loading": "^2.0.3",
     "react-lottie": "^1.2.3",
     "react-marquee": "^1.0.0",

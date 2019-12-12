@@ -3,9 +3,6 @@ import { firebase } from "../../firebase";
 import { geolocated } from "react-geolocated";
 
 function uploadSong(song, user) {
-  console.log(song);
-  console.log(user);
-
   const data = {
     timestamp: song.timestamp,
     listenerId: user.id,

@@ -17,6 +17,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 var client_id = process.env.REACT_APP_CLIENT_ID;
+console.log(client_id);
 var client_secret = process.env.REACT_APP_CLIENT_SECRET;
 var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
 
@@ -51,7 +52,7 @@ app.get("/login", function(req, res) {
 
   // your application requests authorization
   var scope =
-    "user-read-private user-read-email user-read-playback-state user-modify-playback-state";
+    "user-read-private user-read-email user-read-playback-state user-modify-playback-state streaming app-remote-control user-library-read user-library-modify";
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({

@@ -7,7 +7,7 @@ import Avatar from "@material-ui/core/Avatar";
 import audio_wave from "../../images/audio_wave.png";
 import uuid from "react-uuid";
 import { Typography } from "@material-ui/core";
-import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
+import SpotifyPlayer from "../SpotifyPlayerUI/SpotifyPlayerUI";
 
 class TrendingList extends Component {
   createSongItem(song) {
