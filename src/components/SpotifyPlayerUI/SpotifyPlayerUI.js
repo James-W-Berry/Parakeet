@@ -4,6 +4,8 @@ import spotify from "../../images/spotify.png";
 import "./SpotifyPlayerUI.css";
 import { uploadSong } from "../Register/Register.js";
 import SpotifyWebPlayer from "react-spotify-web-playback";
+import { connect } from "react-redux";
+import { setToken } from "../../actions/actions";
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -13,14 +15,19 @@ class SpotifyPlayerUI extends Component {
     const params = this.getHashParams();
     const token = params.access_token;
 
-    // if (token) {
-    //   spotifyApi.setAccessToken(token);
-    // }
+    if (token) {
+      this.props.setToken(token);
+    }
 
     this.state = {
       loggedIn: token ? true : false,
       token: token,
-      selectedTrendingSong: this.props.selectedTrendingSong
+      selectedTrendingSong: this.props.selectedTrendingSong,
+      spotifyId: "",
+      displayName: "",
+      location: null,
+      currentSong: null,
+      group: ""
     };
   }
 
@@ -38,7 +45,6 @@ class SpotifyPlayerUI extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div
         style={{
@@ -118,7 +124,7 @@ class SpotifyPlayerUI extends Component {
                 token={this.state.token}
                 uris={[this.props.selectedTrendingSong]}
                 callback={state => {
-                  console.log(state);
+                  //console.log(state);
                 }}
               />
             </div>
@@ -129,4 +135,8 @@ class SpotifyPlayerUI extends Component {
   }
 }
 
-export default SpotifyPlayerUI;
+const mapDispatchToProps = {
+  setToken: setToken
+};
+
+export default connect(null, mapDispatchToProps)(SpotifyPlayerUI);

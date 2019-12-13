@@ -8,6 +8,8 @@ import { firebase } from "../../firebase";
 import UserBubble from "../UserBubble/UserBubble";
 import GeoLocation from "../Geolocation/GeoLocation";
 import SpotifyPlayerUI from "../SpotifyPlayerUI/SpotifyPlayerUI";
+import { connect } from "react-redux";
+import { setNearbyUsers } from "../../actions/actions";
 
 class Main extends Component {
   constructor(props) {
@@ -26,9 +28,21 @@ class Main extends Component {
     );
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const db = firebase.firestore();
-    //TODO: ger nearby users
+    let doc = db.collection("users");
+    doc.onSnapshot(
+      docSnapshot => {
+        let users = [];
+        docSnapshot.forEach(user =>
+          users.push({ ...user.data(), uid: user.id })
+        );
+        this.props.setNearbyUsers(users);
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   toggleMapHeight = () => {
@@ -58,6 +72,7 @@ class Main extends Component {
   }
 
   render() {
+    console.log(this.props.token);
     return (
       <Flexbox
         flexDirection="column"
@@ -127,7 +142,7 @@ class Main extends Component {
             {/* <GeoLocation /> */}
 
             {this.state.userBubblesVisible &&
-              this.state.users.map(user => this.createNearbyUser(user))}
+              this.props.nearbyUsers.map(user => this.createNearbyUser(user))}
           </div>
 
           <div
@@ -149,4 +164,15 @@ class Main extends Component {
   }
 }
 
-export default Main;
+const mapStateToProps = state => {
+  return {
+    token: state.token,
+    nearbyUsers: state.nearbyUsers
+  };
+};
+
+const mapDispatchToProps = {
+  setNearbyUsers: setNearbyUsers
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
