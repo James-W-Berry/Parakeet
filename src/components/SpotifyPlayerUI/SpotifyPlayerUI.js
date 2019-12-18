@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import SpotifyWebApi from "spotify-web-api-js";
 import spotify from "../../images/spotify.png";
 import "./SpotifyPlayerUI.css";
 import { uploadSong } from "../Register/Register.js";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import { connect } from "react-redux";
 import { setToken } from "../../actions/actions";
+const dotenv = require("dotenv");
 
-const spotifyApi = new SpotifyWebApi();
+dotenv.config();
 
+var loginUrl = process.env.REACT_APP_LOGIN_URL;
+console.log(loginUrl);
 class SpotifyPlayerUI extends Component {
   constructor(props) {
     super(props);
@@ -17,12 +19,12 @@ class SpotifyPlayerUI extends Component {
 
     if (token) {
       this.props.setToken(token);
+      //uploadSong()
     }
 
     this.state = {
       loggedIn: token ? true : false,
       token: token,
-      selectedTrendingSong: this.props.selectedTrendingSong,
       spotifyId: "",
       displayName: "",
       location: null,
@@ -67,7 +69,7 @@ class SpotifyPlayerUI extends Component {
                 left: "40vw"
               }}
             >
-              <a href="http://localhost:8888/login">
+              <a href={loginUrl}>
                 <img
                   src={spotify}
                   alt="login"
@@ -81,21 +83,6 @@ class SpotifyPlayerUI extends Component {
               </a>
             </div>
           )}
-          {/* {this.state.loggedIn && this.props.selectedTrendingSong === null && (
-            <div
-              style={{
-                justifyContent: "center",
-                position: "absolute",
-                height: "5vh",
-                width: "30vw",
-                top: "5vh",
-                left: "35vw"
-              }}
-            >
-              Listen to your own music or spy on someone else's!
-            </div>
-          )} */}
-
           {this.state.loggedIn && (
             <div
               style={{
@@ -122,9 +109,55 @@ class SpotifyPlayerUI extends Component {
                   persistDeviceSelection: "true"
                 }}
                 token={this.state.token}
-                uris={[this.props.selectedTrendingSong]}
+                // uris={[this.props.selectedSong]}
+                // persistDeviceSelection={true}
                 callback={state => {
-                  //console.log(state);
+                  console.log(state);
+
+                  if (
+                    state.devices[0] !== undefined &&
+                    state.isActive !== true
+                  ) {
+                    fetch(`https://api.spotify.com/v1/me/player`, {
+                      body: JSON.stringify({
+                        device_ids: [state.devices[0].id],
+                        play: false
+                      }),
+                      headers: {
+                        Authorization: `Bearer ${this.state.token}`,
+                        "Content-Type": "application/json"
+                      },
+                      method: "PUT"
+                    });
+                  }
+
+                  // if (
+                  //   state.devices[0] !== undefined &&
+                  //   state.isActive === true &&
+                  //   state.track.uri !== this.props.selectedSong
+                  // ) {
+                  //   let body;
+
+                  //   if (this.props.selectedSong) {
+                  //     body = JSON.stringify({
+                  //       uris: [this.props.selectedSong]
+                  //     });
+
+                  //     console.log(body);
+
+                  //     fetch(
+                  //       `https://api.spotify.com/v1/me/player/play?device_id=${state.devices[0].id}`,
+                  //       {
+                  //         body,
+                  //         headers: {
+                  //           Authorization: `Bearer ${this.state.token}`,
+                  //           "Content-Type": "application/json"
+                  //         },
+                  //         method: "PUT"
+                  //       }
+                  //     );
+                  //   }
+                  // }
                 }}
               />
             </div>
@@ -135,8 +168,14 @@ class SpotifyPlayerUI extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    selectedSong: state.selectedSong
+  };
+};
+
 const mapDispatchToProps = {
   setToken: setToken
 };
 
-export default connect(null, mapDispatchToProps)(SpotifyPlayerUI);
+export default connect(mapStateToProps, mapDispatchToProps)(SpotifyPlayerUI);

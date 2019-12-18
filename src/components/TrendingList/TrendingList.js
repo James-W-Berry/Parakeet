@@ -7,7 +7,8 @@ import Avatar from "@material-ui/core/Avatar";
 import audio_wave from "../../images/audio_wave.png";
 import uuid from "react-uuid";
 import { Typography } from "@material-ui/core";
-import SpotifyPlayer from "../SpotifyPlayerUI/SpotifyPlayerUI";
+import { connect } from "react-redux";
+import { setSelectedSong } from "../../actions/actions";
 
 class TrendingList extends Component {
   createSongItem(song) {
@@ -16,7 +17,7 @@ class TrendingList extends Component {
         <ListItem
           key={uuid()}
           button={true}
-          onClick={() => this.props.handleTrendingSongSelected(song.uri)}
+          onClick={() => this.props.setSelectedSong(song.uri)}
         >
           <ListItemAvatar>
             <Avatar>
@@ -42,8 +43,6 @@ class TrendingList extends Component {
   }
 
   render() {
-    //console.log(this.props.orderedList);
-
     let abrevList = [];
     if (this.props.orderedList !== undefined) {
       if (this.props.orderedList.length > 5) {
@@ -60,4 +59,8 @@ class TrendingList extends Component {
   }
 }
 
-export default TrendingList;
+const mapDispatchToProps = {
+  setSelectedSong: setSelectedSong
+};
+
+export default connect(null, mapDispatchToProps)(TrendingList);

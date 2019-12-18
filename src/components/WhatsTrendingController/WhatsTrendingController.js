@@ -53,13 +53,8 @@ class WhatsTrendingController extends Component {
     super(props);
     this.state = {
       songList: [],
-      timescale: 604800000,
-      callback: this.props.trendingSongSelected
+      timescale: 604800000
     };
-
-    this.handleTrendingSongSelected = this.handleTrendingSongSelected.bind(
-      this
-    );
   }
 
   handleTimescaleChange = event => {
@@ -67,10 +62,6 @@ class WhatsTrendingController extends Component {
       timescale: event.target.value
     });
   };
-
-  handleTrendingSongSelected(uri) {
-    this.state.callback(uri);
-  }
 
   componentWillMount() {
     const db = firebase.firestore();
@@ -178,10 +169,7 @@ class WhatsTrendingController extends Component {
             right: "25vw"
           }}
         >
-          <TrendingList
-            orderedList={songList}
-            handleTrendingSongSelected={this.handleTrendingSongSelected}
-          />
+          <TrendingList orderedList={songList} />
         </div>
       </div>
     );

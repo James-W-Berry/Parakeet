@@ -1,4 +1,9 @@
-import { REGISTER_USER, SET_TOKEN, SET_NEARBY_USERS } from "../actions/actions";
+import {
+  REGISTER_USER,
+  SET_TOKEN,
+  SET_NEARBY_USERS,
+  SET_SELECTED_SONG
+} from "../actions/actions";
 
 const initialState = {
   user: [],
@@ -7,6 +12,10 @@ const initialState = {
 
 function rootReducer(state = initialState, action) {
   switch (action.type) {
+    case SET_SELECTED_SONG:
+      return {
+        selectedSong: action.selectedSong
+      };
     case SET_NEARBY_USERS:
       return {
         nearbyUsers: action.nearbyUsers

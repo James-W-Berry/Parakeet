@@ -1,6 +1,14 @@
 export const REGISTER_USER = "REGISTER_USER";
 export const SET_TOKEN = "SET_TOKEN";
 export const SET_NEARBY_USERS = "SET_NEARBY_USERS";
+export const SET_SELECTED_SONG = "SET_SELECTED_SONG";
+
+export function setSelectedSong(selectedSong) {
+  return {
+    type: SET_SELECTED_SONG,
+    selectedSong: selectedSong
+  };
+}
 
 export function setNearbyUsers(nearbyUsers) {
   return {

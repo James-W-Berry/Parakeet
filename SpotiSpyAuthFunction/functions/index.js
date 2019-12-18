@@ -1,25 +1,16 @@
-/**
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
- *
- * For more information, read
- * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
- */
-
 var express = require("express"); // Express web server framework
 var request = require("request"); // "Request" library
 var cors = require("cors");
 var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
+const functions = require("firebase-functions");
 
 dotenv.config();
 
 var client_id = process.env.REACT_APP_CLIENT_ID;
-console.log(client_id);
 var client_secret = process.env.REACT_APP_CLIENT_SECRET;
-var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
+var redirect_uri = process.env.REACT_APP_REDIRECT_URL;
 
 /**
  * Generates a random string containing numbers and letters
@@ -43,7 +34,7 @@ var app = express();
 
 app
   .use(express.static(__dirname + "/public"))
-  .use(cors())
+  .use(cors({ origin: true }))
   .use(cookieParser());
 
 app.get("/login", function(req, res) {
@@ -98,6 +89,7 @@ app.get("/callback", function(req, res) {
     };
 
     request.post(authOptions, function(error, response, body) {
+      console.log(error);
       if (!error && response.statusCode === 200) {
         var access_token = body.access_token,
           refresh_token = body.refresh_token;
@@ -115,7 +107,7 @@ app.get("/callback", function(req, res) {
 
         // we can also pass the token to the browser to make requests from there
         res.redirect(
-          "http://localhost:3000/#" +
+          "https://spotispy.web.app/#" +
             querystring.stringify({
               access_token: access_token,
               refresh_token: refresh_token
@@ -123,7 +115,7 @@ app.get("/callback", function(req, res) {
         );
       } else {
         res.redirect(
-          "/#" +
+          "/authenticate/#" +
             querystring.stringify({
               error: "invalid_token"
             })
@@ -160,5 +152,5 @@ app.get("/refresh_token", function(req, res) {
   });
 });
 
-console.log("Listening on 8888");
-app.listen(8888);
+// Expose Express API as a single Cloud Function:
+exports.authenticate = functions.https.onRequest(app);

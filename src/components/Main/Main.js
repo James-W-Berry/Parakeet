@@ -19,13 +19,8 @@ class Main extends Component {
       mapHeight: "20vh",
       users: [1, 2, 3, 4, 5, 6, 7, 8],
       userBubblesVisible: false,
-      userBubblesOpacity: 0,
-      selectedTrendingSong: null
+      userBubblesOpacity: 0
     };
-
-    this.handleTrendingSongSelected = this.handleTrendingSongSelected.bind(
-      this
-    );
   }
 
   componentWillMount() {
@@ -65,14 +60,7 @@ class Main extends Component {
     return <UserBubble user={user} />;
   }
 
-  handleTrendingSongSelected(uri) {
-    this.setState({
-      selectedTrendingSong: uri
-    });
-  }
-
   render() {
-    console.log(this.props.token);
     return (
       <Flexbox
         flexDirection="column"
@@ -110,9 +98,7 @@ class Main extends Component {
               left: 0
             }}
           >
-            <WhatsTrendingController
-              trendingSongSelected={this.handleTrendingSongSelected}
-            />
+            <WhatsTrendingController />
           </div>
         </Flexbox>
 
@@ -154,9 +140,7 @@ class Main extends Component {
               height: "20vh"
             }}
           >
-            <SpotifyPlayerUI
-              selectedTrendingSong={this.state.selectedTrendingSong}
-            />
+            <SpotifyPlayerUI />
           </div>
         </Flexbox>
       </Flexbox>
