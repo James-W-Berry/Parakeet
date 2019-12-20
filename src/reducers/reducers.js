@@ -1,13 +1,13 @@
 import {
-  REGISTER_USER,
   SET_TOKEN,
   SET_NEARBY_USERS,
-  SET_SELECTED_SONG
+  SET_SELECTED_SONG,
+  SET_USER
 } from "../actions/actions";
 
 const initialState = {
-  user: [],
-  token: null
+  token: null,
+  user: undefined
 };
 
 function rootReducer(state = initialState, action) {
@@ -24,23 +24,19 @@ function rootReducer(state = initialState, action) {
       return {
         token: action.token
       };
-    case REGISTER_USER:
+    case SET_USER:
       return {
-        user: [
-          ...state.user,
-          {
-            spotifyId: action.spotifyId,
-            displayName: action.displayName,
-            location: action.location,
-            currentSong: {
-              uri: action.currentSong.uri,
-              title: action.currentSong.title,
-              artist: action.currentSong.artist,
-              album: action.currentSong.album
-            },
-            group: action.group
+        user: {
+          spotifyId: action.user.spotifyId,
+          displayName: action.user.displayName,
+          location: action.user.location,
+          group: action.user.group,
+          currentSong: {
+            uri: action.user.currentSong.uri,
+            title: action.user.currentSong.title,
+            artist: action.user.currentSong.artist
           }
-        ]
+        }
       };
 
     default:

@@ -1,17 +1,38 @@
 import React from "react";
 import { firebase } from "../../firebase";
 import { geolocated } from "react-geolocated";
+import { connect } from "react-redux";
+
+function uploadUser(song, user) {
+  console.log("uploading user to Firebase");
+  const data = {
+    listenerId: user.spotifyId,
+    listenerName: user.displayName,
+    listenerImage: user.image,
+    timestamp: song.timestamp,
+    uri: song.uri,
+    songTitle: song.title,
+    artist: song.artist
+  };
+
+  const db = firebase.firestore();
+  db.collection("users")
+    .doc(data.listenerId)
+    .set(data)
+    .catch(error => {
+      console.log("There was an error uploading the song");
+    });
+}
 
 function uploadSong(song, user) {
   const data = {
+    listenerId: user.spotifyId,
+    listenerName: user.displayName,
+    listenerImage: user.image,
     timestamp: song.timestamp,
-    listenerId: user.id,
-    listenerName: user.display_name,
-    songId: song.item.id,
-    uri: song.item.uri,
-    songTitle: song.item.name,
-    artist: song.item.artists[0].name,
-    album: song.item.album.name
+    uri: song.uri,
+    songTitle: song.title,
+    artist: song.artist
   };
 
   const db = firebase.firestore();
@@ -166,4 +187,4 @@ class Register extends React.Component {
 }
 
 export default Register;
-export { uploadSong };
+export { uploadSong, uploadUser };

@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import uuid from "react-uuid";
 import Fab from "@material-ui/core/Fab";
 import PersonIcon from "@material-ui/icons/Person";
+import { Avatar } from "material-ui";
+import "./UserBubble.css";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+
 var Marquee = require("react-marquee");
 
 class UserBubble extends Component {
@@ -90,7 +94,6 @@ class UserBubble extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <div
         key={this.state.id}
@@ -99,48 +102,61 @@ class UserBubble extends Component {
         onClick={this.expandedStyle}
       >
         {this.state.expanded ? (
-          <div
-            style={{
-              position: "absolute",
-              fontWeight: "bold",
-              fontSize: "16"
-            }}
-          >
-            <Fab
-              color="primary"
-              aria-label="add"
-              style={{ outline: "none", background: "#ee0979" }}
-            >
-              <PersonIcon />
-            </Fab>
+          <MuiThemeProvider>
             <div
               style={{
-                display: "flex",
-                justifyContent: "flexStart",
                 position: "absolute",
-                left: "65px",
-                top: "0.25vh",
                 fontWeight: "bold",
                 fontSize: "16"
               }}
             >
-              <Marquee text="Song" hoverToStop={false} loop={false} />
-            </div>
+              <Fab
+                color="primary"
+                aria-label="add"
+                style={{ outline: "none", background: "#ee0979" }}
+              >
+                <Avatar
+                  alt={`${this.state.user.listenerName}`}
+                  src={`${this.state.user.listenerImage}`}
+                />
+              </Fab>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flexStart",
+                  position: "absolute",
+                  left: "65px",
+                  top: "0.25vh",
+                  fontWeight: "bold",
+                  fontSize: "16"
+                }}
+              >
+                <Marquee
+                  text={this.state.user.songTitle}
+                  hoverToStop={false}
+                  loop={false}
+                />
+              </div>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flexStart",
-                position: "absolute",
-                left: "65px",
-                top: "2.25vh",
-                fontSize: "16",
-                maxWidth: "20vw"
-              }}
-            >
-              <Marquee text="Artist • Album" hoverToStop={false} loop={false} />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flexStart",
+                  position: "absolute",
+                  left: "65px",
+                  top: "2.25vh",
+                  fontSize: "16",
+                  maxWidth: "20vw"
+                }}
+              >
+                <Marquee
+                  text={`${this.state.user.artist}`}
+                  hoverToStop={false}
+                  loop={false}
+                />
+              </div>
             </div>
-          </div>
+          </MuiThemeProvider>
         ) : (
           <div
             style={{
