@@ -5,6 +5,7 @@ import { uploadUser } from "../Register/Register.js";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import { connect } from "react-redux";
 import { setToken, setUser } from "../../actions/actions";
+import Geolocation from "../Geolocation/GeoLocation";
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -32,6 +33,7 @@ class SpotifyPlayerUI extends Component {
     if (this.props.user === undefined) {
       this.getSpotifyUserInfo(this.state.token);
     }
+
     this.interval = setInterval(
       () => this.getCurrentSpotifySong(this.state.token),
       5000
@@ -39,38 +41,43 @@ class SpotifyPlayerUI extends Component {
   }
 
   getCurrentSpotifySong(token) {
-    fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      method: "GET"
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          var error = new Error(
-            "Error" + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
+    if (this.state.loggedIn) {
+      fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        method: "GET"
       })
-      .then(data => {
-        let currentSong = {
-          timestamp: Date.now(),
-          uri: data.item.uri,
-          title: data.item.name,
-          artist: data.item.artists[0].name,
-          album: data.item.album.name
-        };
-        this.setState({ currentSong: currentSong });
-        uploadUser(currentSong, this.state.user);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            var error = new Error(
+              "Error" + response.status + ": " + response.statusText
+            );
+            error.response = response;
+            throw error;
+          }
+        })
+        .then(data => {
+          let currentSong = {
+            timestamp: Date.now(),
+            uri: data.item.uri,
+            title: data.item.name,
+            artist: data.item.artists[0].name,
+            album: data.item.album.name
+          };
+          this.setState({ currentSong: currentSong });
+          uploadUser(currentSong, this.state.user);
+        })
+        .catch(error => {
+          console.log(error);
+          if (this.state.user === undefined) {
+            this.getSpotifyUserInfo(this.state.token);
+          }
+        });
+    }
   }
 
   getHashParams() {
@@ -111,7 +118,10 @@ class SpotifyPlayerUI extends Component {
           spotifyId: data.id,
           displayName: data.display_name,
           image: data.images[0].url,
-          location: "42.4884253,-83.4552092",
+          location: {
+            latitude: this.props.location.latitude,
+            longitude: this.props.location.longitude
+          },
           group: "Public",
           currentSong: {
             uri: "",
@@ -140,6 +150,7 @@ class SpotifyPlayerUI extends Component {
         }}
       >
         <div>
+          <Geolocation />
           {!this.state.loggedIn && (
             <div
               style={{
@@ -221,7 +232,8 @@ class SpotifyPlayerUI extends Component {
 const mapStateToProps = state => {
   return {
     selectedSong: state.selectedSong,
-    user: state.user
+    user: state.user,
+    location: state.location
   };
 };
 

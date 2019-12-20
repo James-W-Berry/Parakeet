@@ -6,7 +6,6 @@ import LocalMapButton from "../LocalMapButton/LocalMapButton";
 import Flexbox from "flexbox-react";
 import { firebase } from "../../firebase";
 import UserBubble from "../UserBubble/UserBubble";
-import GeoLocation from "../Geolocation/GeoLocation";
 import SpotifyPlayerUI from "../SpotifyPlayerUI/SpotifyPlayerUI";
 import { connect } from "react-redux";
 import { setNearbyUsers } from "../../actions/actions";
@@ -57,7 +56,11 @@ class Main extends Component {
   };
 
   createNearbyUser(user) {
-    return <UserBubble user={user} />;
+    return (
+      <div key={user.listenerId}>
+        <UserBubble user={user} />
+      </div>
+    );
   }
 
   render() {
@@ -125,9 +128,8 @@ class Main extends Component {
             }}
           >
             <LocalMapButton slideCallback={this.toggleMapHeight} />
-            {/* <GeoLocation /> */}
-
             {this.state.userBubblesVisible &&
+              this.props.nearbyUsers &&
               this.props.nearbyUsers.map(user => this.createNearbyUser(user))}
           </div>
 

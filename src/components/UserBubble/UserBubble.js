@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import uuid from "react-uuid";
 import Fab from "@material-ui/core/Fab";
-import PersonIcon from "@material-ui/icons/Person";
 import { Avatar } from "material-ui";
 import "./UserBubble.css";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -35,8 +34,6 @@ class UserBubble extends Component {
         position: "absolute",
         bottom: this.state.y,
         left: this.state.x,
-        width: "60",
-        height: "60",
         opacity: 0,
         transition: "all 1s ease"
       }
@@ -50,9 +47,9 @@ class UserBubble extends Component {
         position: "absolute",
         bottom: this.state.y,
         left: this.state.x,
-        width: "60",
-        height: "60",
         opacity: 1,
+        width: "15vw",
+        height: "6vh",
         transition: "all 2s ease"
       }
     });
@@ -96,7 +93,6 @@ class UserBubble extends Component {
   render() {
     return (
       <div
-        key={this.state.id}
         style={this.state.style}
         onTransitionEnd={this.transitionEnd}
         onClick={this.expandedStyle}
@@ -118,6 +114,7 @@ class UserBubble extends Component {
                 <Avatar
                   alt={`${this.state.user.listenerName}`}
                   src={`${this.state.user.listenerImage}`}
+                  style={{ height: "60px", width: "60px" }}
                 />
               </Fab>
               <div
@@ -158,21 +155,27 @@ class UserBubble extends Component {
             </div>
           </MuiThemeProvider>
         ) : (
-          <div
-            style={{
-              position: "absolute",
-              fontWeight: "bold",
-              fontSize: "16"
-            }}
-          >
-            <Fab
-              color="primary"
-              aria-label="add"
-              style={{ outline: "none", background: "#091740" }}
+          <MuiThemeProvider>
+            <div
+              style={{
+                position: "absolute",
+                fontWeight: "bold",
+                fontSize: "16"
+              }}
             >
-              <PersonIcon />
-            </Fab>
-          </div>
+              <Fab
+                color="primary"
+                aria-label="add"
+                style={{ outline: "none", background: "#091740" }}
+              >
+                <Avatar
+                  alt={`${this.state.user.listenerName}`}
+                  src={`${this.state.user.listenerImage}`}
+                  style={{ height: "60px", width: "60px" }}
+                />
+              </Fab>
+            </div>
+          </MuiThemeProvider>
         )}
       </div>
     );

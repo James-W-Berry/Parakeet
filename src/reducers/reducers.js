@@ -2,7 +2,8 @@ import {
   SET_TOKEN,
   SET_NEARBY_USERS,
   SET_SELECTED_SONG,
-  SET_USER
+  SET_USER,
+  SET_LOCATION
 } from "../actions/actions";
 
 const initialState = {
@@ -36,6 +37,13 @@ function rootReducer(state = initialState, action) {
             title: action.user.currentSong.title,
             artist: action.user.currentSong.artist
           }
+        }
+      };
+    case SET_LOCATION:
+      return {
+        location: {
+          latitude: action.location.latitude,
+          longitude: action.location.longitude
         }
       };
 

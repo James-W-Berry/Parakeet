@@ -1,7 +1,5 @@
 import React from "react";
 import { firebase } from "../../firebase";
-import { geolocated } from "react-geolocated";
-import { connect } from "react-redux";
 
 function uploadUser(song, user) {
   console.log("uploading user to Firebase");
@@ -9,6 +7,10 @@ function uploadUser(song, user) {
     listenerId: user.spotifyId,
     listenerName: user.displayName,
     listenerImage: user.image,
+    location: {
+      latitude: user.location.latitude,
+      longitude: user.location.longitude
+    },
     timestamp: song.timestamp,
     uri: song.uri,
     songTitle: song.title,
