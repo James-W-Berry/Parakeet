@@ -86,7 +86,10 @@ class SpotifyPlayerUI extends Component {
         })
         .catch(error => {
           console.log(error);
-          if (this.state.user === undefined) {
+          if (
+            this.state.user === undefined ||
+            this.props.location === undefined
+          ) {
             this.getSpotifyUserInfo(this.state.token);
           }
         });

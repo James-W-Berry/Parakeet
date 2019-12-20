@@ -3,7 +3,6 @@ import { firebase } from "../../firebase";
 
 function uploadUser(song, user) {
   console.log("uploading user to Firebase");
-  console.log(user);
   const data = {
     listenerId: user.spotifyId,
     listenerName: user.displayName,
