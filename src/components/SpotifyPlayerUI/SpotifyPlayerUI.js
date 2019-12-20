@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import spotify from "../../images/spotify.png";
 import "./SpotifyPlayerUI.css";
-import { uploadUser } from "../Register/Register.js";
+import { uploadUser, uploadSong } from "../Register/Register.js";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import { connect } from "react-redux";
 import { setToken, setUser } from "../../actions/actions";
@@ -25,7 +25,8 @@ class SpotifyPlayerUI extends Component {
 
     this.state = {
       loggedIn: token ? true : false,
-      token: token
+      token: token,
+      currentSong: []
     };
   }
 
@@ -61,15 +62,27 @@ class SpotifyPlayerUI extends Component {
           }
         })
         .then(data => {
-          let currentSong = {
-            timestamp: Date.now(),
-            uri: data.item.uri,
-            title: data.item.name,
-            artist: data.item.artists[0].name,
-            album: data.item.album.name
-          };
-          this.setState({ currentSong: currentSong });
-          uploadUser(currentSong, this.state.user);
+          if (data.item.uri) {
+            let currentSong = {
+              timestamp: Date.now().toString(),
+              uri: data.item.uri,
+              songTitle: data.item.name,
+              artist: data.item.artists[0].name,
+              album: data.item.album.name
+            };
+
+            if (
+              this.state.currentSong !== undefined &&
+              this.state.user !== undefined
+            ) {
+              if (this.state.currentSong.uri !== currentSong.uri) {
+                console.log("setting new current song");
+                this.setState({ currentSong: currentSong });
+                uploadUser(currentSong, this.state.user);
+                uploadSong(currentSong);
+              }
+            }
+          }
         })
         .catch(error => {
           console.log(error);

@@ -3,6 +3,7 @@ import { firebase } from "../../firebase";
 
 function uploadUser(song, user) {
   console.log("uploading user to Firebase");
+  console.log(user);
   const data = {
     listenerId: user.spotifyId,
     listenerName: user.displayName,
@@ -13,7 +14,7 @@ function uploadUser(song, user) {
     },
     timestamp: song.timestamp,
     uri: song.uri,
-    songTitle: song.title,
+    songTitle: song.songTitle,
     artist: song.artist
   };
 
@@ -26,21 +27,12 @@ function uploadUser(song, user) {
     });
 }
 
-function uploadSong(song, user) {
-  const data = {
-    listenerId: user.spotifyId,
-    listenerName: user.displayName,
-    listenerImage: user.image,
-    timestamp: song.timestamp,
-    uri: song.uri,
-    songTitle: song.title,
-    artist: song.artist
-  };
-
+function uploadSong(song) {
+  console.log("uploading song to Firebase");
   const db = firebase.firestore();
   db.collection("pastSongs")
-    .doc(data.songId.toString() + data.timestamp.toString())
-    .set(data)
+    .doc(song.timestamp)
+    .set(song)
     .catch(error => {
       console.log("There was an error uploading the song");
     });
