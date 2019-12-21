@@ -16,16 +16,16 @@ export function orderList(songList, ts) {
 
   for (var i = 0; i < tempList.length; i++) {
     var filteredList = orderedList.filter(item => {
-      return item.songId === tempList[i].songId;
+      return item.uri === tempList[i].uri;
     });
     if (filteredList.length === 0) {
       orderedList.push({
-        songId: tempList[i].songId,
         playcount: 1,
         songTitle: tempList[i].songTitle,
         artist: tempList[i].artist,
         album: tempList[i].album,
-        uri: tempList[i].uri
+        uri: tempList[i].uri,
+        timestamp: tempList[i].timestamp
       });
     } else {
       orderedList[orderedList.indexOf(filteredList[0])].playcount++;
@@ -76,7 +76,6 @@ class WhatsTrendingController extends Component {
         );
 
         const orderedList = orderList(pastSongs, this.state.timescale);
-
         this.setState({ songList: orderedList });
       },
       err => {

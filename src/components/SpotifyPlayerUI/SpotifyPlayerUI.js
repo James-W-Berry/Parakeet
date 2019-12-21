@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import spotify from "../../images/spotify.png";
 import "./SpotifyPlayerUI.css";
-import { uploadUser, uploadSong } from "../Register/Register.js";
+import { uploadUser, uploadSong } from "../FirebaseActions/FirebaseActions.js";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import { connect } from "react-redux";
 import { setToken, setUser } from "../../actions/actions";
 import Geolocation from "../Geolocation/GeoLocation";
+import { geolocated } from "react-geolocated";
+
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -26,12 +28,16 @@ class SpotifyPlayerUI extends Component {
     this.state = {
       loggedIn: token ? true : false,
       token: token,
-      currentSong: []
+      currentSong: [],
+      location: {
+        latitude: "",
+        longitude: ""
+      }
     };
   }
 
   componentDidMount() {
-    if (this.props.user === undefined) {
+    if (this.props.user === undefined && this.state.token) {
       this.getSpotifyUserInfo(this.state.token);
     }
 
@@ -71,6 +77,10 @@ class SpotifyPlayerUI extends Component {
               album: data.item.album.name
             };
 
+            if (this.state.location.latitude === "") {
+              this.getSpotifyUserInfo(this.state.token);
+            }
+
             if (
               this.state.currentSong !== undefined &&
               this.state.user !== undefined
@@ -86,13 +96,12 @@ class SpotifyPlayerUI extends Component {
         })
         .catch(error => {
           console.log(error);
-          if (
-            this.state.user === undefined ||
-            this.props.location === undefined
-          ) {
+          if (this.state.user === undefined) {
             this.getSpotifyUserInfo(this.state.token);
           }
         });
+    } else {
+      console.log("Not logged into Spotify");
     }
   }
 
@@ -130,13 +139,21 @@ class SpotifyPlayerUI extends Component {
         }
       })
       .then(data => {
+        if (this.props.coords !== null)
+          this.setState({
+            location: {
+              latitude: this.props.coords.latitude,
+              longitude: this.props.coords.longitude
+            }
+          });
+
         let user = {
           spotifyId: data.id,
           displayName: data.display_name,
           image: data.images[0].url,
           location: {
-            latitude: this.props.location.latitude,
-            longitude: this.props.location.longitude
+            latitude: this.state.location.latitude,
+            longitude: this.state.location.longitude
           },
           group: "Public",
           currentSong: {
@@ -166,7 +183,10 @@ class SpotifyPlayerUI extends Component {
         }}
       >
         <div>
-          <Geolocation />
+          <Geolocation
+            check={this.props.isGeolocationAvailable}
+            location={this.props.coords}
+          />
           {!this.state.loggedIn && (
             <div
               style={{
@@ -258,4 +278,14 @@ const mapDispatchToProps = {
   setUser: setUser
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpotifyPlayerUI);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  geolocated({
+    positionOptions: {
+      enableHighAccuracy: false
+    },
+    userDecisionTimeout: 5000
+  })(SpotifyPlayerUI)
+);

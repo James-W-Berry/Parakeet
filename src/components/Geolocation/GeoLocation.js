@@ -1,43 +1,22 @@
 import React, { Component } from "react";
-import { geolocated } from "react-geolocated";
-import { connect } from "react-redux";
-import { setLocation } from "../../actions/actions";
 
 class Geolocation extends Component {
-  updateLocation(coords) {
-    if (coords) {
-      const location = {
-        latitude: coords.latitude,
-        longitude: coords.longitude
-      };
-      this.props.setLocation(location);
-    }
-    return null;
+  constructor(props) {
+    super(props);
+    this.state = {
+      location: this.props.coords,
+      check: this.props.check
+    };
   }
-
   render() {
-    return !this.props.isGeolocationAvailable ? (
+    return !this.state.check ? (
       <div>Your browser does not support Geolocation</div>
-    ) : !this.props.isGeolocationEnabled ? (
+    ) : !this.state.check ? (
       <div>Geolocation is not enabled</div>
-    ) : this.props.coords ? (
-      this.updateLocation(this.props.coords)
+    ) : this.state.location ? (
+      console.log(this.state.location)
     ) : null;
   }
 }
 
-const mapDispatchToProps = {
-  setLocation: setLocation
-};
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(
-  geolocated({
-    positionOptions: {
-      enableHighAccuracy: false
-    },
-    userDecisionTimeout: 5000
-  })(Geolocation)
-);
+export default Geolocation;

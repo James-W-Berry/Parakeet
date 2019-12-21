@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { firebase } from "../../firebase";
 
 function uploadUser(song, user) {
@@ -37,7 +37,7 @@ function uploadSong(song) {
     });
 }
 
-class Register extends React.Component {
+class FirebaseActions extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -179,5 +179,5 @@ class Register extends React.Component {
   }
 }
 
-export default Register;
+export default FirebaseActions;
 export { uploadSong, uploadUser };
