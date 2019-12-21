@@ -4,11 +4,11 @@ import Banner from "../Banner/Banner";
 import SearchForPerson from "../SearchForPerson/SearchForPerson";
 import LocalMapButton from "../LocalMapButton/LocalMapButton";
 import Flexbox from "flexbox-react";
-import { firebase } from "../../firebase";
 import UserBubble from "../UserBubble/UserBubble";
 import SpotifyPlayerUI from "../SpotifyPlayerUI/SpotifyPlayerUI";
 import { connect } from "react-redux";
 import { setNearbyUsers } from "../../actions/actions";
+import { firebase } from "../../firebase";
 
 class Main extends Component {
   constructor(props) {
@@ -31,7 +31,12 @@ class Main extends Component {
         docSnapshot.forEach(user =>
           users.push({ ...user.data(), uid: user.id })
         );
-        this.props.setNearbyUsers(users);
+        if (users) {
+          this.setState({
+            nearbyUsers: users
+          });
+          this.props.setNearbyUsers(users);
+        }
       },
       err => {
         console.log(err);
@@ -129,8 +134,8 @@ class Main extends Component {
           >
             <LocalMapButton slideCallback={this.toggleMapHeight} />
             {this.state.userBubblesVisible &&
-              this.props.nearbyUsers &&
-              this.props.nearbyUsers.map(user => this.createNearbyUser(user))}
+              this.state.nearbyUsers &&
+              this.state.nearbyUsers.map(user => this.createNearbyUser(user))}
           </div>
 
           <div

@@ -23,6 +23,7 @@ function rootReducer(state = initialState, action) {
       };
     case SET_TOKEN:
       return {
+        ...state,
         token: action.token
       };
     case SET_USER:

@@ -7,6 +7,7 @@ function uploadUser(song, user) {
     listenerId: user.spotifyId,
     listenerName: user.displayName,
     listenerImage: user.image,
+    group: "",
     location: {
       latitude: user.location.latitude,
       longitude: user.location.longitude

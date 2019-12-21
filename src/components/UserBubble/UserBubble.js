@@ -122,7 +122,7 @@ class UserBubble extends Component {
               <div
                 onClick={() => {
                   console.log(this.state.user.uri);
-                  //this.props.setSelectedSong(this.state.user.uri);
+                  this.props.setSelectedSong(this.state.user.uri);
                 }}
               >
                 <div
