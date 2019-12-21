@@ -4,6 +4,8 @@ import Fab from "@material-ui/core/Fab";
 import { Avatar } from "material-ui";
 import "./UserBubble.css";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { connect } from "react-redux";
+import { setSelectedSong } from "../../actions/actions";
 
 var Marquee = require("react-marquee");
 
@@ -118,39 +120,46 @@ class UserBubble extends Component {
                 />
               </Fab>
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flexStart",
-                  position: "absolute",
-                  left: "65px",
-                  top: "0.25vh",
-                  fontWeight: "bold",
-                  fontSize: "16"
+                onClick={() => {
+                  console.log(this.state.user.uri);
+                  //this.props.setSelectedSong(this.state.user.uri);
                 }}
               >
-                <Marquee
-                  text={this.state.user.songTitle}
-                  hoverToStop={false}
-                  loop={false}
-                />
-              </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flexStart",
+                    position: "absolute",
+                    left: "65px",
+                    top: "0.25vh",
+                    fontWeight: "bold",
+                    fontSize: "16"
+                  }}
+                >
+                  <Marquee
+                    text={this.state.user.songTitle}
+                    hoverToStop={false}
+                    loop={false}
+                  />
+                </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flexStart",
-                  position: "absolute",
-                  left: "65px",
-                  top: "2.25vh",
-                  fontSize: "16",
-                  maxWidth: "20vw"
-                }}
-              >
-                <Marquee
-                  text={`${this.state.user.artist}`}
-                  hoverToStop={false}
-                  loop={false}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flexStart",
+                    position: "absolute",
+                    left: "65px",
+                    top: "2.25vh",
+                    fontSize: "16",
+                    maxWidth: "20vw"
+                  }}
+                >
+                  <Marquee
+                    text={`${this.state.user.artist}`}
+                    hoverToStop={false}
+                    loop={false}
+                  />
+                </div>
               </div>
             </div>
           </MuiThemeProvider>
@@ -182,4 +191,8 @@ class UserBubble extends Component {
   }
 }
 
-export default UserBubble;
+const mapDispatchToProps = {
+  setSelectedSong: setSelectedSong
+};
+
+export default connect(null, mapDispatchToProps)(UserBubble);

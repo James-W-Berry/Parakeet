@@ -47,6 +47,21 @@ class SpotifyPlayerUI extends Component {
     );
   }
 
+  playSelectedSong = uri => {
+    this.setState({ previouslySelectedSong: this.props.selectedSong });
+    fetch(
+      `https://api.spotify.com/v1/me/player/play?device_id=${this.state.playerInstance}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ uris: [uri] }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.state.token}`
+        }
+      }
+    );
+  };
+
   getCurrentSpotifySong(token) {
     if (this.state.loggedIn) {
       fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
@@ -86,7 +101,7 @@ class SpotifyPlayerUI extends Component {
               this.state.user !== undefined
             ) {
               if (this.state.currentSong.uri !== currentSong.uri) {
-                console.log("setting new current song");
+                //console.log("setting new current song");
                 this.setState({ currentSong: currentSong });
                 uploadUser(currentSong, this.state.user);
                 uploadSong(currentSong);
@@ -119,7 +134,7 @@ class SpotifyPlayerUI extends Component {
   }
 
   getSpotifyUserInfo(token) {
-    console.log("getting Spotify user details");
+    //console.log("getting Spotify user details");
     fetch(`https://api.spotify.com/v1/me/`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -172,6 +187,12 @@ class SpotifyPlayerUI extends Component {
   }
 
   render() {
+    if (
+      this.props.selectedSong !== undefined &&
+      this.props.selectedSong !== this.state.previouslySelectedSong
+    ) {
+      this.playSelectedSong(this.props.selectedSong);
+    }
     return (
       <div
         style={{
@@ -243,6 +264,10 @@ class SpotifyPlayerUI extends Component {
                     state.devices[0] !== undefined &&
                     state.isActive !== true
                   ) {
+                    this.setState({
+                      playerInstance: state.devices[0].id
+                    });
+
                     fetch(`https://api.spotify.com/v1/me/player`, {
                       body: JSON.stringify({
                         device_ids: [state.devices[0].id],

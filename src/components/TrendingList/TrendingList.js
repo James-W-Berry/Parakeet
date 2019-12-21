@@ -17,7 +17,9 @@ class TrendingList extends Component {
         <ListItem
           key={uuid()}
           button={true}
-          onClick={() => this.props.setSelectedSong(song.uri)}
+          onClick={() => {
+            this.props.setSelectedSong(song.uri);
+          }}
         >
           <ListItemAvatar>
             <Avatar>

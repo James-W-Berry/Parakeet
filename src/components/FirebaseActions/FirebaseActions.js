@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { firebase } from "../../firebase";
 
 function uploadUser(song, user) {
-  console.log("uploading user to Firebase");
+  //console.log("uploading user to Firebase");
   const data = {
     listenerId: user.spotifyId,
     listenerName: user.displayName,
@@ -27,7 +27,7 @@ function uploadUser(song, user) {
 }
 
 function uploadSong(song) {
-  console.log("uploading song to Firebase");
+  //console.log("uploading song to Firebase");
   const db = firebase.firestore();
   db.collection("pastSongs")
     .doc(song.timestamp)
