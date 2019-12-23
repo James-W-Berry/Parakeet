@@ -7,8 +7,8 @@ import {
 } from "../actions/actions";
 
 const initialState = {
-  token: null,
-  user: undefined
+  token: null
+  // user: undefined
 };
 
 function rootReducer(state = initialState, action) {
@@ -31,6 +31,7 @@ function rootReducer(state = initialState, action) {
         user: {
           spotifyId: action.user.spotifyId,
           displayName: action.user.displayName,
+          listenerImage: action.user.image,
           location: action.user.location,
           group: action.user.group,
           currentSong: {

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import WhatsTrendingController from "../WhatsTrendingController/WhatsTrendingController";
 import Banner from "../Banner/Banner";
-import SearchForPerson from "../SearchForPerson/SearchForPerson";
 import LocalMapButton from "../LocalMapButton/LocalMapButton";
 import Flexbox from "flexbox-react";
 import UserBubble from "../UserBubble/UserBubble";
@@ -79,20 +78,7 @@ class Main extends Component {
         }}
       >
         <Flexbox element="header" height="60px" marginTop="20px">
-          <div>
-            <Banner />
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              position: "absolute",
-              flexGrow: 1,
-              right: "15vw"
-            }}
-          >
-            <SearchForPerson />
-          </div>
+          <Banner />
         </Flexbox>
 
         <Flexbox flexGrow={1} alignSelf="center">
