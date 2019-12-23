@@ -264,21 +264,26 @@ class SpotifyPlayerUI extends Component {
                     state.devices[0] !== undefined &&
                     state.isActive !== true
                   ) {
-                    this.setState({
-                      playerInstance: state.devices[0].id
-                    });
+                    for (const device in state.devices) {
+                      if (state.devices[device].name === "Spotify Web Player") {
+                        this.setState({
+                          playerInstance: state.devices[device].id
+                        });
 
-                    fetch(`https://api.spotify.com/v1/me/player`, {
-                      body: JSON.stringify({
-                        device_ids: [state.devices[0].id],
-                        play: true
-                      }),
-                      headers: {
-                        Authorization: `Bearer ${this.state.token}`,
-                        "Content-Type": "application/json"
-                      },
-                      method: "PUT"
-                    });
+                        fetch(`https://api.spotify.com/v1/me/player`, {
+                          body: JSON.stringify({
+                            device_ids: [state.devices[device].id],
+
+                            play: true
+                          }),
+                          headers: {
+                            Authorization: `Bearer ${this.state.token}`,
+                            "Content-Type": "application/json"
+                          },
+                          method: "PUT"
+                        });
+                      }
+                    }
                   }
                 }}
               />
