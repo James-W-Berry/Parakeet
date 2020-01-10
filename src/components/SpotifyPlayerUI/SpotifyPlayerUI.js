@@ -4,7 +4,7 @@ import "./SpotifyPlayerUI.css";
 import { uploadUser, uploadSong } from "../FirebaseActions/FirebaseActions.js";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import { connect } from "react-redux";
-import { setToken, setUser } from "../../actions/actions";
+import { setToken, setUser, setLocation } from "../../actions/actions";
 import Geolocation from "../Geolocation/GeoLocation";
 import { geolocated } from "react-geolocated";
 
@@ -28,7 +28,7 @@ class SpotifyPlayerUI extends Component {
     this.state = {
       loggedIn: token ? true : false,
       token: token,
-      currentSong: [],
+      currentSong: null,
       location: {
         latitude: "",
         longitude: ""
@@ -37,104 +37,16 @@ class SpotifyPlayerUI extends Component {
   }
 
   componentDidMount() {
-    if (this.props.user === undefined && this.state.token) {
+    if (this.state.token) {
       this.getSpotifyUserInfo(this.state.token);
+      this.interval = setInterval(
+        () => this.getCurrentSpotifySong(this.state.token),
+        10000
+      );
     }
-
-    this.interval = setInterval(
-      () => this.getCurrentSpotifySong(this.state.token),
-      5000
-    );
-  }
-
-  playSelectedSong = uri => {
-    this.setState({ previouslySelectedSong: this.props.selectedSong });
-    fetch(
-      `https://api.spotify.com/v1/me/player/play?device_id=${this.state.playerInstance}`,
-      {
-        method: "PUT",
-        body: JSON.stringify({ uris: [uri] }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.state.token}`
-        }
-      }
-    );
-  };
-
-  getCurrentSpotifySong(token) {
-    if (this.state.loggedIn) {
-      fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        method: "GET"
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            var error = new Error(
-              "Error" + response.status + ": " + response.statusText
-            );
-            error.response = response;
-            throw error;
-          }
-        })
-        .then(data => {
-          if (data.item.uri) {
-            let currentSong = {
-              timestamp: Date.now().toString(),
-              uri: data.item.uri,
-              songTitle: data.item.name,
-              artist: data.item.artists[0].name,
-              album: data.item.album.name
-            };
-
-            if (this.state.location.latitude === "") {
-              this.getSpotifyUserInfo(this.state.token);
-            }
-
-            if (
-              this.state.currentSong !== undefined &&
-              this.state.user !== undefined
-            ) {
-              if (this.state.currentSong.uri !== currentSong.uri) {
-                //console.log("setting new current song");
-                this.setState({ currentSong: currentSong });
-                uploadUser(currentSong, this.state.user);
-                uploadSong(currentSong);
-              }
-            }
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          if (this.state.user === undefined) {
-            this.getSpotifyUserInfo(this.state.token);
-          }
-        });
-    } else {
-      console.log("Not logged into Spotify");
-    }
-  }
-
-  getHashParams() {
-    var hashParams = {};
-    var e,
-      r = /([^&;=]+)=?([^&;]*)/g,
-      q = window.location.hash.substring(1);
-    e = r.exec(q);
-    while (e) {
-      hashParams[e[1]] = decodeURIComponent(e[2]);
-      e = r.exec(q);
-    }
-    return hashParams;
   }
 
   getSpotifyUserInfo(token) {
-    //console.log("getting Spotify user details");
     fetch(`https://api.spotify.com/v1/me/`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -154,45 +66,100 @@ class SpotifyPlayerUI extends Component {
         }
       })
       .then(data => {
-        if (this.props.coords !== null)
-          this.setState({
-            location: {
-              latitude: this.props.coords.latitude,
-              longitude: this.props.coords.longitude
-            }
-          });
-
         let user = {
           spotifyId: data.id,
           displayName: data.display_name,
-          image: data.images[0].url,
-          location: {
-            latitude: this.state.location.latitude,
-            longitude: this.state.location.longitude
-          },
-          group: "Public",
-          currentSong: {
-            uri: "",
-            title: "",
-            artist: "",
-            album: ""
-          }
+          image: data.images[0].url || undefined
         };
+
         this.props.setUser(user);
-        this.setState({ user: user });
       })
       .catch(error => {
-        console.log(error);
+        console.log(`error: ${error}`);
+        return false;
       });
+  }
+
+  getCurrentSpotifySong(token) {
+    fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      method: "GET"
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          var error = new Error(
+            "Error" + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      })
+      .then(data => {
+        console.log(data);
+        if (data !== undefined) {
+          let currentSong = {
+            timestamp: Date.now().toString(),
+            uri: data.item.uri,
+            songTitle: data.item.name,
+            artist: data.item.artists[0].name,
+            album: data.item.album.name
+          };
+
+          uploadUser(currentSong, this.props.store.user, this.props.coords);
+          uploadSong(currentSong);
+          this.setState({ currentSong: currentSong });
+        } else {
+          console.log(
+            "Error: no data retrieved from currently playing endpoint"
+          );
+        }
+      })
+      .catch(error => {
+        console.log(`error: ${error}`);
+      });
+  }
+
+  playSelectedSong = uri => {
+    this.setState({ previouslySelectedSong: this.props.store.selectedSong });
+    fetch(
+      `https://api.spotify.com/v1/me/player/play?device_id=${this.state.playerInstance}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ uris: [uri] }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.state.token}`
+        }
+      }
+    );
+  };
+
+  getHashParams() {
+    var hashParams = {};
+    var e,
+      r = /([^&;=]+)=?([^&;]*)/g,
+      q = window.location.hash.substring(1);
+    e = r.exec(q);
+    while (e) {
+      hashParams[e[1]] = decodeURIComponent(e[2]);
+      e = r.exec(q);
+    }
+    return hashParams;
   }
 
   render() {
     if (
-      this.props.selectedSong !== undefined &&
-      this.props.selectedSong !== this.state.previouslySelectedSong
+      this.props.store !== null &&
+      this.props.store.selectedSong !== this.state.previouslySelectedSong
     ) {
-      this.playSelectedSong(this.props.selectedSong);
+      this.playSelectedSong(this.props.store.selectedSong);
     }
+
     return (
       <div
         style={{
@@ -219,7 +186,7 @@ class SpotifyPlayerUI extends Component {
                 left: "40vw"
               }}
             >
-              <a href={loginUrl}>
+              <a href={devLoginUrl}>
                 <img
                   src={spotify}
                   alt="login"
@@ -283,6 +250,19 @@ class SpotifyPlayerUI extends Component {
                           },
                           method: "PUT"
                         });
+                        // .then(data => {
+                        //   if (
+                        //     this.props.store.user !== undefined &&
+                        //     this.state.currentSong === null
+                        //   ) {
+                        //     this.getCurrentSpotifySong(
+                        //       this.props.store.token
+                        //     );
+                        //   }
+                        // })
+                        // .catch(error => {
+                        //   console.log(error);
+                        // });
                       }
                     }
                   }
@@ -298,15 +278,14 @@ class SpotifyPlayerUI extends Component {
 
 const mapStateToProps = state => {
   return {
-    selectedSong: state.selectedSong,
-    user: state.user,
-    location: state.location
+    store: state.rootReducer
   };
 };
 
 const mapDispatchToProps = {
   setToken: setToken,
-  setUser: setUser
+  setUser: setUser,
+  setLocation: setLocation
 };
 
 export default connect(
@@ -317,6 +296,6 @@ export default connect(
     positionOptions: {
       enableHighAccuracy: false
     },
-    userDecisionTimeout: 5000
+    userDecisionTimeout: 60000
   })(SpotifyPlayerUI)
 );

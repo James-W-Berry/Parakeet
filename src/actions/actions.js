@@ -12,6 +12,7 @@ export function setLocation(location) {
 }
 
 export function setUser(user) {
+  // console.log(user);
   return {
     type: SET_USER,
     user: user

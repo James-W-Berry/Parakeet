@@ -6,19 +6,18 @@ import {
   SET_LOCATION
 } from "../actions/actions";
 
-const initialState = {
-  token: null
-  // user: undefined
-};
+let initialState = null;
 
 function rootReducer(state = initialState, action) {
   switch (action.type) {
     case SET_SELECTED_SONG:
       return {
+        ...state,
         selectedSong: action.selectedSong
       };
     case SET_NEARBY_USERS:
       return {
+        ...state,
         nearbyUsers: action.nearbyUsers
       };
     case SET_TOKEN:
@@ -28,25 +27,13 @@ function rootReducer(state = initialState, action) {
       };
     case SET_USER:
       return {
-        user: {
-          spotifyId: action.user.spotifyId,
-          displayName: action.user.displayName,
-          listenerImage: action.user.image,
-          location: action.user.location,
-          group: action.user.group,
-          currentSong: {
-            uri: action.user.currentSong.uri,
-            title: action.user.currentSong.title,
-            artist: action.user.currentSong.artist
-          }
-        }
+        ...state,
+        user: action.user
       };
     case SET_LOCATION:
       return {
-        location: {
-          latitude: action.location.latitude,
-          longitude: action.location.longitude
-        }
+        ...state,
+        location: action.location
       };
 
     default:

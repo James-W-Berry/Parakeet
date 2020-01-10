@@ -9,19 +9,65 @@ import { connect } from "react-redux";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import { setUser } from "../../actions/actions";
+import { Button } from "@material-ui/core";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import uuid from "react-uuid";
+import { Typography } from "@material-ui/core";
+import { firebase } from "../../firebase";
 
 class Banner extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      user: undefined,
       modalOpen: false
     };
   }
-  setUser = user => {
-    this.setState({ user: user });
-  };
+
+  componentWillMount() {
+    const db = firebase.firestore();
+    let doc = db.collection("users");
+    doc.onSnapshot(
+      docSnapshot => {
+        let users = [];
+        docSnapshot.forEach(doc => users.push({ ...doc.data(), uid: doc.id }));
+        this.setState({ users: users });
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  createGroupItem(user) {
+    if (user.listenerId === this.props.store.user.spotifyId) {
+      if (user.group !== undefined) {
+        return (
+          <ListItem
+            key={uuid()}
+            button={true}
+            onClick={() => {
+              //let user = this.props.user;
+              //user.group = group;
+              //this.props.setUser(user);
+            }}
+          >
+            <ListItemText
+              disableTypography
+              primary={
+                <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                  {user.group}
+                </Typography>
+              }
+            />
+          </ListItem>
+        );
+      }
+    }
+  }
 
   openUserSettings = user => {
     this.setState({ modalOpen: true });
@@ -31,9 +77,14 @@ class Banner extends Component {
     this.setState({ modalOpen: false });
   };
 
+  handleChange = event => {
+    this.setState({ searchingGroup: event.target.value });
+  };
+
   render() {
+    console.log(this.props);
     return (
-      <div style={{ flexDirection: "row" }}>
+      <div style={{ display: "flex", flexGrow: 1 }}>
         <div style={{ flexDirection: "column" }}>
           <img
             src={spy}
@@ -68,45 +119,34 @@ class Banner extends Component {
                 aria-label="add"
                 style={{ outline: "none", background: "#091740" }}
               >
-                {this.props.user !== undefined &&
-                  this.state.user === undefined &&
-                  this.setUser(this.props.user) && (
-                    <Avatar
-                      alt={`${this.props.user.listenerName}`}
-                      src={`${this.props.user.listenerImage}`}
-                      style={{ height: "60px", width: "60px" }}
-                      onClick={() => {
-                        this.openUserSettings(this.props.user);
-                      }}
-                    />
-                  )}
-                {this.state.user !== undefined && (
+                {this.props.store && this.props.store.user && (
                   <Avatar
-                    alt={`${this.state.user.listenerName}`}
-                    src={`${this.state.user.listenerImage}`}
+                    alt={`${this.props.store.user.displayName}`}
+                    src={`${this.props.store.user.image}`}
                     style={{ height: "60px", width: "60px" }}
                     onClick={() => {
-                      this.openUserSettings(this.state.user);
+                      this.openUserSettings(this.props.store.user);
                     }}
                   />
                 )}
-                {this.state.user === undefined &&
-                  this.props.user === undefined && <PersonIcon />}
+                {this.props.store === undefined && <PersonIcon />}
               </Fab>
             </div>
           </MuiThemeProvider>
         </div>
 
-        <div style={{ position: "absolute", top: "10vh", left: "25vw" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center"
+          }}
+        >
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
             style={{
               display: "flex",
-              alignSelf: "center",
               justifyContent: "center",
-              width: "50vw",
-              height: "65vh",
               outline: "none"
             }}
             open={this.state.modalOpen}
@@ -120,49 +160,75 @@ class Banner extends Component {
             <Fade in={this.state.modalOpen}>
               <div
                 style={{
-                  flexGrow: 1,
-                  flexDirection: "column",
-                  display: "flex",
-                  position: "absolute",
-                  justifyContent: "center",
-                  alignItems: "flex-start",
-                  top: "10vh",
-                  left: "25vw",
-                  width: "50vw",
-                  height: "65vh",
+                  height: "80vh",
+                  width: "60vw",
                   backgroundColor: "#091740",
-                  boxShadow: "5px 10px",
-                  padding: "10",
+                  display: "flex",
+                  flexDirection: "column",
                   borderRadius: 10,
                   outline: "none"
                 }}
               >
                 <div
+                  id="transition-modal-title"
                   style={{
+                    display: "flex",
                     marginTop: "20",
-                    justifyContent: "center"
+                    color: "#efefef",
+                    justifyContent: "center",
+                    fontSize: 30
                   }}
                 >
-                  <h2
-                    style={{
-                      color: "#efefef"
-                    }}
-                    id="transition-modal-title"
-                  >
-                    Settings
-                  </h2>
+                  Settings
                 </div>
 
-                {this.state.user && (
-                  <div style={{ justifyContent: "center" }}>
-                    <h3
+                {this.props.store && this.state.users && (
+                  <div>
+                    <div
                       style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignSelf: "center",
                         color: "#efefef",
                         marginTop: "20",
-
-                        alignSelf: "center"
+                        fontSize: 20
                       }}
-                    >{`Group: ${this.state.user.group}`}</h3>
+                    >
+                      <label>
+                        Your Groups:
+                        <List>
+                          {this.state.users.map(group =>
+                            this.createGroupItem(group)
+                          )}
+                        </List>
+                        {/* <input
+                            type="text"
+                            value={this.props.user.group}
+                            onChange={this.handleChange}
+                          /> */}
+                      </label>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignSelf: "center",
+                        color: "#efefef",
+                        marginTop: "20",
+                        fontSize: 20
+                      }}
+                    >
+                      <label>
+                        Join a New Group:
+                        <input
+                          type="text"
+                          placeholder="search for a group"
+                          value={this.state.searchingGroup}
+                          onChange={this.handleChange}
+                        />
+                      </label>
+                    </div>
                   </div>
                 )}
               </div>
@@ -174,10 +240,14 @@ class Banner extends Component {
   }
 }
 
+const mapDispatchToProps = {
+  // setUser: setUser
+};
+
 const mapStateToProps = state => {
   return {
-    user: state.user
+    store: state.rootReducer
   };
 };
 
-export default connect(mapStateToProps, null)(Banner);
+export default connect(mapStateToProps, mapDispatchToProps)(Banner);
