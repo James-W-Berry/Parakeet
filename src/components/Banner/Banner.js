@@ -43,28 +43,30 @@ class Banner extends Component {
   }
 
   createGroupItem(user) {
-    if (user.listenerId === this.props.store.user.spotifyId) {
-      if (user.group !== undefined) {
-        return (
-          <ListItem
-            key={uuid()}
-            button={true}
-            onClick={() => {
-              //let user = this.props.user;
-              //user.group = group;
-              //this.props.setUser(user);
-            }}
-          >
-            <ListItemText
-              disableTypography
-              primary={
-                <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                  {user.group}
-                </Typography>
-              }
-            />
-          </ListItem>
-        );
+    if (this.props.store.user) {
+      if (user.listenerId === this.props.store.user.spotifyId) {
+        if (user.group !== undefined) {
+          return (
+            <ListItem
+              key={uuid()}
+              button={true}
+              onClick={() => {
+                //let user = this.props.user;
+                //user.group = group;
+                //this.props.setUser(user);
+              }}
+            >
+              <ListItemText
+                disableTypography
+                primary={
+                  <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                    {user.group}
+                  </Typography>
+                }
+              />
+            </ListItem>
+          );
+        }
       }
     }
   }
