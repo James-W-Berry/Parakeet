@@ -225,7 +225,7 @@ class SpotifyPlayerUI extends Component {
                   showSaveIcon: "true",
                   persistDeviceSelection: "true"
                 }}
-                name="SpotiSpy"
+                name="Parakeet"
                 token={this.state.token}
                 callback={state => {
                   if (
@@ -233,7 +233,7 @@ class SpotifyPlayerUI extends Component {
                     state.isActive !== true
                   ) {
                     for (const device in state.devices) {
-                      if (state.devices[device].name === "SpotiSpy") {
+                      if (state.devices[device].name === "Parakeet") {
                         this.setState({
                           playerInstance: state.devices[device].id
                         });
