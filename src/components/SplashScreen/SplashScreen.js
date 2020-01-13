@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import FadeIn from "react-fade-in";
 import Lottie from "react-lottie";
 import "bootstrap/dist/css/bootstrap.css";
-import * as spotispies from "./spotispies.json";
+import * as parakeet from "./parakeet.json";
 import "./SplashScreen.css";
 import Main from "../Main/Main.js";
 
 const defaultOptions = {
   loop: true,
   autoplay: true,
-  animationData: spotispies.default
+  animationData: parakeet.default
 };
 
 class SplashScreen extends Component {
@@ -34,7 +34,7 @@ class SplashScreen extends Component {
         {!this.state.done ? (
           <FadeIn>
             <div className="SplashScreen">
-              <h1 className="SplashScreen_text">SpotiSpies</h1>
+              <h1 className="SplashScreen_text">Parakeet</h1>
               <Lottie
                 className="SplashScreen_logo"
                 options={defaultOptions}
