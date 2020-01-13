@@ -1,5 +1,4 @@
-import firebase from 'firebase';
-
+import firebase from "firebase";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCVRxXm5EXKYF0SWLUlZNGNINBqgJm59wk",
@@ -8,13 +7,12 @@ const firebaseConfig = {
   projectId: "zpotizpiez",
   storageBucket: "zpotizpiez.appspot.com",
   messagingSenderId: "146222850402",
-  appId: "1:146222850402:web:3849cccd55b1096ec84c3b",
-  measurementId: "G-FP14Y10X3P"
+  appId: "1:146222850402:web:fab04d0057098c3ac84c3b",
+  measurementId: "G-CZPCCCEBZP"
 };
-
 
 firebase.initializeApp(firebaseConfig);
 
 firebase.firestore();
 
-export {firebase};
+export { firebase };

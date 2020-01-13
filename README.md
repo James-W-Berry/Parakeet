@@ -1,4 +1,4 @@
-# SpotiSpy
+# Parakeet
 
 See who's listening to what near you.
 
