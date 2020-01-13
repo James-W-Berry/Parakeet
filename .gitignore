@@ -41,3 +41,10 @@ yarn-error.log*
 /.changelog
 .npm/
 dist
+
+# firebase 
+/src/firebase.js
+firebase.json
+firestore.rules
+firestore.indexes.json
+.firebaserc
