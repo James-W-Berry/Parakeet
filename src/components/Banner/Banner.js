@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import spy from "../../images/mr_spy.png";
+import bannerLogo from "../../images/bannerLogo.png";
 import SearchForPerson from "../SearchForPerson/SearchForPerson";
 import Fab from "@material-ui/core/Fab";
 import { Avatar } from "material-ui";
@@ -84,15 +84,14 @@ class Banner extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <div style={{ display: "flex", flexGrow: 1 }}>
         <div style={{ flexDirection: "column" }}>
           <img
-            src={spy}
+            src={bannerLogo}
             alt=""
-            height="50"
-            width="50"
+            height="80"
+            width="62"
             style={{ position: "absolute", left: "2vw" }}
           />
 

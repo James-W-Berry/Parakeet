@@ -1,16 +1,9 @@
 import React, { Component } from "react";
 import FadeIn from "react-fade-in";
-import Lottie from "react-lottie";
 import "bootstrap/dist/css/bootstrap.css";
-import * as parakeet from "./parakeet.json";
 import "./SplashScreen.css";
 import Main from "../Main/Main.js";
-
-const defaultOptions = {
-  loop: true,
-  autoplay: true,
-  animationData: parakeet.default
-};
+import bannerLogo from "../../images/bannerLogo.png";
 
 class SplashScreen extends Component {
   constructor(props) {
@@ -25,7 +18,7 @@ class SplashScreen extends Component {
       fetch("https://jsonplaceholder.typicode.com/posts")
         .then(response => response.json())
         .then(json => this.setState({ done: true }));
-    }, 0);
+    }, 2000);
   }
 
   render() {
@@ -33,14 +26,17 @@ class SplashScreen extends Component {
       <div>
         {!this.state.done ? (
           <FadeIn>
-            <div className="SplashScreen">
+            <div
+              className="SplashScreen"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
               <h1 className="SplashScreen_text">Parakeet</h1>
-              <Lottie
-                className="SplashScreen_logo"
-                options={defaultOptions}
-                height={300}
-                width={300}
-              />
+              <img src={bannerLogo} alt="" height="500" width="390" />
             </div>
           </FadeIn>
         ) : (

@@ -1,6 +1,7 @@
 .SplashScreen {
   height: 100vh;
   background: #090235;
+  align-self: "center";
 }
 
 .SplashScreen_text {
