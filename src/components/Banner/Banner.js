@@ -120,16 +120,26 @@ class Banner extends Component {
                 aria-label="add"
                 style={{ outline: "none", background: "#091740" }}
               >
-                {this.props.store && this.props.store.user && (
-                  <Avatar
-                    alt={`${this.props.store.user.displayName}`}
-                    src={`${this.props.store.user.image}`}
-                    style={{ height: "60px", width: "60px" }}
-                    onClick={() => {
-                      this.openUserSettings(this.props.store.user);
-                    }}
-                  />
-                )}
+                {this.props.store &&
+                  this.props.store.user &&
+                  (this.props.store.user.image === undefined ? (
+                    <PersonIcon
+                      alt={`${this.props.store.user.displayName}`}
+                      style={{ height: "60px", width: "60px" }}
+                      onClick={() => {
+                        this.openUserSettings(this.props.store.user);
+                      }}
+                    />
+                  ) : (
+                    <Avatar
+                      alt={`${this.props.store.user.displayName}`}
+                      src={`${this.props.store.user.image}`}
+                      style={{ height: "60px", width: "60px" }}
+                      onClick={() => {
+                        this.openUserSettings(this.props.store.user);
+                      }}
+                    />
+                  ))}
                 {this.props.store === undefined && <PersonIcon />}
               </Fab>
             </div>
@@ -183,7 +193,7 @@ class Banner extends Component {
                   Settings
                 </div>
 
-                {this.props.store && this.state.users && (
+                {this.props.store && (
                   <div>
                     <div
                       style={{
@@ -198,9 +208,8 @@ class Banner extends Component {
                       <label>
                         Your Groups:
                         <List>
-                          {this.state.users.map(group =>
-                            this.createGroupItem(group)
-                          )}
+                          {this.props.store.user &&
+                            console.log(this.props.store.user.group)}
                         </List>
                         {/* <input
                             type="text"
