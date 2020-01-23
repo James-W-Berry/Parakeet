@@ -3,7 +3,8 @@ import {
   SET_NEARBY_USERS,
   SET_SELECTED_SONG,
   SET_USER,
-  SET_LOCATION
+  SET_LOCATION,
+  SET_CURRENT_SONG
 } from "../actions/actions";
 
 let initialState = null;
@@ -34,6 +35,11 @@ function rootReducer(state = initialState, action) {
       return {
         ...state,
         location: action.location
+      };
+    case SET_CURRENT_SONG:
+      return {
+        ...state,
+        currentSong: action.currentSong
       };
 
     default:

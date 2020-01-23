@@ -10,25 +10,28 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import { setUser } from "../../actions/actions";
-import { Button } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import uuid from "react-uuid";
 import { Typography } from "@material-ui/core";
 import { firebase } from "../../firebase";
+import ReactSearchBox from "react-search-box";
+import { uploadUser } from "../FirebaseActions/FirebaseActions.js";
 
 class Banner extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      modalOpen: false
+      modalOpen: false,
+      groups: []
     };
   }
 
   componentWillMount() {
     const db = firebase.firestore();
+
     let doc = db.collection("users");
     doc.onSnapshot(
       docSnapshot => {
@@ -40,34 +43,67 @@ class Banner extends Component {
         console.log(err);
       }
     );
+
+    let groups = db.collection("groups");
+    groups.onSnapshot(
+      docSnapshot => {
+        let groups = [];
+        docSnapshot.forEach(group =>
+          groups.push({ ...group.data(), uid: group.id })
+        );
+        this.setState({ groups: groups });
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
-  createGroupItem(user) {
-    if (this.props.store.user) {
-      if (user.listenerId === this.props.store.user.spotifyId) {
-        if (user.group !== undefined) {
-          return (
-            <ListItem
-              key={uuid()}
-              button={true}
-              onClick={() => {
-                //let user = this.props.user;
-                //user.group = group;
-                //this.props.setUser(user);
-              }}
-            >
-              <ListItemText
-                disableTypography
-                primary={
-                  <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                    {user.group}
-                  </Typography>
-                }
-              />
-            </ListItem>
-          );
+  getUserGroups() {
+    const db = firebase.firestore();
+    let userDoc = db.collection("users").doc(this.props.store.user.spotifyId);
+    let storeUser = this.props.store.user;
+    let setUser = this.props.setUser;
+
+    userDoc
+      .get()
+      .then(function(doc) {
+        if (doc.exists) {
+          let data = doc.data();
+
+          let userGroup = {
+            groups: data.groups
+          };
+
+          let user = {
+            ...userGroup,
+            ...storeUser
+          };
+
+          setUser(user);
+        } else {
+          console.log("No such document!");
         }
-      }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+      });
+  }
+
+  createGroupItem(group) {
+    if (group !== undefined) {
+      return (
+        <ListItem key={uuid()} button={true} onClick={() => {}}>
+          <ListItemText
+            disableTypography
+            primary={
+              <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                {group.value}
+              </Typography>
+            }
+          />
+        </ListItem>
+      );
     }
   }
 
@@ -77,10 +113,6 @@ class Banner extends Component {
 
   closeUserSettings = user => {
     this.setState({ modalOpen: false });
-  };
-
-  handleChange = event => {
-    this.setState({ searchingGroup: event.target.value });
   };
 
   render() {
@@ -140,7 +172,9 @@ class Banner extends Component {
                       }}
                     />
                   ))}
-                {this.props.store === undefined && <PersonIcon />}
+                {this.props.store === undefined && (
+                  <PersonIcon style={{ height: "60px", width: "60px" }} />
+                )}
               </Fab>
             </div>
           </MuiThemeProvider>
@@ -206,38 +240,51 @@ class Banner extends Component {
                       }}
                     >
                       <label>
-                        Your Groups:
+                        Your Group:
                         <List>
                           {this.props.store.user &&
-                            console.log(this.props.store.user.group)}
+                            (this.props.store.user.groups === undefined
+                              ? this.getUserGroups()
+                              : this.createGroupItem(
+                                  this.props.store.user.groups
+                                ))}
                         </List>
-                        {/* <input
-                            type="text"
-                            value={this.props.user.group}
-                            onChange={this.handleChange}
-                          /> */}
                       </label>
                     </div>
 
                     <div
                       style={{
                         display: "flex",
-                        justifyContent: "center",
-                        alignSelf: "center",
-                        color: "#efefef",
-                        marginTop: "20",
-                        fontSize: 20
+                        justifyContent: "center"
                       }}
                     >
-                      <label>
-                        Join a New Group:
-                        <input
-                          type="text"
-                          placeholder="search for a group"
-                          value={this.state.searchingGroup}
-                          onChange={this.handleChange}
-                        />
-                      </label>
+                      <ReactSearchBox
+                        placeholder="search for a group to join"
+                        data={this.state.groups}
+                        onSelect={group => {
+                          let userGroup = {
+                            groups: group
+                          };
+
+                          let user = {
+                            ...this.props.store.user,
+                            ...userGroup
+                          };
+
+                          this.props.setUser(user);
+                          uploadUser(
+                            this.props.store.currentSong,
+                            this.props.store.user,
+                            this.props.store.coords,
+                            group
+                          );
+                        }}
+                        onFocus={() => {}}
+                        fuseConfigs={{
+                          threshold: 0.05
+                        }}
+                        value=""
+                      />
                     </div>
                   </div>
                 )}
@@ -251,7 +298,7 @@ class Banner extends Component {
 }
 
 const mapDispatchToProps = {
-  // setUser: setUser
+  setUser: setUser
 };
 
 const mapStateToProps = state => {

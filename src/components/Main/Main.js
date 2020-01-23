@@ -59,15 +59,18 @@ class Main extends Component {
     }
   };
 
-  createNearbyUser(user) {
-    return (
-      <div key={user.listenerId}>
-        <UserBubble user={user} />
-      </div>
-    );
-  }
+  createNearbyUser = user => {
+    if (this.props?.store?.user?.groups?.value === user.groups.value) {
+      return (
+        <div key={user.listenerId}>
+          <UserBubble user={user} />
+        </div>
+      );
+    }
+  };
 
   render() {
+    console.log(this.props?.store?.user?.groups?.value);
     return (
       <Flexbox
         flexDirection="column"
@@ -119,6 +122,19 @@ class Main extends Component {
             }}
           >
             <LocalMapButton slideCallback={this.toggleMapHeight} />
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignSelf: "baseline",
+                marginTop: "2vh",
+                fontSize: 24,
+                color: "#ee0979"
+              }}
+            >
+              {this.props?.store?.user?.groups?.value}
+            </div>
             {this.state.userBubblesVisible &&
               this.state.nearbyUsers &&
               this.state.nearbyUsers.map(user => this.createNearbyUser(user))}
@@ -144,7 +160,8 @@ class Main extends Component {
 const mapStateToProps = state => {
   return {
     token: state.token,
-    nearbyUsers: state.nearbyUsers
+    nearbyUsers: state.nearbyUsers,
+    store: state.rootReducer
   };
 };
 

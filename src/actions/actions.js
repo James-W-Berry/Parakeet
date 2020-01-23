@@ -3,6 +3,14 @@ export const SET_NEARBY_USERS = "SET_NEARBY_USERS";
 export const SET_SELECTED_SONG = "SET_SELECTED_SONG";
 export const SET_USER = "SET_USER";
 export const SET_LOCATION = "SET_LOCATION";
+export const SET_CURRENT_SONG = "SET_CURRENT_SONG";
+
+export function setCurrentSong(currentSong) {
+  return {
+    type: SET_CURRENT_SONG,
+    currentSong: currentSong
+  };
+}
 
 export function setLocation(location) {
   return {

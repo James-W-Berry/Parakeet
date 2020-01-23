@@ -4,7 +4,12 @@ import "./SpotifyPlayerUI.css";
 import { uploadUser, uploadSong } from "../FirebaseActions/FirebaseActions.js";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import { connect } from "react-redux";
-import { setToken, setUser, setLocation } from "../../actions/actions";
+import {
+  setToken,
+  setUser,
+  setLocation,
+  setCurrentSong
+} from "../../actions/actions";
 import Geolocation from "../Geolocation/GeoLocation";
 import { geolocated } from "react-geolocated";
 
@@ -100,7 +105,6 @@ class SpotifyPlayerUI extends Component {
         }
       })
       .then(data => {
-        console.log(data);
         if (data !== undefined) {
           let currentSong = {
             timestamp: Date.now().toString(),
@@ -110,7 +114,14 @@ class SpotifyPlayerUI extends Component {
             album: data.item.album.name
           };
 
-          uploadUser(currentSong, this.props.store.user, this.props.coords);
+          this.props.setCurrentSong(currentSong);
+
+          uploadUser(
+            currentSong,
+            this.props.store.user,
+            this.props.coords,
+            this.props.store.groups
+          );
           uploadSong(currentSong);
           this.setState({ currentSong: currentSong });
         } else {
@@ -186,7 +197,7 @@ class SpotifyPlayerUI extends Component {
                 left: "40vw"
               }}
             >
-              <a href={loginUrl}>
+              <a href={devLoginUrl}>
                 <img
                   src={spotify}
                   alt="login"
@@ -285,7 +296,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   setToken: setToken,
   setUser: setUser,
-  setLocation: setLocation
+  setLocation: setLocation,
+  setCurrentSong: setCurrentSong
 };
 
 export default connect(
