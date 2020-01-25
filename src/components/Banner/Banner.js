@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import bannerLogo from "../../images/bannerLogo.png";
-import SearchForPerson from "../SearchForPerson/SearchForPerson";
 import Fab from "@material-ui/core/Fab";
-import { Avatar } from "material-ui";
+import { Avatar, TextField } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import PersonIcon from "@material-ui/icons/Person";
 import { connect } from "react-redux";
@@ -14,10 +13,20 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import uuid from "react-uuid";
-import { Typography } from "@material-ui/core";
+import { Typography, Button } from "@material-ui/core";
 import { firebase } from "../../firebase";
 import ReactSearchBox from "react-search-box";
-import { uploadUser } from "../FirebaseActions/FirebaseActions.js";
+import { uploadUser, addGroup } from "../FirebaseActions/FirebaseActions.js";
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = {
+  root: {
+    background: "black"
+  },
+  input: {
+    color: "white"
+  }
+};
 
 class Banner extends Component {
   constructor(props) {
@@ -25,7 +34,8 @@ class Banner extends Component {
 
     this.state = {
       modalOpen: false,
-      groups: []
+      groups: [],
+      newGroupDialog: false
     };
   }
 
@@ -115,6 +125,15 @@ class Banner extends Component {
     this.setState({ modalOpen: false });
   };
 
+  showAddNewGroup = () => {
+    this.setState({ newGroupDialog: !this.state.newGroupDialog });
+  };
+
+  handleAddNewGroup = () => {
+    addGroup(this.state.newGroupName);
+    this.setState({ newGroupDialog: !this.state.newGroupDialog });
+  };
+
   render() {
     return (
       <div style={{ display: "flex", flexGrow: 1 }}>
@@ -126,17 +145,6 @@ class Banner extends Component {
             width="62"
             style={{ position: "absolute", left: "2vw" }}
           />
-
-          <div
-            style={{
-              display: "flex",
-              position: "absolute",
-              flexGrow: 1,
-              right: "15vw"
-            }}
-          >
-            <SearchForPerson />
-          </div>
 
           <MuiThemeProvider>
             <div
@@ -286,6 +294,54 @@ class Banner extends Component {
                         value=""
                       />
                     </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: "2vh"
+                      }}
+                    >
+                      {!this.state.newGroupDialog && (
+                        <Button
+                          variant="contained"
+                          color="default"
+                          title="Add New Group"
+                          onClick={this.showAddNewGroup}
+                        >
+                          Add New Group
+                        </Button>
+                      )}
+
+                      {this.state.newGroupDialog && (
+                        <div>
+                          <form>
+                            <label style={{ color: "#efefef" }}>
+                              <input
+                                type="text"
+                                placeholder="new group name"
+                                name="name"
+                                onChange={event =>
+                                  this.setState({
+                                    newGroupName: event.target.value
+                                  })
+                                }
+                              />
+                            </label>
+                            <input
+                              type="submit"
+                              value="Add"
+                              onClick={this.handleAddNewGroup}
+                            />
+                            <input
+                              type="submit"
+                              value="Cancel"
+                              onClick={this.showAddNewGroup}
+                            />
+                          </form>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -307,4 +363,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Banner);
+export default withStyles(styles)(
+  connect(mapStateToProps, mapDispatchToProps)(Banner)
+);

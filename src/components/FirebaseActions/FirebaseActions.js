@@ -1,4 +1,5 @@
 import { firebase } from "../../firebase";
+const uuidv4 = require("uuid/v4");
 
 function uploadUser(song, user, coords, groups) {
   let fireUser;
@@ -62,4 +63,20 @@ function uploadSong(song) {
     });
 }
 
-export { uploadSong, uploadUser };
+function addGroup(group) {
+  const db = firebase.firestore();
+
+  const newGroup = {
+    key: group.toLowerCase(),
+    value: group
+  };
+
+  db.collection("groups")
+    .doc(group.toLowerCase())
+    .set(newGroup)
+    .catch(error => {
+      console.log("Error creating new group");
+    });
+}
+
+export { uploadSong, uploadUser, addGroup };

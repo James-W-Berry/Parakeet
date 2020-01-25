@@ -60,7 +60,7 @@ class Main extends Component {
   };
 
   createNearbyUser = user => {
-    if (this.props?.store?.user?.groups?.value === user.groups.value) {
+    if (this.props?.store?.user?.groups?.value === user?.groups?.value) {
       return (
         <div key={user.listenerId}>
           <UserBubble user={user} />

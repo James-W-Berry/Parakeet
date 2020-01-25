@@ -197,7 +197,7 @@ class SpotifyPlayerUI extends Component {
                 left: "40vw"
               }}
             >
-              <a href={loginUrl}>
+              <a href={devLoginUrl}>
                 <img
                   src={spotify}
                   alt="login"
