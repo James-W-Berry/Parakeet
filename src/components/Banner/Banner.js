@@ -155,22 +155,13 @@ class Banner extends Component {
                 right: "5vw"
               }}
             >
-              <Fab
-                color="primary"
-                aria-label="add"
-                style={{ outline: "none", background: "#091740" }}
-              >
-                {this.props.store &&
-                  this.props.store.user &&
-                  (this.props.store.user.image === undefined ? (
-                    <PersonIcon
-                      alt={`${this.props.store.user.displayName}`}
-                      style={{ height: "60px", width: "60px" }}
-                      onClick={() => {
-                        this.openUserSettings(this.props.store.user);
-                      }}
-                    />
-                  ) : (
+              {this.props?.store?.user && (
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  style={{ outline: "none", background: "#091740" }}
+                >
+                  {this.props.store.user.image !== undefined ? (
                     <Avatar
                       alt={`${this.props.store.user.displayName}`}
                       src={`${this.props.store.user.image}`}
@@ -179,11 +170,17 @@ class Banner extends Component {
                         this.openUserSettings(this.props.store.user);
                       }}
                     />
-                  ))}
-                {this.props.store === undefined && (
-                  <PersonIcon style={{ height: "60px", width: "60px" }} />
-                )}
-              </Fab>
+                  ) : (
+                    <PersonIcon
+                      alt={`${this.props.store.user.displayName}`}
+                      style={{ height: "60px", width: "60px" }}
+                      onClick={() => {
+                        this.openUserSettings(this.props.store.user);
+                      }}
+                    />
+                  )}
+                </Fab>
+              )}
             </div>
           </MuiThemeProvider>
         </div>
