@@ -1,12 +1,20 @@
 .SplashScreen {
   height: 100vh;
-  background: #090235;
+  background: #191919;
   align-self: "center";
 }
 
 .SplashScreen_text {
   font-size: 120px;
-  text-align: center;
+  align-self: flex-end;
   font-style: italic;
-  color: #efefef;
+  background: linear-gradient(180deg, #56b918 0%, #ffd918 50%, #fa0008 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.loginBtn {
+  color: #ffffff;
+  background-color: #1db954;
+  border-color: #1aa34a;
 }
