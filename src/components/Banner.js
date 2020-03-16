@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import bannerLogo from "../../images/bannerLogo.png";
+import bannerLogo from "../assets/bannerLogo.png";
 import Fab from "@material-ui/core/Fab";
 import { Avatar, TextField } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -8,15 +8,15 @@ import { connect } from "react-redux";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import { setUser } from "../../actions/actions";
+import { setUser } from "../actions/actions";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import uuid from "react-uuid";
 import { Typography, Button } from "@material-ui/core";
-import { firebase } from "../../firebase";
+import firebase from "../firebase";
 import ReactSearchBox from "react-search-box";
-import { uploadUser, addGroup } from "../FirebaseActions/FirebaseActions.js";
+import { uploadUser, addGroup } from "./FirebaseActions.js";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
@@ -350,16 +350,4 @@ class Banner extends Component {
   }
 }
 
-const mapDispatchToProps = {
-  setUser: setUser
-};
-
-const mapStateToProps = state => {
-  return {
-    store: state.rootReducer
-  };
-};
-
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(Banner)
-);
+export default withStyles(styles)(Banner);

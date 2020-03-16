@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import Fab from "@material-ui/core/Fab";
-import pull_up from "../../images/pull_up.png";
-import pull_down from "../../images/pull_down.png";
-import local_map from "../../images/local_map.png";
+import pull_up from "../assets/pull_up.png";
+import pull_down from "../assets/pull_down.png";
+import local_map from "../assets/local_map.png";
 
 class LocalMapButton extends Component {
   state = { open: false };

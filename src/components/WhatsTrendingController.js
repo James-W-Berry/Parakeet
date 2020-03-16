@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { firebase } from "../../firebase";
-import trendingPic from "../../images/trending_pic.png";
-import trending from "../../images/trending.png";
-import TrendingList from "../TrendingList/TrendingList";
+import firebase from "../firebase";
+import trendingPic from "../assets/trending_pic.png";
+import trending from "../assets/trending.png";
+import TrendingList from "./TrendingList";
 import { FormControl, Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";

@@ -12,6 +12,7 @@ var request = require("request"); // "Request" library
 var cors = require("cors");
 var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
+var bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -44,7 +45,9 @@ var app = express();
 app
   .use(express.static(__dirname + "/public"))
   .use(cors())
-  .use(cookieParser());
+  .use(cookieParser())
+  .use(bodyParser.json())
+  .use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/login", function(req, res) {
   var state = generateRandomString(16);
@@ -133,9 +136,10 @@ app.get("/callback", function(req, res) {
   }
 });
 
-app.get("/refresh_token", function(req, res) {
+app.post("/refresh_token", function(req, res) {
   // requesting access token from refresh token
-  var refresh_token = req.query.refresh_token;
+  console.log(req.body);
+  var refresh_token = req.body.refresh_token;
   var authOptions = {
     url: "https://accounts.spotify.com/api/token",
     headers: {
@@ -153,8 +157,10 @@ app.get("/refresh_token", function(req, res) {
   request.post(authOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       var access_token = body.access_token;
+      var expires_in = body.expires_in;
       res.send({
-        access_token: access_token
+        access_token: access_token,
+        expires_in: expires_in
       });
     }
   });

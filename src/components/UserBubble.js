@@ -5,7 +5,7 @@ import { Avatar } from "material-ui";
 import "./UserBubble.css";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { connect } from "react-redux";
-import { setSelectedSong } from "../../actions/actions";
+import { setSelectedSong } from "../actions/actions";
 
 var Marquee = require("react-marquee");
 

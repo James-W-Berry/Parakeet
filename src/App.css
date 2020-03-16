@@ -14,6 +14,18 @@
   }
 }
 
+@font-face {
+  font-family: "AntikorDisplayLight";
+  src: local("AntikorDisplayLight"),
+    url(./assets/AntikorDisplayLight.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "AntikorMonoLightItalic";
+  src: local("AntikorMonoLightItalic"),
+    url(./assets/AntikorMonoLightItalic.ttf) format("truetype");
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

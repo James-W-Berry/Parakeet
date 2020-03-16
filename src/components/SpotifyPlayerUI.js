@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import spotify from "../../images/spotify.png";
+import spotify from "../assets/spotify.png";
 import "./SpotifyPlayerUI.css";
-import { uploadUser, uploadSong } from "../FirebaseActions/FirebaseActions.js";
+import { uploadUser, uploadSong } from "./FirebaseActions.js";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import { connect } from "react-redux";
 import {
@@ -9,31 +9,38 @@ import {
   setUser,
   setLocation,
   setCurrentSong
-} from "../../actions/actions";
-import Geolocation from "../Geolocation/GeoLocation";
+} from "../actions/actions";
+import Geolocation from "./GeoLocation";
 import { geolocated } from "react-geolocated";
+import { Button } from "@material-ui/core";
 
 const dotenv = require("dotenv");
 
 dotenv.config();
 
-const loginUrl = process.env.REACT_APP_LOGIN_URL;
+const prodLoginUrl = process.env.REACT_APP_LOGIN_URL;
 const devLoginUrl = process.env.REACT_APP_DEV_LOGIN_URL;
+const prodRefreshTokenUrl = process.env.REACT_APP_REFRESH_URL;
+const devRefreshTokenUrl = process.env.REACT_APP_DEV_REFRESH_URL;
 
 class SpotifyPlayerUI extends Component {
   constructor(props) {
     super(props);
     const params = this.getHashParams();
     const token = params.access_token;
+    const refreshToken = params.refresh_token;
 
     if (token) {
       this.props.setToken(token);
+
+      //TODO: this.props.setRefreshToken(refreshToken)
     }
 
     this.state = {
       loggedIn: token ? true : false,
       token: token,
       currentSong: null,
+      refresh_token: refreshToken,
       location: {
         latitude: "",
         longitude: ""
@@ -163,6 +170,23 @@ class SpotifyPlayerUI extends Component {
     return hashParams;
   }
 
+  getRefreshToken() {
+    fetch(devRefreshTokenUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        refresh_token: this.state.refresh_token
+      })
+    }).then(response => {
+      response.json().then(data => {
+        let refreshedToken = data.access_token;
+        let expiresIn = data.expires_in;
+      });
+    });
+  }
+
   render() {
     if (
       this.props.store !== null &&
@@ -223,6 +247,9 @@ class SpotifyPlayerUI extends Component {
                 width: "80vw"
               }}
             >
+              <Button onClick={() => this.getRefreshToken()}>
+                Get refresh token
+              </Button>
               <SpotifyWebPlayer
                 styles={{
                   bgColor: "#091740",
@@ -239,6 +266,19 @@ class SpotifyPlayerUI extends Component {
                 name="Parakeet"
                 token={this.state.token}
                 callback={state => {
+                  console.log(state);
+                  if (state.errorType === "authentication_error") {
+                    console.log("retrieving new token with refresh token");
+                    // fetch(devRefreshTokenUrl, {
+                    //   body: JSON.stringify({
+                    //     query: this.props.store.refreshedToken
+                    //   })
+                    // }).then(data => {
+                    //   console.log(data);
+                    //   let refreshedToken = data.access_token;
+                    //   //TODO: this.props.setToken(refreshedToken)
+                    // });
+                  }
                   if (
                     state.devices[0] !== undefined &&
                     state.isActive !== true
@@ -252,7 +292,6 @@ class SpotifyPlayerUI extends Component {
                         fetch(`https://api.spotify.com/v1/me/player`, {
                           body: JSON.stringify({
                             device_ids: [state.devices[device].id],
-
                             play: true
                           }),
                           headers: {

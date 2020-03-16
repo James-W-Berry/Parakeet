@@ -1,4 +1,4 @@
-import { firebase } from "../../firebase";
+import firebase from "../firebase";
 const uuidv4 = require("uuid/v4");
 
 function uploadUser(song, user, coords, groups) {
