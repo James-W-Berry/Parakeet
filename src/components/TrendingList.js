@@ -61,8 +61,4 @@ class TrendingList extends Component {
   }
 }
 
-const mapDispatchToProps = {
-  setSelectedSong: setSelectedSong
-};
-
-export default connect(null, mapDispatchToProps)(TrendingList);
+export default TrendingList;

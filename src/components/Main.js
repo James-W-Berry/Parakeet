@@ -7,7 +7,8 @@ import UserBubble from "./UserBubble";
 import SpotifyPlayerUI from "./SpotifyPlayerUI";
 import firebase from "../firebase";
 
-function Main(props) {
+function Main() {
+  const user = useUser();
   const nearbyPeople = useNearbyPeople();
   const [mapHeight, setMapHeight] = useState("20vh");
   const [showUserBubbles, setShowBubblesVisible] = useState(false);
@@ -33,6 +34,26 @@ function Main(props) {
     return users;
   }
 
+  function useUser() {
+    const [user, setUser] = useState([]);
+
+    useEffect(() => {
+      const unsubscribe = firebase
+        .firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .onSnapshot(snapshot => {
+          const retrievedUser = { ...snapshot.data() };
+          console.log(retrievedUser);
+
+          setUser(retrievedUser);
+        });
+
+      return () => unsubscribe();
+    }, []);
+    return user;
+  }
+
   function toggleMapHeight() {
     if (mapHeight === "20vh") {
       setMapHeight("90vh");
@@ -45,11 +66,11 @@ function Main(props) {
     }
   }
 
-  function createNearbyUser(user) {
-    if (this.props?.store?.user?.groups?.value === user?.groups?.value) {
+  function createNearbyUser(nearbyUser) {
+    if (nearbyUser.groups.value === user.groups.value) {
       return (
-        <div key={user.listenerId}>
-          <UserBubble user={user} />
+        <div key={nearbyUser.displayName}>
+          <UserBubble user={nearbyUser} />
         </div>
       );
     }
@@ -79,7 +100,7 @@ function Main(props) {
             left: 0
           }}
         >
-          <WhatsTrendingController />
+          {/* <WhatsTrendingController /> */}
         </div>
       </Flexbox>
 
@@ -117,7 +138,7 @@ function Main(props) {
               color: "#ee0979"
             }}
           >
-            {this.props?.store?.user?.groups?.value}
+            {user?.groups?.value}
           </div>
           {showUserBubbles &&
             nearbyPeople &&
@@ -133,7 +154,7 @@ function Main(props) {
             height: "20vh"
           }}
         >
-          <SpotifyPlayerUI />
+          {/* <SpotifyPlayerUI /> */}
         </div>
       </Flexbox>
     </Flexbox>
