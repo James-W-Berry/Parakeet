@@ -1,32 +1,16 @@
-import React, { Component } from "react";
-import FadeIn from "react-fade-in";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "./SplashScreen.css";
-import Main from "./Main.js";
 import logo from "../assets/logo.png";
-import SpotifyIcon from "../assets/SpotifyIcon";
-import {
-  setToken,
-  setUser,
-  setLocation,
-  setCurrentSong
-} from "../actions/actions";
-import { connect } from "react-redux";
 import { Button } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
 import { Typography } from "@material-ui/core";
-import PropTypes from "prop-types";
-import Img from "react-image";
 import { makeStyles } from "@material-ui/core/styles";
 import Lottie from "react-lottie";
 import * as musicAnimation from "../assets/music-animation.json";
 const dotenv = require("dotenv");
 
 dotenv.config();
-
-const loginUrl = process.env.REACT_APP_LOGIN_URL;
-const devLoginUrl = process.env.REACT_APP_DEV_LOGIN_URL;
 
 const defaultOptions = {
   loop: true,
@@ -36,20 +20,6 @@ const defaultOptions = {
     preserveAspectRatio: "xMidYMid slice"
   }
 };
-
-const StyledButton = withStyles({
-  root: {
-    background: "#1db954",
-    borderColor: "#1aa34a",
-    borderRadius: 40,
-    border: 0,
-    color: "white",
-    height: "10vh",
-    width: "20vw",
-    padding: "0 30px",
-    boxShadow: "0 3px 5px 2px rgba(29, 185,	84, .3)"
-  }
-})(Button);
 
 const useStyles = makeStyles({
   root: {
@@ -65,7 +35,7 @@ const useStyles = makeStyles({
     padding: "0 30px"
   },
   title: {
-    fontFamily: "AntikorMonoLightItalic",
+    fontFamily: "AntikorDisplayLight",
     fontSize: "120px",
     padding: "0 30px",
     color: "#f7f7f5"
@@ -136,23 +106,6 @@ function LandingPage() {
             <Button className={classes.root}>Sign In</Button>
           </NavLink>
         </div>
-
-        {/* <div
-          style={{
-            display: "flex",
-            marginTop: "20vh",
-            justifyContent: "center",
-            alignSelf: "center"
-          }}
-        >
-          <StyledButton
-            variant="contained"
-            href={devLoginUrl}
-            startIcon={<SpotifyIcon />}
-          >
-            Login with Spotify
-          </StyledButton>
-        </div> */}
       </div>
     </div>
   );

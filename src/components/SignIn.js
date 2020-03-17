@@ -1,29 +1,23 @@
 import React, { useState } from "react";
 import firebase from "../firebase";
 import "firebase/auth";
-import SignUp from "./SignUp";
 import { NavLink } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import { Typography, Divider } from "@material-ui/core";
-import PropTypes from "prop-types";
-import Img from "react-image";
-import landingPhoto from "../assets/bannerLogo.png";
-import logo from "../assets/bannerLogo.png";
-import { withStyles } from "@material-ui/core/styles";
-import SyncLoader from "react-spinners/SyncLoader";
-
-const Logo = () => <Img src={logo} height={60} />;
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const useStyles = makeStyles({
   textInput: {
-    width: "20vw",
+    width: "100%",
+    marginTop: "20px",
     "& label ": {
-      color: "#e5475080"
+      color: "#f7f7f5",
+      fontFamily: "AntikorMonoLightItalic"
     },
     "& label.Mui-focused": {
-      color: "#e54750"
+      fontFamily: "AntikorMonoLightItalic",
+      color: "#f7f7f580"
     },
     "& .MuiInput-underline:after": {
       borderBottomColor: "#e54750"
@@ -43,18 +37,21 @@ const useStyles = makeStyles({
   },
   input: {
     fontFamily: "AntikorMonoLightItalic",
-
-    color: "#e54750"
+    color: "#e54750",
+    fontSize: "32px"
   },
   forgotButton: {
     "&:hover": {
-      color: "#171820"
+      color: "#f7f7f5"
     },
+    fontFamily: "AntikorMonoLightItalic",
     border: 0,
     borderRadius: 3,
-    color: "#17182080",
+    fontSize: "14px",
+    color: "#e54750",
     height: 48,
-    padding: "0 30px"
+    padding: "0 30px",
+    marginTop: "20px"
   }
 });
 
@@ -90,22 +87,32 @@ function SignIn(props) {
         flex: 1
       }}
     >
-      <NavLink
-        style={{
-          textDecoration: "none"
-        }}
-        to="/home"
-      >
-        <Button className={classes.root}>Back</Button>
-      </NavLink>
       <div
         style={{
-          flex: 1,
+          display: "flex",
+          flex: "1",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <NavLink
+          style={{
+            textDecoration: "none"
+          }}
+          to="/home"
+        >
+          <Button className={classes.root}>{"< Back"}</Button>
+        </NavLink>
+      </div>
+
+      <div
+        style={{
+          flex: 2,
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
-          alignItems: "center",
-          marginTop: "10vh"
+          alignItems: "center"
         }}
       >
         <TextField
@@ -134,43 +141,7 @@ function SignIn(props) {
             setPassword(event.target.value);
           }}
         />
-      </div>
 
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: "30px",
-          marginRight: "20px"
-        }}
-      >
-        {isLoading ? (
-          <SyncLoader color={"#171820"} />
-        ) : (
-          <Button
-            onClick={() => {
-              onSignIn(email, password);
-            }}
-            className={classes.root}
-          >
-            Sign In
-          </Button>
-        )}
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: "120px"
-        }}
-      >
         <NavLink
           style={{
             textDecoration: "none"
@@ -179,6 +150,29 @@ function SignIn(props) {
         >
           <Button className={classes.forgotButton}>Forgot Password?</Button>
         </NavLink>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flex: "1",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        {isLoading ? (
+          <ScaleLoader color={"#e54750"} />
+        ) : (
+          <Button
+            onClick={() => {
+              onSignIn(email, password);
+            }}
+            className={classes.root}
+          >
+            Sign In >
+          </Button>
+        )}
       </div>
     </div>
   );

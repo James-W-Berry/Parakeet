@@ -5,23 +5,19 @@ import { NavLink } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import { Typography, Divider } from "@material-ui/core";
-import Img from "react-image";
-import landingPhoto from "../assets/bannerLogo.png";
-import logo from "../assets/bannerLogo.png";
-
-const Logo = () => <Img src={logo} height={60} />;
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const useStyles = makeStyles({
   textInput: {
-    width: "20vw",
+    width: "100%",
+    marginTop: "20px",
     "& label ": {
-      color: "#e5475080"
+      color: "#f7f7f5",
+      fontFamily: "AntikorMonoLightItalic"
     },
     "& label.Mui-focused": {
-      color: "#e54750"
+      fontFamily: "AntikorMonoLightItalic",
+      color: "#f7f7f580"
     },
     "& .MuiInput-underline:after": {
       borderBottomColor: "#e54750"
@@ -41,14 +37,12 @@ const useStyles = makeStyles({
   },
   input: {
     fontFamily: "AntikorMonoLightItalic",
-
-    color: "#e54750"
+    color: "#e54750",
+    fontSize: "32px"
   }
 });
 
 function onResetPassword(email) {
-  console.log("resettingpassword ");
-  console.log(email);
   firebase
     .auth()
     .sendPasswordResetEmail(email)
@@ -64,8 +58,10 @@ function onResetPassword(email) {
     });
 }
 
-function ForgottenPassword(props) {
+function ForgottenPassword() {
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const classes = useStyles();
 
   return (
@@ -79,22 +75,31 @@ function ForgottenPassword(props) {
         flex: 1
       }}
     >
-      <NavLink
-        style={{
-          textDecoration: "none"
-        }}
-        to="/home"
-      >
-        <Button className={classes.root}>Back</Button>
-      </NavLink>
       <div
         style={{
-          flex: 1,
+          display: "flex",
+          flex: "1",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <NavLink
+          style={{
+            textDecoration: "none"
+          }}
+          to="/signin"
+        >
+          <Button className={classes.root}>{"< Back"}</Button>
+        </NavLink>
+      </div>
+      <div
+        style={{
+          flex: 2,
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
-          alignItems: "center",
-          marginTop: "10vh"
+          alignItems: "center"
         }}
       >
         <TextField
@@ -102,32 +107,37 @@ function ForgottenPassword(props) {
           id="standard-email-input"
           label="Email"
           type="email"
+          autoComplete="email"
           InputProps={{
             className: classes.input
           }}
-          autoComplete="email"
           onChange={event => {
             setEmail(event.target.value);
           }}
         />
       </div>
+
       <div
         style={{
           display: "flex",
           flex: "1",
           flexDirection: "column",
           alignItems: "center",
-          marginTop: "30px"
+          justifyContent: "center"
         }}
       >
-        <Button
-          onClick={() => {
-            onResetPassword(email);
-          }}
-          className={classes.root}
-        >
-          Reset Password
-        </Button>
+        {isLoading ? (
+          <ScaleLoader color={"#e54750"} />
+        ) : (
+          <Button
+            onClick={() => {
+              onResetPassword(email);
+            }}
+            className={classes.root}
+          >
+            Reset Password >
+          </Button>
+        )}
       </div>
     </div>
   );
