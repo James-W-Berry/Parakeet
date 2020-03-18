@@ -7,52 +7,53 @@ import UserBubble from "./UserBubble";
 import SpotifyPlayerUI from "./SpotifyPlayerUI";
 import firebase from "../firebase";
 
-function Main() {
-  const user = useUser();
-  const nearbyPeople = useNearbyPeople();
-  const [mapHeight, setMapHeight] = useState("20vh");
-  const [showUserBubbles, setShowBubblesVisible] = useState(false);
-  const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
-
-  function useNearbyPeople() {
-    const [users, setUsers] = useState([]);
-    useEffect(() => {
+function useNearbyPeople(user) {
+  const [nearbyPeople, setNearbyPeople] = useState([]);
+  useEffect(() => {
+    if (user.group) {
       const unsubscribe = firebase
         .firestore()
         .collection("users")
+        .where("group", "==", user.group)
         .onSnapshot(snapshot => {
           const retrievedUsers = snapshot.docs.map(doc => ({
             uid: doc.id,
             ...doc.data()
           }));
 
-          setUsers(retrievedUsers);
+          setNearbyPeople(retrievedUsers);
+          return () => unsubscribe();
         });
+    }
+  }, [user.group]);
+  return nearbyPeople;
+}
 
-      return () => unsubscribe();
-    }, []);
-    return users;
-  }
+function useUser() {
+  const [user, setUser] = useState([]);
 
-  function useUser() {
-    const [user, setUser] = useState([]);
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .onSnapshot(snapshot => {
+        const retrievedUser = { ...snapshot.data() };
+        setUser(retrievedUser);
+      });
 
-    useEffect(() => {
-      const unsubscribe = firebase
-        .firestore()
-        .collection("users")
-        .doc(firebase.auth().currentUser.uid)
-        .onSnapshot(snapshot => {
-          const retrievedUser = { ...snapshot.data() };
-          console.log(retrievedUser);
+    return () => unsubscribe();
+  }, []);
+  return user;
+}
 
-          setUser(retrievedUser);
-        });
+function Main() {
+  const user = useUser();
+  const nearbyPeople = useNearbyPeople(user);
 
-      return () => unsubscribe();
-    }, []);
-    return user;
-  }
+  const [mapHeight, setMapHeight] = useState("20vh");
+  const [showUserBubbles, setShowBubblesVisible] = useState(false);
+  const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
 
   function toggleMapHeight() {
     if (mapHeight === "20vh") {
@@ -67,13 +68,11 @@ function Main() {
   }
 
   function createNearbyUser(nearbyUser) {
-    if (nearbyUser.groups.value === user.groups.value) {
-      return (
-        <div key={nearbyUser.displayName}>
-          <UserBubble user={nearbyUser} />
-        </div>
-      );
-    }
+    return (
+      <div key={nearbyUser.displayName}>
+        <UserBubble user={nearbyUser} />
+      </div>
+    );
   }
 
   return (

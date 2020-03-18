@@ -63,7 +63,7 @@ function SignUp() {
           .doc(userId)
           .set({
             displayName: username,
-            groups: "public"
+            group: "ETVOvDEqnWL9I7fURN3D"
           })
           .catch(function(error) {
             console.log(error);
