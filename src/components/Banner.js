@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import bannerLogo from "../assets/bannerLogo.png";
 import Fab from "@material-ui/core/Fab";
 import { Avatar, TextField } from "material-ui";
@@ -16,8 +16,9 @@ import uuid from "react-uuid";
 import { Typography, Button } from "@material-ui/core";
 import firebase from "../firebase";
 import ReactSearchBox from "react-search-box";
-import { uploadUser, addGroup } from "./FirebaseActions.js";
 import { withStyles } from "@material-ui/core/styles";
+import "firebase/auth";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
 
 const styles = {
   root: {
@@ -28,326 +29,87 @@ const styles = {
   }
 };
 
-class Banner extends Component {
-  constructor(props) {
-    super(props);
+function logout() {
+  firebase.auth().signOut();
+}
 
-    this.state = {
-      modalOpen: false,
-      groups: [],
-      newGroupDialog: false
-    };
-  }
+function useGroups() {
+  const [groups, setGroups] = useState([]);
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("groups")
+      .onSnapshot(snapshot => {
+        const retrievedGroups = snapshot.docs.map(doc => ({
+          ...doc.data()
+        }));
 
-  componentWillMount() {
-    const db = firebase.firestore();
-
-    let doc = db.collection("users");
-    doc.onSnapshot(
-      docSnapshot => {
-        let users = [];
-        docSnapshot.forEach(doc => users.push({ ...doc.data(), uid: doc.id }));
-        this.setState({ users: users });
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-    let groups = db.collection("groups");
-    groups.onSnapshot(
-      docSnapshot => {
-        let groups = [];
-        docSnapshot.forEach(group =>
-          groups.push({ ...group.data(), uid: group.id })
-        );
-        this.setState({ groups: groups });
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  getUserGroups() {
-    const db = firebase.firestore();
-    let userDoc = db.collection("users").doc(this.props.store.user.spotifyId);
-    let storeUser = this.props.store.user;
-    let setUser = this.props.setUser;
-
-    userDoc
-      .get()
-      .then(function(doc) {
-        if (doc.exists) {
-          let data = doc.data();
-
-          let userGroup = {
-            groups: data.groups
-          };
-
-          let user = {
-            ...userGroup,
-            ...storeUser
-          };
-
-          setUser(user);
-        } else {
-          console.log("No such document!");
-        }
-      })
-      .catch(function(error) {
-        console.log("Error getting document:", error);
+        setGroups(retrievedGroups);
+        return () => unsubscribe();
       });
+  }, []);
+  return groups;
+}
+
+function Banner(props) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [newGroupDialog, setNewGroupDialog] = useState(false);
+  const groups = useGroups();
+
+  const requestLogout = useCallback(() => {
+    logout();
+  }, []);
+
+  function openUserSettings() {
+    setModalOpen(true);
   }
 
-  createGroupItem(group) {
-    if (group !== undefined) {
-      return (
-        <ListItem key={uuid()} button={true} onClick={() => {}}>
-          <ListItemText
-            disableTypography
-            primary={
-              <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                {group.value}
-              </Typography>
-            }
-          />
-        </ListItem>
-      );
-    }
+  function closeUserSettings() {
+    setModalOpen(false);
   }
 
-  openUserSettings = user => {
-    this.setState({ modalOpen: true });
-  };
+  function showAddNewGroup() {
+    setNewGroupDialog(!newGroupDialog);
+  }
 
-  closeUserSettings = user => {
-    this.setState({ modalOpen: false });
-  };
+  function handleAddNewGroup() {
+    // addGroup(this.state.newGroupName);
+    setNewGroupDialog(!newGroupDialog);
+  }
 
-  showAddNewGroup = () => {
-    this.setState({ newGroupDialog: !this.state.newGroupDialog });
-  };
-
-  handleAddNewGroup = () => {
-    addGroup(this.state.newGroupName);
-    this.setState({ newGroupDialog: !this.state.newGroupDialog });
-  };
-
-  render() {
-    return (
-      <div style={{ display: "flex", flexGrow: 1 }}>
-        <div style={{ flexDirection: "column" }}>
-          <img
-            src={bannerLogo}
-            alt=""
-            height="80"
-            width="62"
-            style={{ position: "absolute", left: "2vw" }}
-          />
-
-          <MuiThemeProvider>
-            <div
-              style={{
-                display: "flex",
-                position: "absolute",
-                flexGrow: 1,
-                right: "5vw"
-              }}
-            >
-              {this.props?.store?.user && (
-                <Fab
-                  color="primary"
-                  aria-label="add"
-                  style={{ outline: "none", background: "#091740" }}
-                >
-                  {this.props.store.user.image !== undefined ? (
-                    <Avatar
-                      alt={`${this.props.store.user.displayName}`}
-                      src={`${this.props.store.user.image}`}
-                      style={{ height: "60px", width: "60px" }}
-                      onClick={() => {
-                        this.openUserSettings(this.props.store.user);
-                      }}
-                    />
-                  ) : (
-                    <PersonIcon
-                      alt={`${this.props.store.user.displayName}`}
-                      style={{ height: "60px", width: "60px" }}
-                      onClick={() => {
-                        this.openUserSettings(this.props.store.user);
-                      }}
-                    />
-                  )}
-                </Fab>
-              )}
-            </div>
-          </MuiThemeProvider>
-        </div>
-
-        <div
+  return (
+    <div>
+      <div>
+        <img
+          src={bannerLogo}
+          alt=""
+          height="80"
+          width="62"
+          style={{ position: "absolute", left: "2vw" }}
+        />
+      </div>
+      <div
+        onClick={requestLogout}
+        style={{
+          position: "absolute",
+          right: "2vw",
+          cursor: "pointer",
+          width: "10vw"
+        }}
+      >
+        <Typography
           style={{
-            display: "flex",
-            justifyContent: "center"
+            marginRight: "10px",
+            color: "#e54750",
+            fontFamily: "AntikorMonoLightItalic"
           }}
         >
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              outline: "none"
-            }}
-            open={this.state.modalOpen}
-            onClose={this.closeUserSettings}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500
-            }}
-          >
-            <Fade in={this.state.modalOpen}>
-              <div
-                style={{
-                  height: "80vh",
-                  width: "60vw",
-                  backgroundColor: "#091740",
-                  display: "flex",
-                  flexDirection: "column",
-                  borderRadius: 10,
-                  outline: "none"
-                }}
-              >
-                <div
-                  id="transition-modal-title"
-                  style={{
-                    display: "flex",
-                    marginTop: "20",
-                    color: "#efefef",
-                    justifyContent: "center",
-                    fontSize: 30
-                  }}
-                >
-                  Settings
-                </div>
-
-                {this.props.store && (
-                  <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignSelf: "center",
-                        color: "#efefef",
-                        marginTop: "20",
-                        fontSize: 20
-                      }}
-                    >
-                      <label>
-                        Your Group:
-                        <List>
-                          {this.props.store.user &&
-                            (this.props.store.user.groups === undefined
-                              ? this.getUserGroups()
-                              : this.createGroupItem(
-                                  this.props.store.user.groups
-                                ))}
-                        </List>
-                      </label>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center"
-                      }}
-                    >
-                      <ReactSearchBox
-                        placeholder="search for a group to join"
-                        data={this.state.groups}
-                        onSelect={group => {
-                          let userGroup = {
-                            groups: group
-                          };
-
-                          let user = {
-                            ...this.props.store.user,
-                            ...userGroup
-                          };
-
-                          this.props.setUser(user);
-                          uploadUser(
-                            this.props.store.currentSong,
-                            this.props.store.user,
-                            this.props.store.coords,
-                            group
-                          );
-                        }}
-                        onFocus={() => {}}
-                        fuseConfigs={{
-                          threshold: 0.05
-                        }}
-                        value=""
-                      />
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginTop: "2vh"
-                      }}
-                    >
-                      {!this.state.newGroupDialog && (
-                        <Button
-                          variant="contained"
-                          color="default"
-                          title="Add New Group"
-                          onClick={this.showAddNewGroup}
-                        >
-                          Add New Group
-                        </Button>
-                      )}
-
-                      {this.state.newGroupDialog && (
-                        <div>
-                          <form>
-                            <label style={{ color: "#efefef" }}>
-                              <input
-                                type="text"
-                                placeholder="new group name"
-                                name="name"
-                                onChange={event =>
-                                  this.setState({
-                                    newGroupName: event.target.value
-                                  })
-                                }
-                              />
-                            </label>
-                            <input
-                              type="submit"
-                              value="Add"
-                              onClick={this.handleAddNewGroup}
-                            />
-                            <input
-                              type="submit"
-                              value="Cancel"
-                              onClick={this.showAddNewGroup}
-                            />
-                          </form>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Fade>
-          </Modal>
-        </div>
+          Logout
+        </Typography>
+        <LogoutIcon />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default withStyles(styles)(Banner);

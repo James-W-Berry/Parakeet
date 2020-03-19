@@ -42,6 +42,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "spotify-web-api-js": "^1.2.0",
+    "use-position": "0.0.6",
     "uuid": "^3.4.0"
   },
   "scripts": {

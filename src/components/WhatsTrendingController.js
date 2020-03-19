@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import firebase from "../firebase";
-import trendingPic from "../assets/trending_pic.png";
 import trending from "../assets/trending.png";
 import TrendingList from "./TrendingList";
 import { FormControl, Select } from "@material-ui/core";
@@ -98,10 +97,7 @@ class WhatsTrendingController extends Component {
           style={{
             height: "80%",
             width: "20%",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-input",
-            backgroundSize: "cover",
-            backgroundImage: `url(${trendingPic})`,
+            backgroundColor: "#37e0b6",
             position: "absolute",
             display: "flex",
             flexDirection: "row",
@@ -114,24 +110,23 @@ class WhatsTrendingController extends Component {
             borderRadius: "30px"
           }}
         >
-          <div style={{ position: "absolute", top: "20%" }}>Top Hits</div>
-          <img
-            src={trending}
-            alt=""
-            height="54"
-            width="43"
-            style={{ position: "absolute", top: "44%" }}
-          />
-
           <div
             style={{
-              position: "absolute",
-              fontSize: 30,
-              height: "10%",
-              bottom: "-10%"
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              fontFamily: "AntikorMonoLightItalic"
             }}
           >
-            Trending now near you
+            Top Hits
+            <img
+              src={trending}
+              alt=""
+              height="54"
+              width="43"
+              // style={{ position: "absolute", top: "44%" }}
+            />
           </div>
 
           <div

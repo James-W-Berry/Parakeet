@@ -7,8 +7,6 @@ import Avatar from "@material-ui/core/Avatar";
 import audio_wave from "../assets/audio_wave.png";
 import uuid from "react-uuid";
 import { Typography } from "@material-ui/core";
-import { connect } from "react-redux";
-import { setSelectedSong } from "../actions/actions";
 
 class TrendingList extends Component {
   createSongItem(song) {
@@ -22,7 +20,7 @@ class TrendingList extends Component {
           }}
         >
           <ListItemAvatar>
-            <Avatar style={{ backgroundColor: "#091740" }}>
+            <Avatar style={{ backgroundColor: "#37e0b6" }}>
               <img src={audio_wave} alt="" />
             </Avatar>
           </ListItemAvatar>

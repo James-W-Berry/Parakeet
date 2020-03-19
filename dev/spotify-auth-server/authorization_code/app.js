@@ -102,6 +102,7 @@ app.get("/callback", function(req, res) {
 
     request.post(authOptions, function(error, response, body) {
       if (!error && response.statusCode === 200) {
+        console.log(body);
         var access_token = body.access_token,
           refresh_token = body.refresh_token;
 
@@ -157,9 +158,11 @@ app.post("/refresh_token", function(req, res) {
   request.post(authOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       var access_token = body.access_token;
+      console.log(body);
       var expires_in = body.expires_in;
       res.send({
         access_token: access_token,
+        refresh_token: refresh_token,
         expires_in: expires_in
       });
     }

@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { makeStyles } from "@material-ui/core";
 import Main from "./components/Main";
 import firebase from "./firebase";
 import "firebase/auth";
@@ -13,30 +11,6 @@ import ForgottenPassword from "./components/ForgottenPassword";
 import SpotifyLogin from "./components/SpotifyLogin";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import posed, { PoseGroup } from "react-pose";
-
-const useStyles = makeStyles({
-  drawerPaper: {
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    color: "#191919",
-    width: "220px"
-  },
-  paperAnchorDockedLeft: {
-    borderRight: "1px",
-    borderLeft: "0px",
-    borderTop: "0px",
-    borderBottom: "0px",
-    borderRightColor: "#E7E5DF40",
-    borderStyle: "solid"
-  },
-  divider: {
-    backgroundColor: "#191919",
-    width: "90%",
-    display: "flex",
-    alignSelf: "center"
-  }
-});
 
 const AuthFeature = posed.div({
   enter: { opacity: 1 },
@@ -61,14 +35,8 @@ function onAuthStateChange(callback) {
   });
 }
 
-function logout() {
-  firebase.auth().signOut();
-}
-
 function App() {
   const [user, setUser] = useState({ loggedIn: false, isLoading: true });
-
-  const classes = useStyles();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChange(setUser);
@@ -102,7 +70,7 @@ function App() {
           <Feature id="content" key={location.pathname}>
             <Switch location={location}>
               <Route path="/spotifylogin" component={SpotifyLogin} />
-              <Route path="/home" component={Main} />
+              <Route path="/pandemonium" component={Main} />
 
               <Redirect to="/spotifylogin" />
             </Switch>
@@ -111,10 +79,6 @@ function App() {
       )}
     />
   );
-
-  const requestLogout = useCallback(() => {
-    logout();
-  }, []);
 
   if (user.isLoading) {
     return (

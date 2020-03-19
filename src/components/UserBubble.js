@@ -9,7 +9,7 @@ import "firebase/auth";
 
 var Marquee = require("react-marquee");
 
-function uploadCurrentlyListeningTo(currentlyListeningTo) {
+function uploadSelectedSong(selectedSong) {
   const userId = firebase.auth().currentUser.uid;
   const docRef = firebase
     .firestore()
@@ -18,12 +18,12 @@ function uploadCurrentlyListeningTo(currentlyListeningTo) {
   return docRef
     .set(
       {
-        currentlyListeningTo: currentlyListeningTo
+        selectedSong: selectedSong
       },
       { merge: true }
     )
     .then(function() {
-      console.log("successfully updated currently listening to");
+      console.log("successfully updated selected song");
     })
     .catch(function(error) {
       console.log(error);
@@ -33,6 +33,7 @@ function uploadCurrentlyListeningTo(currentlyListeningTo) {
 function UserBubble(nearbyUser) {
   const [showBubble, setShowBubble] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [parakeetImage, setParakeetImage] = useState();
   const [bubbleLocation, setBubbleLocation] = useState({
     x: `${10 + Math.random() * 80}vw`,
     y: `${20 + Math.random() * 60}vh`,
@@ -43,6 +44,13 @@ function UserBubble(nearbyUser) {
     opacity: 0,
     transition: "all 2s ease"
   });
+
+  useEffect(() => {
+    const image = require("../assets/parakeet_" +
+      Math.floor(Math.random() * 6) +
+      ".jpg");
+    setParakeetImage(image);
+  }, []);
 
   useEffect(() => {
     setTimeout(mountStyle(), 10);
@@ -92,6 +100,8 @@ function UserBubble(nearbyUser) {
     setShowBubble(false);
   }
 
+  // const parakeetImage = require(`../assets/parakeet_'${}.jpg`);
+
   return (
     <div
       style={style}
@@ -107,22 +117,24 @@ function UserBubble(nearbyUser) {
               fontSize: "16"
             }}
           >
-            <Fab
-              color="primary"
-              aria-label="add"
-              style={{ outline: "none", background: "#ee0979" }}
-            >
-              <Avatar
-                alt={nearbyUser.displayName}
-                src={nearbyUser.listenerImage}
-                style={{ height: "60px", width: "60px" }}
-              />
+            <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
+              {nearbyUser.user.profilePic ? (
+                <Avatar
+                  alt={nearbyUser.user.displayName}
+                  src={nearbyUser.user.profilePic}
+                  style={{ height: "60px", width: "60px" }}
+                />
+              ) : (
+                <Avatar
+                  alt={nearbyUser.user.displayName}
+                  src={parakeetImage}
+                  style={{ height: "60px", width: "60px" }}
+                />
+              )}
             </Fab>
             <div
               onClick={() => {
-                uploadCurrentlyListeningTo(
-                  nearbyUser.user.currentlyListeningTo
-                );
+                uploadSelectedSong(nearbyUser.user.currentlyListeningTo);
               }}
             >
               <div
@@ -137,7 +149,7 @@ function UserBubble(nearbyUser) {
                 }}
               >
                 <Marquee
-                  text={nearbyUser.user.currentlyListeningTo.songTitle}
+                  text={nearbyUser.user.currentlyListeningTo.name}
                   hoverToStop={false}
                   loop={false}
                 />
@@ -155,7 +167,7 @@ function UserBubble(nearbyUser) {
                 }}
               >
                 <Marquee
-                  text={nearbyUser.user.currentlyListeningTo.artist}
+                  text={nearbyUser.user.currentlyListeningTo.artists}
                   hoverToStop={false}
                   loop={false}
                 />
@@ -172,16 +184,20 @@ function UserBubble(nearbyUser) {
               fontSize: "16"
             }}
           >
-            <Fab
-              color="primary"
-              aria-label="add"
-              style={{ outline: "none", background: "#091740" }}
-            >
-              <Avatar
-                alt={nearbyUser.displayName}
-                src={nearbyUser.profilePic}
-                style={{ height: "60px", width: "60px" }}
-              />
+            <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
+              {nearbyUser.user.profilePic ? (
+                <Avatar
+                  alt={nearbyUser.user.displayName}
+                  src={nearbyUser.user.profilePic}
+                  style={{ height: "60px", width: "60px" }}
+                />
+              ) : (
+                <Avatar
+                  alt={nearbyUser.user.displayName}
+                  src={parakeetImage}
+                  style={{ height: "60px", width: "60px" }}
+                />
+              )}
             </Fab>
           </div>
         </MuiThemeProvider>

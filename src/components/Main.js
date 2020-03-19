@@ -6,6 +6,8 @@ import Flexbox from "flexbox-react";
 import UserBubble from "./UserBubble";
 import SpotifyPlayerUI from "./SpotifyPlayerUI";
 import firebase from "../firebase";
+import { usePosition } from "use-position";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 function useNearbyPeople(user) {
   const [nearbyPeople, setNearbyPeople] = useState([]);
@@ -47,13 +49,48 @@ function useUser() {
   return user;
 }
 
+function uploadPosition(position) {
+  if (position.latitude) {
+    const userId = firebase.auth().currentUser.uid;
+    const docRef = firebase
+      .firestore()
+      .collection("users")
+      .doc(userId);
+
+    return docRef
+      .set(
+        {
+          location: position
+        },
+        { merge: true }
+      )
+      .then(function() {
+        console.log("successfully updated location");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+}
+
 function Main() {
   const user = useUser();
   const nearbyPeople = useNearbyPeople(user);
-
+  const { latitude, longitude, timestamp, accuracy, error } = usePosition(true);
   const [mapHeight, setMapHeight] = useState("20vh");
   const [showUserBubbles, setShowBubblesVisible] = useState(false);
   const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
+
+  useEffect(() => {
+    let location = {
+      latitude: latitude,
+      longitude: longitude,
+      timestamp: timestamp,
+      accuracy: accuracy,
+      error: error
+    };
+    uploadPosition(location);
+  }, [latitude, longitude, timestamp, accuracy, error]);
 
   function toggleMapHeight() {
     if (mapHeight === "20vh") {
@@ -80,12 +117,12 @@ function Main() {
       flexDirection="column"
       minHeight="100vh"
       style={{
-        background: "linear-gradient(180deg, #ee0979 0%, #ff6a00 100%)",
-        color: "#efefef"
+        background: "#252a2e",
+        color: "#f7f7f5"
       }}
     >
       <Flexbox element="header" height="60px" marginTop="20px">
-        <Banner />
+        <Banner user={user} />
       </Flexbox>
 
       <Flexbox flexGrow={1} alignSelf="center">
@@ -99,7 +136,7 @@ function Main() {
             left: 0
           }}
         >
-          {/* <WhatsTrendingController /> */}
+          <WhatsTrendingController />
         </div>
       </Flexbox>
 
@@ -121,7 +158,7 @@ function Main() {
             height: mapHeight,
             minHeight: "20vh",
             borderTopLeftRadius: "120px",
-            background: "rgba(0,0,0,1)",
+            background: "#e54750",
             transition: "height 0.3s ease-in-out"
           }}
         >
@@ -134,10 +171,10 @@ function Main() {
               alignSelf: "baseline",
               marginTop: "2vh",
               fontSize: 24,
-              color: "#ee0979"
+              color: "#252a2e"
             }}
           >
-            {user?.groups?.value}
+            {user?.group}
           </div>
           {showUserBubbles &&
             nearbyPeople &&
@@ -153,7 +190,22 @@ function Main() {
             height: "20vh"
           }}
         >
-          {/* <SpotifyPlayerUI /> */}
+          {user.tokens ? (
+            <SpotifyPlayerUI
+              tokens={user.tokens}
+              selectedSong={user.selectedSong}
+            />
+          ) : (
+            <div
+              style={{
+                position: "absolute",
+                bottom: "8vh",
+                left: "48vw"
+              }}
+            >
+              <ScaleLoader color={"#252a2e"} />
+            </div>
+          )}
         </div>
       </Flexbox>
     </Flexbox>
