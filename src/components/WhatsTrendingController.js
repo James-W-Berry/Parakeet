@@ -1,173 +1,160 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import trending from "../assets/trending.png";
 import TrendingList from "./TrendingList";
 import { FormControl, Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import ScaleLoader from "react-spinners/ScaleLoader";
+import { makeStyles } from "@material-ui/core/styles";
 
-export function orderList(songList, ts) {
-  const tempList = songList;
-  var timerange = ts;
-  var curTime = Date.now();
-  var startTime = curTime - timerange;
-  var orderedList = [];
-
-  for (var i = 0; i < tempList.length; i++) {
-    var filteredList = orderedList.filter(item => {
-      return item.uri === tempList[i].uri;
-    });
-    if (filteredList.length === 0) {
-      orderedList.push({
-        playcount: 1,
-        songTitle: tempList[i].songTitle,
-        artist: tempList[i].artist,
-        album: tempList[i].album,
-        uri: tempList[i].uri,
-        timestamp: tempList[i].timestamp
-      });
-    } else {
-      orderedList[orderedList.indexOf(filteredList[0])].playcount++;
+const useStyles = makeStyles({
+  selector: {
+    marginTop: "20px",
+    "& label ": {
+      color: "#f7f7f5",
+      fontFamily: "AntikorMonoLightItalic"
+    },
+    "& label.Mui-focused": {
+      fontFamily: "AntikorMonoLightItalic",
+      color: "#f7f7f580"
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "#f7f7f5"
     }
   }
+});
 
-  let swapped;
-  do {
-    swapped = false;
-    for (let i = 0; i < orderedList.length - 1; i++) {
-      if (orderedList[i].playcount < orderedList[i + 1].playcount) {
-        var tmp = orderedList[i];
-        orderedList[i] = orderedList[i + 1];
-        orderedList[i + 1] = tmp;
-        swapped = true;
-      }
-    }
-  } while (swapped);
+function usePastSongs(trendingRange) {
+  const [pastSongs, setPastSongs] = useState([]);
 
-  return orderedList;
-}
+  useEffect(() => {
+    const today = new Date();
+    const range = new Date(today.getTime() - trendingRange);
 
-class WhatsTrendingController extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      songList: [],
-      timescale: 604800000
-    };
-  }
+    const unsubscribe = firebase
+      .firestore()
+      .collection("pastSongs")
+      .where("listenDate", ">=", range)
+      .limit(5)
+      .onSnapshot(snapshot => {
+        const retrievedSongs = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
 
-  handleTimescaleChange = event => {
-    this.setState({
-      timescale: event.target.value
-    });
-  };
-
-  componentWillMount() {
-    const db = firebase.firestore();
-    var curTime = Date.now();
-    var startTime = curTime - this.state.timescale;
-    let doc = db.collection("pastSongs");
-    doc.onSnapshot(
-      docSnapshot => {
-        let pastSongs = [];
-        docSnapshot.forEach(doc =>
-          pastSongs.push({ ...doc.data(), uid: doc.id })
+        let sortedRetrievedSongs = retrievedSongs.sort((a, b) =>
+          a.totalListens > b.totalListens ? 1 : -1
         );
 
-        const orderedList = orderList(pastSongs, this.state.timescale);
-        this.setState({ songList: orderedList });
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
+        setPastSongs(sortedRetrievedSongs);
+      });
+    return () => unsubscribe();
+  }, [trendingRange]);
 
-  render() {
-    const { songList } = this.state;
+  return pastSongs;
+}
 
-    return (
+function WhatsTrendingController(props) {
+  const [trendingRange, setTrendingRange] = useState(3600000);
+  const songList = usePastSongs(trendingRange);
+  const classes = useStyles();
+
+  const handleTrendingRangeChange = event => {
+    setTrendingRange(event.target.value);
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        width: "100%",
+        minHeight: "448px"
+      }}
+    >
       <div
         style={{
+          flex: 1,
+          height: "100%",
+          width: "100%",
           display: "flex",
-          flexDirection: "row"
+          alignItems: "center",
+          justifyContent: "center"
         }}
       >
         <div
           style={{
-            height: "80%",
-            width: "20%",
-            backgroundColor: "#37e0b6",
-            position: "absolute",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
             fontSize: 40,
-            left: "15vw",
-            textAlign: "start",
             border: "1px solid black",
-            borderRadius: "30px"
+            borderRadius: "30px",
+            display: "flex",
+            backgroundColor: "#37e0b6",
+            height: "75%",
+            width: "75%",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            fontFamily: "AntikorMonoLightItalic",
+            color: "#f7f7f5",
+            padding: "30px"
           }}
         >
+          {/* {props.group} */}
+          Top Hits
+          <img src={trending} alt="" height="54" width="43" />
+          <MuiThemeProvider>
+            <FormControl className={classes.selector}>
+              <Select
+                className={classes.selector}
+                value={trendingRange}
+                onChange={handleTrendingRangeChange}
+              >
+                <MenuItem value={3600000}>Past Hour</MenuItem>
+                <MenuItem value={86400000}>Past Day</MenuItem>
+                <MenuItem value={604800000}>Past Week</MenuItem>
+              </Select>
+            </FormControl>
+          </MuiThemeProvider>
+        </div>
+      </div>
+
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        {songList ? (
           <div
             style={{
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
+              flexDirection: "row",
               alignItems: "center",
-              fontFamily: "AntikorMonoLightItalic"
+              justifyContent: "center"
             }}
           >
-            Top Hits
-            <img
-              src={trending}
-              alt=""
-              height="54"
-              width="43"
-              // style={{ position: "absolute", top: "44%" }}
-            />
+            <TrendingList songList={songList} />
           </div>
-
+        ) : (
           <div
             style={{
-              position: "absolute",
-              fontSize: 30,
-              height: "10%",
-              bottom: "-25%"
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center"
             }}
           >
-            <MuiThemeProvider>
-              <FormControl>
-                <Select
-                  value={this.state.timescale}
-                  onChange={this.handleTimescaleChange}
-                  style={{ color: "#efefef" }}
-                >
-                  <MenuItem value={3600000}>Hour</MenuItem>
-                  <MenuItem value={86400000}>Day</MenuItem>
-                  <MenuItem value={604800000}>Week</MenuItem>
-                </Select>
-              </FormControl>
-            </MuiThemeProvider>
+            <ScaleLoader color={"#e54750"} />
           </div>
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            right: "25vw"
-          }}
-        >
-          <TrendingList orderedList={songList} />
-        </div>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default WhatsTrendingController;

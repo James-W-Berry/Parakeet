@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import bannerLogo from "../assets/bannerLogo.png";
+import bannerLogo from "../assets/parakeet-nomusic.png";
 import Fab from "@material-ui/core/Fab";
 import { Avatar, TextField } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -78,35 +78,22 @@ function Banner(props) {
   }
 
   return (
-    <div>
-      <div>
-        <img
-          src={bannerLogo}
-          alt=""
-          height="80"
-          width="62"
-          style={{ position: "absolute", left: "2vw" }}
-        />
-      </div>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        width: "5vw"
+      }}
+    >
       <div
         onClick={requestLogout}
         style={{
-          position: "absolute",
-          right: "2vw",
-          cursor: "pointer",
-          width: "10vw"
+          flex: 1,
+          alignItems: "center",
+          cursor: "pointer"
         }}
       >
-        <Typography
-          style={{
-            marginRight: "10px",
-            color: "#e54750",
-            fontFamily: "AntikorMonoLightItalic"
-          }}
-        >
-          Logout
-        </Typography>
-        <LogoutIcon />
+        <img src={bannerLogo} alt="" height="80" width="100" />
       </div>
     </div>
   );

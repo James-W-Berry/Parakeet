@@ -84,7 +84,16 @@ function SpotifyLogin() {
             flex: 1
           }}
         >
-          <div>
+          <div
+            style={{
+              height: "100vh",
+              width: "100vw",
+              background: "#252a2e",
+              alignSelf: "center",
+              display: "flex",
+              flex: 1
+            }}
+          >
             <ScaleLoader color={"#e54750"} />
             <Redirect to="/pandemonium" />
           </div>

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -7,16 +7,40 @@ import Avatar from "@material-ui/core/Avatar";
 import audio_wave from "../assets/audio_wave.png";
 import uuid from "react-uuid";
 import { Typography } from "@material-ui/core";
+import firebase from "../firebase";
+import "firebase/auth";
 
-class TrendingList extends Component {
-  createSongItem(song) {
+function uploadSelectedSong(selectedSong) {
+  const userId = firebase.auth().currentUser.uid;
+  const docRef = firebase
+    .firestore()
+    .collection("users")
+    .doc(userId);
+
+  return docRef
+    .set(
+      {
+        selectedSong: selectedSong
+      },
+      { merge: true }
+    )
+    .then(function() {
+      console.log("successfully updated selected song");
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
+
+function TrendingList(props) {
+  function createSongItem(song) {
     if (song !== undefined) {
       return (
         <ListItem
           key={uuid()}
           button={true}
           onClick={() => {
-            this.props.setSelectedSong(song.uri);
+            uploadSelectedSong(song.pastSong);
           }}
         >
           <ListItemAvatar>
@@ -27,13 +51,25 @@ class TrendingList extends Component {
           <ListItemText
             disableTypography
             primary={
-              <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                {song.songTitle}
+              <Typography
+                variant="h6"
+                style={{
+                  fontFamily: "AntikorMonoLightItalic",
+                  color: "#f7f7f5"
+                }}
+              >
+                {song.pastSong.name}
               </Typography>
             }
             secondary={
-              <Typography variant="body2" style={{ color: "#FFFFFF" }}>
-                {`${song.artist} • ${song.album}`}
+              <Typography
+                variant="body2"
+                style={{
+                  fontFamily: "AntikorMonoLightItalic",
+                  color: "#f7f7f5"
+                }}
+              >
+                {song.pastSong.artists}
               </Typography>
             }
           />
@@ -42,21 +78,7 @@ class TrendingList extends Component {
     }
   }
 
-  render() {
-    let abrevList = [];
-    if (this.props.orderedList !== undefined) {
-      if (this.props.orderedList.length > 5) {
-        for (var i = 0; i < this.props.orderedList.length && i <= 4; i++) {
-          abrevList.push(this.props.orderedList[i]);
-        }
-      } else {
-        abrevList = this.props.orderedList;
-      }
-      return <List>{abrevList.map(song => this.createSongItem(song))}</List>;
-    } else {
-      return null;
-    }
-  }
+  return <List>{props.songList.map(song => createSongItem(song))}</List>;
 }
 
 export default TrendingList;

@@ -64,7 +64,10 @@ function uploadSpotifyInfo(info) {
     });
 }
 
-function uploadCurrentlyListeningTo(currentlyListeningTo) {
+function uploadCurrentlyListeningTo(
+  currentlyListeningTo,
+  previouslyListeningTo
+) {
   const userId = firebase.auth().currentUser.uid;
   const docRef = firebase
     .firestore()
@@ -85,24 +88,29 @@ function uploadCurrentlyListeningTo(currentlyListeningTo) {
       console.log(error);
     });
 
-  const pastSongRef = firebase
-    .firestore()
-    .collection("pastSongs")
-    .doc();
+  if (previouslyListeningTo?.uri !== currentlyListeningTo?.uri) {
+    let now = new Date();
+    const pastSongRef = firebase
+      .firestore()
+      .collection("pastSongs")
+      .doc(currentlyListeningTo.uri);
 
-  pastSongRef
-    .set(
-      {
-        pastSong: currentlyListeningTo
-      },
-      { merge: true }
-    )
-    .then(function() {
-      console.log("successfully added song to past songs");
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+    pastSongRef
+      .set(
+        {
+          pastSong: currentlyListeningTo,
+          listenDate: now,
+          totalListens: firebase.firestore.FieldValue.increment(1)
+        },
+        { merge: true }
+      )
+      .then(function() {
+        console.log("successfully added song to past songs");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
 }
 
 function playSelectedSong(uri, tokens, playerInstance) {
@@ -121,90 +129,99 @@ function playSelectedSong(uri, tokens, playerInstance) {
 
 function SpotifyPlayerUI(props) {
   const [playerInstance, setPlayerInstance] = useState();
+  const [previouslySelectedSong, setPreviouslySelectedSong] = useState();
+  const [previousToken, setPreviousToken] = useState();
+  const [previouslyListeningTo, setPreviouslyListeningTo] = useState();
 
   useEffect(() => {
-    getSpotifyUserInfo(props.tokens);
-  }, [props.tokens]);
+    if (props.tokens?.access_token !== previousToken) {
+      setPreviousToken(props.tokens.access_token);
+      getSpotifyUserInfo(props.tokens);
+    }
+  }, [props.tokens, previousToken]);
 
   useEffect(() => {
-    if (props.selectedSong?.uri) {
+    if (props.selectedSong?.uri !== previouslySelectedSong) {
+      setPreviouslySelectedSong(props.selectedSong.uri);
       playSelectedSong(props.selectedSong.uri, props.tokens, playerInstance);
     }
-  }, [props.selectedSong, props.tokens, playerInstance]);
+  }, [
+    props.selectedSong,
+    props.tokens,
+    playerInstance,
+    previouslySelectedSong
+  ]);
 
   return (
     <div
       style={{
-        background: "#e54750",
-        height: "20vh",
-        textAlign: "center",
-        borderTopLeftRadius: "120px"
+        display: "flex",
+        direction: "row",
+        position: "absolute",
+        bottom: "5vh",
+        left: "10vw",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "80vw"
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          direction: "row",
-          position: "absolute",
-          top: "5vh",
-          left: "10vw",
-          justifyContent: "center",
-          width: "80vw"
+      <SpotifyWebPlayer
+        styles={{
+          bgColor: "#e54750",
+          trackNameColor: "#f7f7f5",
+          trackArtistColor: "#f7f7f5",
+          sliderTrackColor: "#f7f7f580",
+          sliderColor: "#f7f7f5",
+          color: "#f7f7f5",
+          loaderSize: "5vw",
+          magnifySliderOnHover: "true",
+          showSaveIcon: "true",
+          persistDeviceSelection: "true",
+          fontFamily: "AntikorMonoLightItalic"
         }}
-      >
-        <SpotifyWebPlayer
-          styles={{
-            bgColor: "#e54750",
-            trackNameColor: "#f7f7f5",
-            trackArtistColor: "#f7f7f5",
-            sliderTrackColor: "#f7f7f580",
-            sliderColor: "#f7f7f5",
-            color: "#f7f7f5",
-            loaderSize: "5vw",
-            magnifySliderOnHover: "true",
-            showSaveIcon: "true",
-            persistDeviceSelection: "true",
-            fontFamily: "AntikorMonoLightItalic"
-          }}
-          name="Parakeet"
-          token={props.tokens.access_token}
-          callback={state => {
-            if (state.track.uri !== "") {
-              let currentlyListeningTo = {
-                timestamp: Date.now().toString(),
-                ...state.track
-              };
-              uploadCurrentlyListeningTo(currentlyListeningTo);
-            }
+        name="Parakeet"
+        token={props.tokens.access_token}
+        callback={state => {
+          if (state.track.uri !== "") {
+            let currentlyListeningTo = {
+              timestamp: Date.now().toString(),
+              ...state.track
+            };
 
-            if (state.errorType === "authentication_error") {
-              console.log(state);
-              console.log("need to get refresh token");
-              setTimeout(function() {
-                window.location.replace(devLoginUrl);
-              }, 2000);
-            }
-            if (state.devices[0] !== undefined && state.isActive !== true) {
-              for (const device in state.devices) {
-                if (state.devices[device].name === "Parakeet") {
-                  setPlayerInstance(state.devices[device].id);
-                  fetch(`https://api.spotify.com/v1/me/player`, {
-                    body: JSON.stringify({
-                      device_ids: [state.devices[device].id],
-                      play: true
-                    }),
-                    headers: {
-                      Authorization: `Bearer ${props.tokens.access_token}`,
-                      "Content-Type": "application/json"
-                    },
-                    method: "PUT"
-                  });
-                }
+            uploadCurrentlyListeningTo(
+              currentlyListeningTo,
+              previouslyListeningTo
+            );
+            setPreviouslyListeningTo(currentlyListeningTo);
+          }
+
+          if (state.errorType === "authentication_error") {
+            console.log(state);
+            console.log("need to get refresh token");
+            setTimeout(function() {
+              window.location.replace(devLoginUrl);
+            }, 2000);
+          }
+          if (state.devices[0] !== undefined && state.isActive !== true) {
+            for (const device in state.devices) {
+              if (state.devices[device].name === "Parakeet") {
+                setPlayerInstance(state.devices[device].id);
+                fetch(`https://api.spotify.com/v1/me/player`, {
+                  body: JSON.stringify({
+                    device_ids: [state.devices[device].id],
+                    play: true
+                  }),
+                  headers: {
+                    Authorization: `Bearer ${props.tokens.access_token}`,
+                    "Content-Type": "application/json"
+                  },
+                  method: "PUT"
+                });
               }
             }
-          }}
-        />
-      </div>
+          }
+        }}
+      />
     </div>
   );
 }

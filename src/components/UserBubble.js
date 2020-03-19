@@ -100,8 +100,6 @@ function UserBubble(nearbyUser) {
     setShowBubble(false);
   }
 
-  // const parakeetImage = require(`../assets/parakeet_'${}.jpg`);
-
   return (
     <div
       style={style}
@@ -144,8 +142,9 @@ function UserBubble(nearbyUser) {
                   position: "absolute",
                   left: "65px",
                   top: "0.25vh",
-                  fontWeight: "bold",
-                  fontSize: "16"
+                  fontSize: "16",
+                  fontFamily: "AntikorMonoLightItalic",
+                  color: "#f7f7f5"
                 }}
               >
                 <Marquee
@@ -163,7 +162,9 @@ function UserBubble(nearbyUser) {
                   left: "65px",
                   top: "2.25vh",
                   fontSize: "16",
-                  maxWidth: "20vw"
+                  maxWidth: "20vw",
+                  fontFamily: "AntikorMonoLightItalic",
+                  color: "#f7f7f5"
                 }}
               >
                 <Marquee

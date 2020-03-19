@@ -1,64 +1,62 @@
-import React, { Component, Fragment } from "react";
+import React, { useState } from "react";
 import Fab from "@material-ui/core/Fab";
 import pull_up from "../assets/pull_up.png";
 import pull_down from "../assets/pull_down.png";
-import local_map from "../assets/local_map.png";
 
-class LocalMapButton extends Component {
-  state = { open: false };
+function LocalMapButton(props) {
+  const [open, setOpen] = useState(false);
 
-  toggle = () => {
-    this.setState(prevState => ({ open: !prevState.open }));
+  const toggle = () => {
+    setOpen(!open);
   };
 
-  render() {
-    return (
-      <Fragment>
-        <Fab
-          style={{
-            position: "absolute",
-            justifyContent: "center",
-            top: -60,
-            outline: "none",
-            width: "50px",
-            height: "50px",
-            background: "rgba(0,0,0,0.2)"
-          }}
-          aria-label="open map"
-          onClick={() => {
-            this.toggle();
-            this.props.slideCallback();
-          }}
-        >
-          {this.state.open ? (
-            <img
-              style={{
-                position: "absolute",
-                justifyContent: "center",
-                outline: "none",
-                width: "74px",
-                height: "74px"
-              }}
-              src={pull_down}
-              alt="map"
-            />
-          ) : (
-            <img
-              style={{
-                position: "absolute",
-                justifyContent: "center",
-                outline: "none",
-                width: "74px",
-                height: "74px"
-              }}
-              src={pull_up}
-              alt="map"
-            />
-          )}
-        </Fab>
-      </Fragment>
-    );
-  }
+  return (
+    <div
+      style={{
+        alignSelf: "top",
+        marginTop: "-30px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+      }}
+    >
+      <Fab
+        style={{
+          outline: "none",
+          background: "#252a2e"
+        }}
+        aria-label="open map"
+        onClick={() => {
+          toggle();
+          props.slideCallback();
+        }}
+      >
+        {open ? (
+          <img
+            style={{
+              color: "#f7f7f5",
+              outline: "none",
+              width: "74px",
+              height: "74px"
+            }}
+            src={pull_down}
+            alt="map"
+          />
+        ) : (
+          <img
+            style={{
+              color: "#f7f7f5",
+              outline: "none",
+              width: "74px",
+              height: "74px"
+            }}
+            src={pull_up}
+            alt="map"
+          />
+        )}
+      </Fab>
+    </div>
+  );
 }
 
 export default LocalMapButton;

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import WhatsTrendingController from "./WhatsTrendingController";
 import Banner from "./Banner";
 import LocalMapButton from "./LocalMapButton";
-import Flexbox from "flexbox-react";
 import UserBubble from "./UserBubble";
 import SpotifyPlayerUI from "./SpotifyPlayerUI";
 import firebase from "../firebase";
@@ -94,7 +93,7 @@ function Main() {
 
   function toggleMapHeight() {
     if (mapHeight === "20vh") {
-      setMapHeight("90vh");
+      setMapHeight("85vh");
       setShowBubblesVisible(true);
       setUserBubblesOpacity(1);
     } else {
@@ -113,102 +112,97 @@ function Main() {
   }
 
   return (
-    <Flexbox
-      flexDirection="column"
-      minHeight="100vh"
+    <div
       style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: "100vw",
         background: "#252a2e",
         color: "#f7f7f5"
       }}
     >
-      <Flexbox element="header" height="60px" marginTop="20px">
+      <div id="header" style={{ height: "75px" }}>
         <Banner user={user} />
-      </Flexbox>
+      </div>
 
-      <Flexbox flexGrow={1} alignSelf="center">
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            top: "20vh",
-            width: "100vw",
-            height: "40vh",
-            left: 0
-          }}
-        >
-          <WhatsTrendingController />
-        </div>
-      </Flexbox>
+      <div
+        id="body"
+        style={{
+          display: "flex",
+          flex: 2
+        }}
+      >
+        <WhatsTrendingController group={user.group} />
+      </div>
 
-      <Flexbox
-        flexGrow={1}
-        alignSelf="center"
-        element="footer"
-        flexDirection="column"
+      <div
+        id="footer"
+        style={{
+          flex: 1,
+          bottom: 0,
+          left: 0,
+          width: "100vw",
+          height: "20vh"
+        }}
       >
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            flexDirection: "column",
             position: "absolute",
-            bottom: "0vh",
+            bottom: 0,
             left: 0,
             width: "100vw",
             height: mapHeight,
-            minHeight: "20vh",
             borderTopLeftRadius: "120px",
             background: "#e54750",
-            transition: "height 0.3s ease-in-out"
+            transition: "height 0.3s ease-in-out",
+            minHeight: "100px"
           }}
         >
-          <LocalMapButton slideCallback={toggleMapHeight} />
+          <LocalMapButton slideCallback={() => toggleMapHeight()} />
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignSelf: "baseline",
-              marginTop: "2vh",
-              fontSize: 24,
-              color: "#252a2e"
-            }}
-          >
-            {user?.group}
-          </div>
+          {userBubblesOpacity ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "2vh",
+                fontSize: 24,
+                fontFamily: "AntikorMonoLightItalic",
+                color: "#252a2e"
+              }}
+            >
+              {user?.group}
+            </div>
+          ) : (
+            <div />
+          )}
+
           {showUserBubbles &&
             nearbyPeople &&
             nearbyPeople.map(user => createNearbyUser(user))}
         </div>
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100vw",
-            height: "20vh"
-          }}
-        >
-          {user.tokens ? (
-            <SpotifyPlayerUI
-              tokens={user.tokens}
-              selectedSong={user.selectedSong}
-            />
-          ) : (
-            <div
-              style={{
-                position: "absolute",
-                bottom: "8vh",
-                left: "48vw"
-              }}
-            >
-              <ScaleLoader color={"#252a2e"} />
-            </div>
-          )}
-        </div>
-      </Flexbox>
-    </Flexbox>
+        {user.tokens ? (
+          <SpotifyPlayerUI
+            tokens={user.tokens}
+            selectedSong={user.selectedSong}
+          />
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "8vh",
+              left: "48vw"
+            }}
+          >
+            <ScaleLoader color={"#252a2e"} />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
