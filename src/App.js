@@ -71,7 +71,6 @@ function App() {
             <Switch location={location}>
               <Route path="/spotifylogin" component={SpotifyLogin} />
               <Route path="/pandemonium" component={Main} />
-
               <Redirect to="/spotifylogin" />
             </Switch>
           </Feature>

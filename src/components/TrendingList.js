@@ -56,7 +56,8 @@ function TrendingList(props) {
                 variant="h6"
                 style={{
                   fontFamily: "AntikorMonoLightItalic",
-                  color: "#f7f7f5"
+                  color: "#f7f7f5",
+                  fontSize: "100%"
                 }}
               >
                 {song.pastSong.name}
@@ -66,6 +67,7 @@ function TrendingList(props) {
               <Typography
                 variant="body2"
                 style={{
+                  fontSize: "100%",
                   fontFamily: "AntikorMonoLightItalic",
                   color: "#f7f7f5"
                 }}
@@ -81,7 +83,7 @@ function TrendingList(props) {
 
   return (
     <div style={{ height: "50%", width: "100%" }}>
-      <Scrollbar style={{ height: "60vh", width: "40vw" }}>
+      <Scrollbar style={{ height: "60vh", width: "50vw" }}>
         <List>{props.songList.map(song => createSongItem(song))}</List>
       </Scrollbar>
     </div>

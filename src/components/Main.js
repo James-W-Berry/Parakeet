@@ -276,7 +276,7 @@ function Main() {
                   justifyContent: "center",
                   width: "50vw",
                   fontSize: 24,
-                  fontFamily: "AntikorMonoLightItalic",
+                  fontFamily: "AntikorDisplayLight",
                   color: "#252a2e"
                 }}
               >
@@ -313,8 +313,8 @@ function Main() {
           <div
             style={{
               position: "absolute",
-              bottom: "8vh",
-              left: "48vw"
+              bottom: "7vh",
+              left: "47%"
             }}
           >
             <ScaleLoader color={"#252a2e"} />

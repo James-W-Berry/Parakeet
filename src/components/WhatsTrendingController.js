@@ -109,13 +109,33 @@ function WhatsTrendingController(props) {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            fontFamily: "AntikorMonoLightItalic",
             color: "#f7f7f5",
             padding: "30px"
           }}
         >
-          <span style={{ color: "#252a2e" }}> {props.groupName}</span>
-          <span> Top Hits</span>
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "100%",
+              color: "#252a2e",
+              fontFamily: "AntikorDisplayLight"
+            }}
+          >
+            {props.groupName}
+          </span>
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "100%",
+              fontFamily: "AntikorMonoLightItalic"
+            }}
+          >
+            Top Hits
+          </span>
           <img src={trending} alt="" height="54" width="43" />
           <MuiThemeProvider>
             <FormControl className={classes.selector}>

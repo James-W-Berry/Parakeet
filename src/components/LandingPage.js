@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   },
   title: {
     fontFamily: "AntikorDisplayLight",
-    fontSize: "120px",
+    fontSize: "15vw",
     padding: "0 30px",
     color: "#f7f7f5"
   }
@@ -48,8 +48,9 @@ function LandingPage() {
         width: "100vw",
         background: "#252a2e",
         alignSelf: "center",
+        justifyContent: "center",
         display: "flex",
-        flex: 1
+        flexDirection: "column"
       }}
     >
       <div
@@ -71,8 +72,23 @@ function LandingPage() {
         >
           <Lottie options={defaultOptions} height={150} width={100} />
         </div>
-        <img src={logo} alt="" height="300" width="300" />
-        <Typography className={classes.title}>Parakeet</Typography>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            <img src={logo} alt="" height="300" width="300" />
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <Typography className={classes.title}>Parakeet</Typography>
+          </div>
+        </div>
 
         <div
           style={{

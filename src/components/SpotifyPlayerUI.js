@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./SpotifyPlayerUI.css";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import firebase from "../firebase";
 
