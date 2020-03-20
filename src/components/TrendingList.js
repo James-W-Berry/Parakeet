@@ -9,6 +9,7 @@ import uuid from "react-uuid";
 import { Typography } from "@material-ui/core";
 import firebase from "../firebase";
 import "firebase/auth";
+import Scrollbar from "react-scrollbars-custom";
 
 function uploadSelectedSong(selectedSong) {
   const userId = firebase.auth().currentUser.uid;
@@ -78,7 +79,13 @@ function TrendingList(props) {
     }
   }
 
-  return <List>{props.songList.map(song => createSongItem(song))}</List>;
+  return (
+    <div style={{ height: "50%", width: "100%" }}>
+      <Scrollbar style={{ height: "60vh", width: "40vw" }}>
+        <List>{props.songList.map(song => createSongItem(song))}</List>
+      </Scrollbar>
+    </div>
+  );
 }
 
 export default TrendingList;

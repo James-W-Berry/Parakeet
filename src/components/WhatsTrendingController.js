@@ -10,18 +10,27 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   selector: {
+    color: "#252a2e",
+    fontFamily: "AntikorMonoLightItalic",
+    menuStyle: {
+      border: "1px solid black",
+      borderRadius: "5%",
+      backgroundColor: "lightgrey"
+    },
     marginTop: "20px",
-    "& label ": {
-      color: "#f7f7f5",
-      fontFamily: "AntikorMonoLightItalic"
-    },
-    "& label.Mui-focused": {
-      fontFamily: "AntikorMonoLightItalic",
-      color: "#f7f7f580"
-    },
     "& .MuiInput-underline:after": {
       borderBottomColor: "#f7f7f5"
     }
+  },
+  dropdownStyle: {
+    root: {
+      color: "#252a2e",
+      fontFamily: "AntikorMonoLightItalic"
+    },
+    fontFamily: "AntikorMonoLightItalic",
+    border: "1px solid black",
+    borderRadius: "5%",
+    backgroundColor: "#37e0b6"
   }
 });
 
@@ -106,13 +115,14 @@ function WhatsTrendingController(props) {
             padding: "30px"
           }}
         >
-          <span style={{ color: "#12355b" }}> {props.groupName}</span>
+          <span style={{ color: "#252a2e" }}> {props.groupName}</span>
           <span> Top Hits</span>
           <img src={trending} alt="" height="54" width="43" />
           <MuiThemeProvider>
             <FormControl className={classes.selector}>
               <Select
                 className={classes.selector}
+                MenuProps={{ classes: { paper: classes.dropdownStyle } }}
                 value={trendingRange}
                 onChange={handleTrendingRangeChange}
               >
