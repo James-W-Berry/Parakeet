@@ -1,81 +1,47 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import bannerLogo from "../assets/parakeet-nomusic.png";
-import Fab from "@material-ui/core/Fab";
-import { Avatar, TextField } from "material-ui";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import PersonIcon from "@material-ui/icons/Person";
-import { connect } from "react-redux";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import { setUser } from "../actions/actions";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import uuid from "react-uuid";
-import { Typography, Button } from "@material-ui/core";
-import firebase from "../firebase";
-import ReactSearchBox from "react-search-box";
-import { withStyles } from "@material-ui/core/styles";
-import "firebase/auth";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
+import { Typography } from "@material-ui/core";
+import firebase from "../firebase";
+import "firebase/auth";
 
-const styles = {
-  root: {
-    background: "black"
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
-  input: {
-    color: "white"
+  paper: {
+    color: "#f7f7f5",
+    backgroundColor: "#12355b",
+    padding: theme.spacing(2, 4, 3)
   }
-};
+}));
 
 function logout() {
   firebase.auth().signOut();
 }
 
-function useGroups() {
-  const [groups, setGroups] = useState([]);
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("groups")
-      .onSnapshot(snapshot => {
-        const retrievedGroups = snapshot.docs.map(doc => ({
-          ...doc.data()
-        }));
-
-        setGroups(retrievedGroups);
-        return () => unsubscribe();
-      });
-  }, []);
-  return groups;
-}
-
 function Banner(props) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [newGroupDialog, setNewGroupDialog] = useState(false);
-  const groups = useGroups();
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const requestLogout = useCallback(() => {
     logout();
   }, []);
-
-  function openUserSettings() {
-    setModalOpen(true);
-  }
-
-  function closeUserSettings() {
-    setModalOpen(false);
-  }
-
-  function showAddNewGroup() {
-    setNewGroupDialog(!newGroupDialog);
-  }
-
-  function handleAddNewGroup() {
-    // addGroup(this.state.newGroupName);
-    setNewGroupDialog(!newGroupDialog);
-  }
 
   return (
     <div
@@ -86,7 +52,8 @@ function Banner(props) {
       }}
     >
       <div
-        onClick={requestLogout}
+        // onClick={requestLogout}
+        onClick={handleOpen}
         style={{
           flex: 1,
           alignItems: "center",
@@ -95,8 +62,38 @@ function Banner(props) {
       >
         <img src={bannerLogo} alt="" height="80" width="100" />
       </div>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <h2 id="transition-modal-title">Settings</h2>
+            <p id="transition-modal-description">
+              Join a group or create a new group here
+            </p>
+            <div
+              onClick={requestLogout}
+              style={{ display: "flex", cursor: "pointer" }}
+            >
+              <Typography style={{ marginRight: "10px", color: "#f7f7f5" }}>
+                Logout
+              </Typography>
+              <LogoutIcon />
+            </div>
+          </div>
+        </Fade>
+      </Modal>
     </div>
   );
 }
 
-export default withStyles(styles)(Banner);
+export default Banner;

@@ -69,35 +69,14 @@ function SpotifyLogin() {
           height: "100vh",
           width: "100vw",
           background: "#252a2e",
-          alignSelf: "center",
+          justifyContent: "center",
+          alignItems: "center",
           display: "flex",
           flex: 1
         }}
       >
-        <div
-          style={{
-            height: "100vh",
-            width: "100vw",
-            background: "#252a2e",
-            alignSelf: "center",
-            display: "flex",
-            flex: 1
-          }}
-        >
-          <div
-            style={{
-              height: "100vh",
-              width: "100vw",
-              background: "#252a2e",
-              alignSelf: "center",
-              display: "flex",
-              flex: 1
-            }}
-          >
-            <ScaleLoader color={"#e54750"} />
-            <Redirect to="/pandemonium" />
-          </div>
-        </div>
+        <ScaleLoader color={"#e54750"} />
+        <Redirect to="/pandemonium" />
       </div>
     );
   }
@@ -107,23 +86,13 @@ function SpotifyLogin() {
         height: "100vh",
         width: "100vw",
         background: "#252a2e",
-        alignSelf: "center",
+        justifyContent: "center",
+        alignItems: "center",
         display: "flex",
         flex: 1
       }}
     >
-      <div
-        style={{
-          height: "100vh",
-          width: "100vw",
-          background: "#252a2e",
-          alignSelf: "center",
-          display: "flex",
-          flex: 1
-        }}
-      >
-        <ScaleLoader color={"#e54750"} />
-      </div>
+      <ScaleLoader color={"#e54750"} />
     </div>
   );
 }
