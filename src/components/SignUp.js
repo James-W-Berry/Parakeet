@@ -63,6 +63,7 @@ function SignUp() {
           .doc(userId)
           .set({
             displayName: username,
+            displayNameVisible: false,
             group: "ETVOvDEqnWL9I7fURN3D"
           })
           .catch(function(error) {

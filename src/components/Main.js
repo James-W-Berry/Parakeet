@@ -29,7 +29,7 @@ function useNearbyPeople(user, distanceFilter) {
         .where("group", "==", user.group)
         .onSnapshot(snapshot => {
           const retrievedUsers = snapshot.docs.map(doc => ({
-            uid: doc.id,
+            id: doc.id,
             ...doc.data()
           }));
 
@@ -89,7 +89,7 @@ function useGroups() {
       .collection("groups")
       .onSnapshot(snapshot => {
         const retrievedGroups = snapshot.docs.map(doc => ({
-          uid: doc.id,
+          id: doc.id,
           ...doc.data()
         }));
 
@@ -149,12 +149,11 @@ function Main() {
   }, [latitude, longitude, timestamp, accuracy, error]);
 
   useEffect(() => {
-    let userGroupName = groups.filter(group => {
-      return (group.id = user.group);
+    groups.forEach(group => {
+      if (group.id === user.group) {
+        setUserGroupName(group.name);
+      }
     });
-    if (userGroupName[0]?.name) {
-      setUserGroupName(userGroupName[0].name);
-    }
   }, [groups, user.group]);
 
   function toggleMapHeight() {
@@ -220,7 +219,7 @@ function Main() {
       }}
     >
       <div id="header" style={{ height: "75px" }}>
-        <Banner user={user} />
+        <Banner user={user} groups={groups} groupName={userGroupName} />
       </div>
 
       <div

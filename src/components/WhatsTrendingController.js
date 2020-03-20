@@ -126,9 +126,33 @@ function WhatsTrendingController(props) {
                 value={trendingRange}
                 onChange={handleTrendingRangeChange}
               >
-                <MenuItem value={3600000}>Past Hour</MenuItem>
-                <MenuItem value={86400000}>Past Day</MenuItem>
-                <MenuItem value={604800000}>Past Week</MenuItem>
+                <MenuItem
+                  style={{
+                    color: "#252a2e",
+                    fontFamily: "AntikorMonoLightItalic"
+                  }}
+                  value={3600000}
+                >
+                  Past Hour
+                </MenuItem>
+                <MenuItem
+                  style={{
+                    color: "#252a2e",
+                    fontFamily: "AntikorMonoLightItalic"
+                  }}
+                  value={86400000}
+                >
+                  Past Day
+                </MenuItem>
+                <MenuItem
+                  style={{
+                    color: "#252a2e",
+                    fontFamily: "AntikorMonoLightItalic"
+                  }}
+                  value={604800000}
+                >
+                  Past Week
+                </MenuItem>
               </Select>
             </FormControl>
           </MuiThemeProvider>
