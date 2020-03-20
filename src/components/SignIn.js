@@ -38,7 +38,7 @@ const useStyles = makeStyles({
   input: {
     fontFamily: "AntikorMonoLightItalic",
     color: "#e54750",
-    fontSize: "32px"
+    fontSize: "24px"
   },
   forgotButton: {
     "&:hover": {

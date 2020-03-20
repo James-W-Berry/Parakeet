@@ -1,6 +1,5 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import "./SplashScreen.css";
 import logo from "../assets/logo.png";
 import { Button } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
@@ -8,9 +7,6 @@ import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Lottie from "react-lottie";
 import * as musicAnimation from "../assets/music-animation.json";
-const dotenv = require("dotenv");
-
-dotenv.config();
 
 const defaultOptions = {
   loop: true,
