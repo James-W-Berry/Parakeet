@@ -48,7 +48,6 @@ function usePastSongs(trendingRange, groupId) {
         .doc(groupId)
         .collection("pastSongs")
         .where("listenDate", ">=", range)
-        // .limit(5)
         .onSnapshot(snapshot => {
           const retrievedSongs = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -56,7 +55,7 @@ function usePastSongs(trendingRange, groupId) {
           }));
 
           let sortedRetrievedSongs = retrievedSongs.sort((a, b) =>
-            a.totalListens > b.totalListens ? 1 : -1
+            a.totalListens > b.totalListens ? -1 : 1
           );
 
           setPastSongs(sortedRetrievedSongs);

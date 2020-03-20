@@ -325,9 +325,19 @@ function Banner(props) {
         aria-labelledby="customized-dialog-title"
         open={open}
       >
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Settings
-        </DialogTitle>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#252a2e"
+          }}
+        >
+          <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+            Settings
+          </DialogTitle>
+        </div>
+
         <DialogContent dividers>
           <div
             style={{
@@ -353,7 +363,7 @@ function Banner(props) {
               {`Currently a member of ${props.groupName}`}
             </Typography>
           </div>
-          <div>
+          <div style={{ backgroundColor: "#191919" }}>
             <Scrollbar style={{ height: "20vh", width: "100%" }}>
               <List style={{ borderRadius: "10px" }}>
                 {props.groups.map(group => createGroupItem(group))}
@@ -365,7 +375,7 @@ function Banner(props) {
               display: "flex",
               alignItems: "center",
               flexDirection: "column",
-              marginTop: "25px"
+              marginTop: "30px"
             }}
           >
             <Typography
@@ -411,7 +421,7 @@ function Banner(props) {
               display: "flex",
               alignItems: "center",
               flexDirection: "column",
-              marginTop: "25px"
+              marginTop: "60px"
             }}
           >
             <Typography

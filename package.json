@@ -1,6 +1,6 @@
 {
-  "name": "spotispies",
-  "version": "0.1.0",
+  "name": "parakeet",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.7.1",
@@ -9,6 +9,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "bootstrap": "^4.4.1",
+    "core-js": "^3.6.4",
     "firebase": "^7.5.0",
     "geolib": "^3.2.1",
     "material-ui": "^0.20.2",
@@ -19,14 +20,11 @@
     "react-marquee": "^1.0.0",
     "react-pose": "^4.0.10",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
+    "react-scripts": "3.3.1",
     "react-scrollbars-custom": "^4.0.21",
     "react-spinners": "^0.8.1",
     "react-spotify-web-playback": "^0.6.0",
     "react-uuid": "^1.0.2",
-    "redux": "^4.0.4",
-    "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
     "use-position": "0.0.6"
   },
   "scripts": {
@@ -50,8 +48,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "dotenv": "^8.2.0",
-    "eslint-plugin-promise": "^4.2.1"
+  "resolutions": {
+    "@babel/preset-env": "^7.8.7"
   }
 }
