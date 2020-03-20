@@ -42,10 +42,31 @@ function useUser() {
         const retrievedUser = { ...snapshot.data() };
         setUser(retrievedUser);
       });
-
     return () => unsubscribe();
   }, []);
+
   return user;
+}
+
+function useGroups() {
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("groups")
+      .onSnapshot(snapshot => {
+        const retrievedGroups = snapshot.docs.map(doc => ({
+          uid: doc.id,
+          ...doc.data()
+        }));
+
+        setGroups(retrievedGroups);
+        return () => unsubscribe();
+      });
+  }, []);
+
+  return groups;
 }
 
 function uploadPosition(position) {
@@ -76,6 +97,8 @@ function Main() {
   const user = useUser();
   const nearbyPeople = useNearbyPeople(user);
   const { latitude, longitude, timestamp, accuracy, error } = usePosition(true);
+  const groups = useGroups();
+  const [userGroupName, setUserGroupName] = useState();
   const [mapHeight, setMapHeight] = useState("20vh");
   const [showUserBubbles, setShowBubblesVisible] = useState(false);
   const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
@@ -91,9 +114,18 @@ function Main() {
     uploadPosition(location);
   }, [latitude, longitude, timestamp, accuracy, error]);
 
+  useEffect(() => {
+    let userGroupName = groups.filter(group => {
+      return (group.id = user.group);
+    });
+    if (userGroupName[0]?.name) {
+      setUserGroupName(userGroupName[0].name);
+    }
+  }, [groups, user.group]);
+
   function toggleMapHeight() {
     if (mapHeight === "20vh") {
-      setMapHeight("85vh");
+      setMapHeight("88vh");
       setShowBubblesVisible(true);
       setUserBubblesOpacity(1);
     } else {
@@ -133,7 +165,7 @@ function Main() {
           flex: 2
         }}
       >
-        <WhatsTrendingController group={user.group} />
+        <WhatsTrendingController group={user.group} groupName={userGroupName} />
       </div>
 
       <div
@@ -174,7 +206,7 @@ function Main() {
                 color: "#252a2e"
               }}
             >
-              {user?.group}
+              {userGroupName}
             </div>
           ) : (
             <div />
@@ -189,6 +221,7 @@ function Main() {
           <SpotifyPlayerUI
             tokens={user.tokens}
             selectedSong={user.selectedSong}
+            group={user.group}
           />
         ) : (
           <div

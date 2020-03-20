@@ -25,39 +25,43 @@ const useStyles = makeStyles({
   }
 });
 
-function usePastSongs(trendingRange) {
+function usePastSongs(trendingRange, groupId) {
   const [pastSongs, setPastSongs] = useState([]);
 
   useEffect(() => {
-    const today = new Date();
-    const range = new Date(today.getTime() - trendingRange);
+    if (groupId) {
+      const today = new Date();
+      const range = new Date(today.getTime() - trendingRange);
 
-    const unsubscribe = firebase
-      .firestore()
-      .collection("pastSongs")
-      .where("listenDate", ">=", range)
-      .limit(5)
-      .onSnapshot(snapshot => {
-        const retrievedSongs = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+      const unsubscribe = firebase
+        .firestore()
+        .collection("groups")
+        .doc(groupId)
+        .collection("pastSongs")
+        .where("listenDate", ">=", range)
+        // .limit(5)
+        .onSnapshot(snapshot => {
+          const retrievedSongs = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
 
-        let sortedRetrievedSongs = retrievedSongs.sort((a, b) =>
-          a.totalListens > b.totalListens ? 1 : -1
-        );
+          let sortedRetrievedSongs = retrievedSongs.sort((a, b) =>
+            a.totalListens > b.totalListens ? 1 : -1
+          );
 
-        setPastSongs(sortedRetrievedSongs);
-      });
-    return () => unsubscribe();
-  }, [trendingRange]);
+          setPastSongs(sortedRetrievedSongs);
+        });
+      return () => unsubscribe();
+    }
+  }, [trendingRange, groupId]);
 
   return pastSongs;
 }
 
 function WhatsTrendingController(props) {
   const [trendingRange, setTrendingRange] = useState(3600000);
-  const songList = usePastSongs(trendingRange);
+  const songList = usePastSongs(trendingRange, props.group);
   const classes = useStyles();
 
   const handleTrendingRangeChange = event => {
@@ -102,8 +106,8 @@ function WhatsTrendingController(props) {
             padding: "30px"
           }}
         >
-          {/* {props.group} */}
-          Top Hits
+          <span style={{ color: "#12355b" }}> {props.groupName}</span>
+          <span> Top Hits</span>
           <img src={trending} alt="" height="54" width="43" />
           <MuiThemeProvider>
             <FormControl className={classes.selector}>

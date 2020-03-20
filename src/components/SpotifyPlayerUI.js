@@ -66,7 +66,8 @@ function uploadSpotifyInfo(info) {
 
 function uploadCurrentlyListeningTo(
   currentlyListeningTo,
-  previouslyListeningTo
+  previouslyListeningTo,
+  groupId
 ) {
   const userId = firebase.auth().currentUser.uid;
   const docRef = firebase
@@ -90,12 +91,14 @@ function uploadCurrentlyListeningTo(
 
   if (previouslyListeningTo?.uri !== currentlyListeningTo?.uri) {
     let now = new Date();
-    const pastSongRef = firebase
+    const groupSongRef = firebase
       .firestore()
+      .collection("groups")
+      .doc(groupId)
       .collection("pastSongs")
       .doc(currentlyListeningTo.uri);
 
-    pastSongRef
+    groupSongRef
       .set(
         {
           pastSong: currentlyListeningTo,
@@ -105,7 +108,7 @@ function uploadCurrentlyListeningTo(
         { merge: true }
       )
       .then(function() {
-        console.log("successfully added song to past songs");
+        console.log("successfully added song to past group songs");
       })
       .catch(function(error) {
         console.log(error);
@@ -190,7 +193,8 @@ function SpotifyPlayerUI(props) {
 
             uploadCurrentlyListeningTo(
               currentlyListeningTo,
-              previouslyListeningTo
+              previouslyListeningTo,
+              props.group
             );
             setPreviouslyListeningTo(currentlyListeningTo);
           }
