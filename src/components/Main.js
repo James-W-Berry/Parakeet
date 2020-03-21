@@ -2,24 +2,13 @@ import React, { useState, useEffect } from "react";
 import WhatsTrendingController from "./WhatsTrendingController";
 import Banner from "./Banner";
 import LocalMapButton from "./LocalMapButton";
-import UserBubble from "./UserBubble";
 import SpotifyPlayerUI from "./SpotifyPlayerUI";
 import firebase from "../firebase";
 import { usePosition } from "use-position";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import getDistance from "geolib/es/getDistance";
-import Slider from "@material-ui/core/Slider";
-import { makeStyles } from "@material-ui/core/styles";
+import ParakeetMap from "./ParakeetMap";
 
-const useStyles = makeStyles({
-  slider: {
-    color: "#252a2e",
-    width: "50vw",
-    marginTop: "30px"
-  }
-});
-
-function useNearbyPeople(user, distanceFilter) {
+function useNearbyPeople(user) {
   const [nearbyPeople, setNearbyPeople] = useState([]);
   useEffect(() => {
     if (user.group) {
@@ -33,32 +22,11 @@ function useNearbyPeople(user, distanceFilter) {
             ...doc.data()
           }));
 
-          let userLocation = {
-            latitude: user.location.latitude,
-            longitude: user.location.longitude
-          };
-          let retrivedUsersInDistanceFilter = [];
-          retrievedUsers.forEach(retrievedUser => {
-            let retrievedUserLocation = {
-              latitude: retrievedUser.location.latitude,
-              longitude: retrievedUser.location.longitude
-            };
-
-            let distanceToUser = getDistance(
-              userLocation,
-              retrievedUserLocation
-            );
-
-            if (distanceToUser <= distanceFilter) {
-              retrivedUsersInDistanceFilter.push(retrievedUser);
-            }
-          });
-
-          setNearbyPeople(retrivedUsersInDistanceFilter);
+          setNearbyPeople(retrievedUsers);
           return () => unsubscribe();
         });
     }
-  }, [user, distanceFilter]);
+  }, [user]);
   return nearbyPeople;
 }
 
@@ -127,15 +95,12 @@ function uploadPosition(position) {
 
 function Main() {
   const user = useUser();
-  const [distanceFilter, setDistanceFilter] = useState(21000);
-  const nearbyPeople = useNearbyPeople(user, distanceFilter);
+  const nearbyPeople = useNearbyPeople(user);
   const { latitude, longitude, timestamp, accuracy, error } = usePosition(true);
   const groups = useGroups();
   const [userGroupName, setUserGroupName] = useState();
   const [mapHeight, setMapHeight] = useState("20vh");
-  const [showUserBubbles, setShowBubblesVisible] = useState(false);
   const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
-  const classes = useStyles();
 
   useEffect(() => {
     let location = {
@@ -159,53 +124,12 @@ function Main() {
   function toggleMapHeight() {
     if (mapHeight === "20vh") {
       setMapHeight("95vh");
-      setShowBubblesVisible(true);
       setUserBubblesOpacity(1);
     } else {
       setMapHeight("20vh");
-      setShowBubblesVisible(false);
       setUserBubblesOpacity(0);
     }
   }
-
-  function createNearbyUser(nearbyUser) {
-    return (
-      <div key={nearbyUser.displayName}>
-        <UserBubble user={nearbyUser} />
-      </div>
-    );
-  }
-
-  const handleDistanceFilterChange = (event, value) => {
-    setDistanceFilter(value);
-  };
-
-  function valuetext(value) {
-    return `${value}km`;
-  }
-
-  const marks = [
-    {
-      value: 1,
-      label: "1km"
-    },
-    {
-      value: 5000,
-      label: "5k km"
-    },
-    {
-      value: 10000,
-      label: "10k km"
-    },
-    {
-      value: 15000,
-      label: "15k km"
-    },
-    {
-      value: 20000,
-      label: "20k km"
-    }
-  ];
 
   return (
     <div
@@ -282,25 +206,16 @@ function Main() {
               >
                 {userGroupName}
               </span>
-              <Slider
-                className={classes.slider}
-                getAriaValueText={valuetext}
-                aria-labelledby="discrete-slider-custom"
-                min={1}
-                max={21000}
-                defaultValue={21000}
-                marks={marks}
-                onChangeCommitted={handleDistanceFilterChange}
-                valueLabelDisplay="auto"
-              />
+
+              <div
+                style={{ height: "65vh", width: "90vw", borderRadius: "100px" }}
+              >
+                <ParakeetMap user={user} nearbyPeople={nearbyPeople} />
+              </div>
             </div>
           ) : (
             <div />
           )}
-
-          {showUserBubbles &&
-            nearbyPeople &&
-            nearbyPeople.map(user => createNearbyUser(user))}
         </div>
 
         {user.tokens ? (

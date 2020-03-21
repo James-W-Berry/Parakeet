@@ -46,7 +46,7 @@ function TrendingList(props) {
         >
           <ListItemAvatar>
             <Avatar style={{ backgroundColor: "#37e0b6" }}>
-              <img src={audio_wave} alt="" />
+              <img src={audio_wave} alt="" height="70%" width="70%" />
             </Avatar>
           </ListItemAvatar>
           <ListItemText

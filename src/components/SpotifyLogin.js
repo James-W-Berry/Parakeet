@@ -3,6 +3,9 @@ import firebase from "../firebase";
 import "firebase/auth";
 import { Redirect } from "react-router-dom";
 import ScaleLoader from "react-spinners/ScaleLoader";
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const loginUrl = process.env.REACT_APP_LOGIN_URL;
 const devLoginUrl = process.env.REACT_APP_DEV_LOGIN_URL;
@@ -44,7 +47,7 @@ function SpotifyLogin() {
       uploadAccessTokens(tokens);
     } else {
       setTimeout(function() {
-        window.location.replace(loginUrl);
+        window.location.replace(devLoginUrl);
       }, 3000);
     }
   }, []);

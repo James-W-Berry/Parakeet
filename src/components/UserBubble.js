@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import uuid from "react-uuid";
 import Fab from "@material-ui/core/Fab";
 import { Avatar } from "material-ui";
 import "./UserBubble.css";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import firebase from "../firebase";
 import "firebase/auth";
+import { Marker } from "react-mapbox-gl";
 
 var Marquee = require("react-marquee");
 
@@ -30,20 +30,21 @@ function uploadSelectedSong(selectedSong) {
     });
 }
 
-function UserBubble(nearbyUser) {
-  const [showBubble, setShowBubble] = useState(true);
+function UserBubble(props) {
+  const [user, setUser] = useState();
   const [isExpanded, setIsExpanded] = useState(false);
   const [parakeetImage, setParakeetImage] = useState();
-  const [bubbleLocation, setBubbleLocation] = useState({
-    x: `${10 + Math.random() * 80}vw`,
-    y: `${20 + Math.random() * 60}vh`,
-    id: uuid()
-  });
   const [style, setStyle] = useState({
     fontSize: 60,
     opacity: 0,
     transition: "all 2s ease"
   });
+
+  useEffect(() => {
+    if (props.user?.location) {
+      setUser(props.user);
+    }
+  }, [props.user]);
 
   useEffect(() => {
     const image = require("../assets/parakeet_" +
@@ -52,41 +53,11 @@ function UserBubble(nearbyUser) {
     setParakeetImage(image);
   }, []);
 
-  useEffect(() => {
-    setTimeout(mountStyle(), 10);
-  }, []);
-
-  function unMountStyle() {
-    setStyle({
-      flexDirection: "column",
-      position: "absolute",
-      bottom: bubbleLocation.y,
-      left: bubbleLocation.x,
-      opacity: 0,
-      transition: "all 1s ease"
-    });
-  }
-
-  function mountStyle() {
-    setStyle({
-      flexDirection: "column",
-      position: "absolute",
-      bottom: bubbleLocation.y,
-      left: bubbleLocation.x,
-      opacity: 1,
-      width: "15vw",
-      height: "6vh",
-      transition: "all 2s ease"
-    });
-  }
-
   function expandedStyle() {
     setIsExpanded(!isExpanded);
     setStyle({
       flexDirection: "column",
       position: "absolute",
-      bottom: bubbleLocation.y,
-      left: bubbleLocation.x,
       width: "15vw",
       height: "6vh",
       border: "1px",
@@ -96,115 +67,115 @@ function UserBubble(nearbyUser) {
     });
   }
 
-  function transitionEnd() {
-    setShowBubble(false);
-  }
-
-  return (
-    <div
-      style={style}
-      onTransitionEnd={() => transitionEnd()}
-      onClick={() => expandedStyle()}
-    >
-      {isExpanded ? (
-        <MuiThemeProvider>
-          <div
-            style={{
-              position: "absolute",
-              fontWeight: "bold",
-              fontSize: "16"
-            }}
-          >
-            <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
-              {nearbyUser.user.profilePic ? (
-                <Avatar
-                  alt={nearbyUser.user.displayName}
-                  src={nearbyUser.user.profilePic}
-                  style={{ height: "60px", width: "60px" }}
-                />
-              ) : (
-                <Avatar
-                  alt={nearbyUser.user.displayName}
-                  src={parakeetImage}
-                  style={{ height: "60px", width: "60px" }}
-                />
-              )}
-            </Fab>
-            <div
-              onClick={() => {
-                uploadSelectedSong(nearbyUser.user.currentlyListeningTo);
-              }}
-            >
+  if (user && isExpanded) {
+    return (
+      <div key={user.spotifyId} onClick={() => expandedStyle()}>
+        <Marker
+          coordinates={[user.location.longitude, user.location.latitude]}
+          offsetLeft={-20}
+          offsetTop={-10}
+        >
+          <MuiThemeProvider>
+            <div>
+              <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
+                {user.profilePic ? (
+                  <Avatar
+                    alt={user.displayName}
+                    src={user.profilePic}
+                    style={{ height: "60px", width: "60px" }}
+                  />
+                ) : (
+                  <Avatar
+                    alt={user.displayName}
+                    src={parakeetImage}
+                    style={{ height: "60px", width: "60px" }}
+                  />
+                )}
+              </Fab>
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flexStart",
-                  position: "absolute",
-                  left: "65px",
-                  top: "0.25vh",
-                  fontSize: "16",
-                  fontFamily: "AntikorMonoLightItalic",
-                  color: "#f7f7f5"
+                onClick={() => {
+                  uploadSelectedSong(user.currentlyListeningTo);
                 }}
               >
-                <Marquee
-                  text={nearbyUser.user.currentlyListeningTo.name}
-                  hoverToStop={false}
-                  loop={false}
-                />
-              </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flexStart",
+                    position: "absolute",
+                    left: "65px",
+                    top: "0.25vh",
+                    fontSize: "16",
+                    fontFamily: "AntikorMonoLightItalic",
+                    color: "#f7f7f5",
+                    backgroundColor: "#252a2e"
+                  }}
+                >
+                  <Marquee
+                    text={user.currentlyListeningTo.name}
+                    hoverToStop={false}
+                    loop={false}
+                  />
+                </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flexStart",
-                  position: "absolute",
-                  left: "65px",
-                  top: "2.25vh",
-                  fontSize: "16",
-                  maxWidth: "20vw",
-                  fontFamily: "AntikorMonoLightItalic",
-                  color: "#f7f7f5"
-                }}
-              >
-                <Marquee
-                  text={nearbyUser.user.currentlyListeningTo.artists}
-                  hoverToStop={false}
-                  loop={false}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flexStart",
+                    position: "absolute",
+                    left: "65px",
+                    top: "2.25vh",
+                    fontSize: "16",
+                    maxWidth: "20vw",
+                    fontFamily: "AntikorMonoLightItalic",
+                    color: "#f7f7f5",
+                    backgroundColor: "#252a2e"
+                  }}
+                >
+                  <Marquee
+                    text={user.currentlyListeningTo.artists}
+                    hoverToStop={false}
+                    loop={false}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </MuiThemeProvider>
-      ) : (
-        <MuiThemeProvider>
-          <div
-            style={{
-              position: "absolute",
-              fontWeight: "bold",
-              fontSize: "16"
-            }}
-          >
+          </MuiThemeProvider>
+        </Marker>
+      </div>
+    );
+  }
+
+  if (user) {
+    return (
+      <div key={user.spotifyId} onClick={() => expandedStyle()}>
+        <Marker
+          coordinates={[user.location.longitude, user.location.latitude]}
+          offsetLeft={-20}
+          offsetTop={-10}
+        >
+          <MuiThemeProvider>
             <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
-              {nearbyUser.user.profilePic ? (
+              {user.profilePic ? (
                 <Avatar
-                  alt={nearbyUser.user.displayName}
-                  src={nearbyUser.user.profilePic}
+                  alt={user.displayName}
+                  src={user.profilePic}
                   style={{ height: "60px", width: "60px" }}
                 />
               ) : (
                 <Avatar
-                  alt={nearbyUser.user.displayName}
+                  alt={user.displayName}
                   src={parakeetImage}
                   style={{ height: "60px", width: "60px" }}
                 />
               )}
             </Fab>
-          </div>
-        </MuiThemeProvider>
-      )}
-    </div>
-  );
+          </MuiThemeProvider>
+        </Marker>
+      </div>
+    );
+  }
+
+  return <div />;
 }
 
 export default UserBubble;
