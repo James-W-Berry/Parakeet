@@ -34,6 +34,7 @@ function UserBubble(props) {
   const [user, setUser] = useState();
   const [isExpanded, setIsExpanded] = useState(false);
   const [parakeetImage, setParakeetImage] = useState();
+  const [isHovering, setIsHovering] = useState(false);
   const [style, setStyle] = useState({
     fontSize: 60,
     opacity: 0,
@@ -76,67 +77,68 @@ function UserBubble(props) {
           offsetTop={-10}
         >
           <MuiThemeProvider>
-            <div>
-              <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
-                {user.profilePic ? (
-                  <Avatar
-                    alt={user.displayName}
-                    src={user.profilePic}
-                    style={{ height: "60px", width: "60px" }}
-                  />
-                ) : (
-                  <Avatar
-                    alt={user.displayName}
-                    src={parakeetImage}
-                    style={{ height: "60px", width: "60px" }}
-                  />
-                )}
-              </Fab>
+            <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
+              {user.profilePic ? (
+                <Avatar
+                  alt={user.displayName}
+                  src={user.profilePic}
+                  style={{ height: "60px", width: "60px" }}
+                />
+              ) : (
+                <Avatar
+                  alt={user.displayName}
+                  src={parakeetImage}
+                  style={{ height: "60px", width: "60px" }}
+                />
+              )}
+            </Fab>
+            <div
+              onClick={() => {
+                uploadSelectedSong(user.currentlyListeningTo);
+              }}
+            >
               <div
-                onClick={() => {
-                  uploadSelectedSong(user.currentlyListeningTo);
+                style={{
+                  display: "flex",
+                  justifyContent: "flexStart",
+                  position: "absolute",
+                  maxWidth: "20vw",
+                  left: "65px",
+                  top: "0.25vh",
+                  fontSize: "20",
+                  fontFamily: "AntikorMonoLightItalic",
+                  color: "#37e0b6",
+                  backgroundColor: "#252a2e",
+                  cursor: "pointer"
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flexStart",
-                    position: "absolute",
-                    left: "65px",
-                    top: "0.25vh",
-                    fontSize: "16",
-                    fontFamily: "AntikorMonoLightItalic",
-                    color: "#f7f7f5",
-                    backgroundColor: "#252a2e"
-                  }}
-                >
-                  <Marquee
-                    text={user.currentlyListeningTo.name}
-                    hoverToStop={false}
-                    loop={false}
-                  />
-                </div>
+                <Marquee
+                  text={user.currentlyListeningTo.name}
+                  hoverToStop={false}
+                  loop={false}
+                />
+              </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flexStart",
-                    position: "absolute",
-                    left: "65px",
-                    top: "2.25vh",
-                    fontSize: "16",
-                    maxWidth: "20vw",
-                    fontFamily: "AntikorMonoLightItalic",
-                    color: "#f7f7f5",
-                    backgroundColor: "#252a2e"
-                  }}
-                >
-                  <Marquee
-                    text={user.currentlyListeningTo.artists}
-                    hoverToStop={false}
-                    loop={false}
-                  />
-                </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flexStart",
+                  position: "absolute",
+                  left: "65px",
+                  top: "2.25vh",
+                  fontSize: "20",
+                  maxWidth: "20vw",
+                  fontFamily: "AntikorMonoLightItalic",
+                  color: "#37e0b6",
+                  backgroundColor: "#252a2e",
+                  cursor: "pointer"
+                }}
+              >
+                <Marquee
+                  text={user.currentlyListeningTo.artists}
+                  hoverToStop={false}
+                  loop={false}
+                />
               </div>
             </div>
           </MuiThemeProvider>
@@ -154,21 +156,44 @@ function UserBubble(props) {
           offsetTop={-10}
         >
           <MuiThemeProvider>
-            <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
-              {user.profilePic ? (
-                <Avatar
-                  alt={user.displayName}
-                  src={user.profilePic}
-                  style={{ height: "60px", width: "60px" }}
-                />
-              ) : (
-                <Avatar
-                  alt={user.displayName}
-                  src={parakeetImage}
-                  style={{ height: "60px", width: "60px" }}
-                />
+            <div
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+            >
+              <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
+                {user.profilePic ? (
+                  <Avatar
+                    alt={user.displayName}
+                    src={user.profilePic}
+                    style={{ height: "60px", width: "60px" }}
+                  />
+                ) : (
+                  <Avatar
+                    alt={user.displayName}
+                    src={parakeetImage}
+                    style={{ height: "60px", width: "60px" }}
+                  />
+                )}
+              </Fab>
+              {isHovering && user.displayNameVisible && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "-30px",
+                    left: "15px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#37e0b6",
+                    fontSize: "20px",
+                    backgroundColor: "#252a2e",
+                    fontFamily: "AntikorMonoLightItalic"
+                  }}
+                >
+                  {user.displayName}
+                </div>
               )}
-            </Fab>
+            </div>
           </MuiThemeProvider>
         </Marker>
       </div>

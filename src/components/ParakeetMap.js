@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import ReactMapboxGl from "react-mapbox-gl";
 import UserBubble from "./UserBubble";
+import MyLocationIcon from "@material-ui/icons/MyLocation";
 
 const dotenv = require("dotenv");
 dotenv.config();
 const mapboxApiKey = process.env.REACT_APP_MAPBOX_API_KEY;
 const mapboxStyle = process.env.REACT_APP_MAPBOX_STYLE_URL;
 
+const Map = new ReactMapboxGl({
+  accessToken: mapboxApiKey,
+  attributionControl: false
+});
+
 function ParakeetMap(props) {
   const [userLocation, setUserLocation] = useState({
-    longitude: 42.3523699,
-    latitude: -83.3793885
+    longitude: -83.3793885,
+    latitude: 42.3523699
   });
   const [nearbyUsers, setNearbyUsers] = useState();
   const [user, setUser] = useState();
@@ -44,21 +50,16 @@ function ParakeetMap(props) {
     }
   }
 
-  const Map = ReactMapboxGl({
-    accessToken: mapboxApiKey
-  });
-
   return (
     <Map
-      zoom={[10]}
       style={mapboxStyle}
+      zoom={[10]}
       containerStyle={{
-        borderRadius: "200px",
+        borderTopLeftRadius: "120px",
         height: "100%",
         width: "100%"
       }}
-      flyToOptions={{ speed: 2.0 }}
-      center={[userLocation.longitude, userLocation.latitude]}
+      center={[-83.3793885, 42.3523699]}
     >
       {nearbyUsers && nearbyUsers.map(person => createPersonBubble(person))}
     </Map>

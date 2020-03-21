@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import bannerLogo from "../assets/parakeet-nomusic.png";
+import bannerLogo from "../assets/parakeet-nomusic-red.png";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import firebase from "../firebase";
 import "firebase/auth";
@@ -252,7 +252,7 @@ function Banner(props) {
         <div key={group.id}>
           <ListItem
             key={group.id}
-            style={{ backgroundColor: "#191919" }}
+            style={{ backgroundColor: "#252a2e", marginBottom: "1px" }}
             button={true}
             onClick={() => {
               updateGroup(group.id);
@@ -270,7 +270,7 @@ function Banner(props) {
                   variant="h6"
                   style={{
                     fontFamily: "AntikorMonoLightItalic",
-                    color: "#e54750"
+                    color: "#f7f7f5"
                   }}
                 >
                   {group.name}
@@ -303,19 +303,26 @@ function Banner(props) {
     <div
       style={{
         display: "flex",
-        alignItems: "center",
-        width: "5vw"
+        alignItems: "center"
       }}
     >
       <div
-        onClick={handleClickOpen}
         style={{
-          flex: 1,
-          alignItems: "center",
-          cursor: "pointer"
+          position: "absolute",
+          right: "2vw",
+          top: "2vh",
+          cursor: "pointer",
+          boxShadow: "10px"
         }}
       >
-        <img src={bannerLogo} alt="" height="80" width="100" />
+        <img
+          onClick={handleClickOpen}
+          src={bannerLogo}
+          alt=""
+          height="60"
+          width="60"
+          style={{ flex: 1 }}
+        />
       </div>
 
       <Dialog
@@ -363,8 +370,8 @@ function Banner(props) {
               {`Currently a member of ${props.groupName}`}
             </Typography>
           </div>
-          <div style={{ backgroundColor: "#191919" }}>
-            <Scrollbar style={{ height: "20vh", width: "100%" }}>
+          <div style={{ backgroundColor: "#f7f7f5" }}>
+            <Scrollbar style={{ height: "30vh", width: "100%" }}>
               <List style={{ borderRadius: "10px" }}>
                 {props.groups.map(group => createGroupItem(group))}
               </List>
@@ -479,6 +486,7 @@ function Banner(props) {
             style={{
               display: "flex",
               flex: 1,
+              marginTop: "20px",
               alignItems: "center",
               justifyContent: "center"
             }}
