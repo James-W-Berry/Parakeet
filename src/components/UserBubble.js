@@ -113,7 +113,11 @@ function UserBubble(props) {
                 }}
               >
                 <Marquee
-                  text={user.currentlyListeningTo.name}
+                  text={
+                    user.currentlyListeningTo?.name
+                      ? user.currentlyListeningTo.name
+                      : "No music yet"
+                  }
                   hoverToStop={false}
                   loop={false}
                 />
@@ -135,7 +139,11 @@ function UserBubble(props) {
                 }}
               >
                 <Marquee
-                  text={user.currentlyListeningTo.artists}
+                  text={
+                    user.currentlyListeningTo?.artists
+                      ? user.currentlyListeningTo?.artists
+                      : ""
+                  }
                   hoverToStop={false}
                   loop={false}
                 />

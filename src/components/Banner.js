@@ -362,8 +362,9 @@ function Banner(props) {
             <Typography
               style={{
                 color: "#f7f7f5",
-                fontSize: "12px",
-                fontFamily: "AntikorMonoLightItalic"
+                fontSize: "16px",
+                fontFamily: "AntikorMonoLightItalic",
+                marginBottom: "10px"
               }}
               gutterBottom
             >
@@ -392,7 +393,7 @@ function Banner(props) {
               }}
               gutterBottom
             >
-              Add New Group
+              Create a new group
             </Typography>
             <div style={{ display: "flex", alignItems: "center" }}>
               <TextField
@@ -435,7 +436,7 @@ function Banner(props) {
               style={{ color: "#f7f7f5", fontFamily: "AntikorMonoLightItalic" }}
               gutterBottom
             >
-              Display Name
+              Change your display name
             </Typography>
             <div
               style={{ display: "flex", alignItems: "center", padding: "10px" }}

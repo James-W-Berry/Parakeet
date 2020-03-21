@@ -15,9 +15,10 @@ const Map = new ReactMapboxGl({
 
 function ParakeetMap(props) {
   const [userLocation, setUserLocation] = useState({
-    longitude: -83.3793885,
-    latitude: 42.3523699
+    longitude: -83.0562526,
+    latitude: 42.333456
   });
+  const [center, setCenter] = useState([-83.0562526, 42.333456]);
   const [nearbyUsers, setNearbyUsers] = useState();
   const [user, setUser] = useState();
 
@@ -53,13 +54,13 @@ function ParakeetMap(props) {
   return (
     <Map
       style={mapboxStyle}
-      zoom={[10]}
+      zoom={[8]}
       containerStyle={{
         borderTopLeftRadius: "120px",
         height: "100%",
         width: "100%"
       }}
-      center={[-83.3793885, 42.3523699]}
+      center={center}
     >
       {nearbyUsers && nearbyUsers.map(person => createPersonBubble(person))}
     </Map>
