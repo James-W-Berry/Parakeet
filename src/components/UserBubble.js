@@ -77,76 +77,79 @@ function UserBubble(props) {
           offsetTop={-10}
         >
           <MuiThemeProvider>
-            <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
-              {user.profilePic ? (
-                <Avatar
-                  alt={user.displayName}
-                  src={user.profilePic}
-                  style={{ height: "60px", width: "60px" }}
-                />
-              ) : (
-                <Avatar
-                  alt={user.displayName}
-                  src={parakeetImage}
-                  style={{ height: "60px", width: "60px" }}
-                />
-              )}
-            </Fab>
-            <div
-              onClick={() => {
-                uploadSelectedSong(user.currentlyListeningTo);
-              }}
-            >
+            <div>
+              {" "}
+              <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
+                {user.profilePic ? (
+                  <Avatar
+                    alt={user.displayName}
+                    src={user.profilePic}
+                    style={{ height: "60px", width: "60px" }}
+                  />
+                ) : (
+                  <Avatar
+                    alt={user.displayName}
+                    src={parakeetImage}
+                    style={{ height: "60px", width: "60px" }}
+                  />
+                )}
+              </Fab>
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flexStart",
-                  position: "absolute",
-                  maxWidth: "20vw",
-                  left: "65px",
-                  top: "0.25vh",
-                  fontSize: "20",
-                  fontFamily: "AntikorMonoLightItalic",
-                  color: "#37e0b6",
-                  backgroundColor: "#252a2e",
-                  cursor: "pointer"
+                onClick={() => {
+                  uploadSelectedSong(user.currentlyListeningTo);
                 }}
               >
-                <Marquee
-                  text={
-                    user.currentlyListeningTo?.name
-                      ? user.currentlyListeningTo.name
-                      : "No music yet"
-                  }
-                  hoverToStop={false}
-                  loop={false}
-                />
-              </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flexStart",
+                    position: "absolute",
+                    maxWidth: "20vw",
+                    left: "65px",
+                    top: "0.25vh",
+                    fontSize: "20",
+                    fontFamily: "AntikorMonoLightItalic",
+                    color: "#37e0b6",
+                    backgroundColor: "#252a2e",
+                    cursor: "pointer"
+                  }}
+                >
+                  <Marquee
+                    text={
+                      user.currentlyListeningTo?.name
+                        ? user.currentlyListeningTo.name
+                        : "No music yet"
+                    }
+                    hoverToStop={false}
+                    loop={false}
+                  />
+                </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flexStart",
-                  position: "absolute",
-                  left: "65px",
-                  top: "2.25vh",
-                  fontSize: "20",
-                  maxWidth: "20vw",
-                  fontFamily: "AntikorMonoLightItalic",
-                  color: "#37e0b6",
-                  backgroundColor: "#252a2e",
-                  cursor: "pointer"
-                }}
-              >
-                <Marquee
-                  text={
-                    user.currentlyListeningTo?.artists
-                      ? user.currentlyListeningTo?.artists
-                      : ""
-                  }
-                  hoverToStop={false}
-                  loop={false}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flexStart",
+                    position: "absolute",
+                    left: "65px",
+                    top: "2.25vh",
+                    fontSize: "20",
+                    maxWidth: "20vw",
+                    fontFamily: "AntikorMonoLightItalic",
+                    color: "#37e0b6",
+                    backgroundColor: "#252a2e",
+                    cursor: "pointer"
+                  }}
+                >
+                  <Marquee
+                    text={
+                      user.currentlyListeningTo?.artists
+                        ? user.currentlyListeningTo?.artists
+                        : ""
+                    }
+                    hoverToStop={false}
+                    loop={false}
+                  />
+                </div>
               </div>
             </div>
           </MuiThemeProvider>

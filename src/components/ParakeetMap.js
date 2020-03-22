@@ -19,6 +19,7 @@ function ParakeetMap(props) {
     latitude: 42.333456
   });
   const [center, setCenter] = useState([-83.0562526, 42.333456]);
+  const [zoom, setZoom] = useState([8]);
   const [nearbyUsers, setNearbyUsers] = useState();
   const [user, setUser] = useState();
 
@@ -54,7 +55,7 @@ function ParakeetMap(props) {
   return (
     <Map
       style={mapboxStyle}
-      zoom={[8]}
+      zoom={zoom}
       containerStyle={{
         borderTopLeftRadius: "120px",
         height: "100%",
