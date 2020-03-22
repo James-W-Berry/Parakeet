@@ -202,7 +202,7 @@ function SpotifyPlayerUI(props) {
             console.log(state);
             console.log("need to get refresh token");
             setTimeout(function() {
-              window.location.replace(devLoginUrl);
+              window.location.replace(prodLoginUrl);
             }, 2000);
           }
           if (state.devices[0] !== undefined && state.isActive !== true) {
