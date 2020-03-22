@@ -134,7 +134,7 @@ function WhatsTrendingController(props) {
               fontFamily: "AntikorMonoLightItalic"
             }}
           >
-            Top Hits
+            Top Songs
           </span>
           <img src={trending} alt="" height="54" width="43" />
           <MuiThemeProvider>
@@ -152,7 +152,7 @@ function WhatsTrendingController(props) {
                   }}
                   value={3600000}
                 >
-                  Past Hour
+                  over the past hour
                 </MenuItem>
                 <MenuItem
                   style={{
@@ -161,7 +161,7 @@ function WhatsTrendingController(props) {
                   }}
                   value={86400000}
                 >
-                  Past Day
+                  over the past day
                 </MenuItem>
                 <MenuItem
                   style={{
@@ -170,7 +170,7 @@ function WhatsTrendingController(props) {
                   }}
                   value={604800000}
                 >
-                  Past Week
+                  over the past week
                 </MenuItem>
               </Select>
             </FormControl>

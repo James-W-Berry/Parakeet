@@ -42,27 +42,27 @@ const useStyles = makeStyles({
   }
 });
 
-function onResetPassword(email) {
-  firebase
-    .auth()
-    .sendPasswordResetEmail(email)
-    .then(function() {
-      alert("Check your email to reset your password.");
-    })
-    .catch(function(error) {
-      console.log("error resetting password ");
-
-      alert(
-        "Could not send email, please enter your email address and try again."
-      );
-    });
-}
-
 function ForgottenPassword() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const classes = useStyles();
+
+  function onResetPassword(email) {
+    firebase
+      .auth()
+      .sendPasswordResetEmail(email)
+      .then(function() {
+        setIsLoading(false);
+        alert("Check your email to reset your password.");
+      })
+      .catch(function(error) {
+        setIsLoading(false);
+        console.log("error resetting password ");
+        alert(
+          "Could not send email, please enter your email address and try again."
+        );
+      });
+  }
 
   return (
     <div
@@ -131,6 +131,7 @@ function ForgottenPassword() {
         ) : (
           <Button
             onClick={() => {
+              setIsLoading(true);
               onResetPassword(email);
             }}
             className={classes.root}

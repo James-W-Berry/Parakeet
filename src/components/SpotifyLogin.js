@@ -48,7 +48,7 @@ function SpotifyLogin() {
     } else {
       setTimeout(function() {
         window.location.replace(loginUrl);
-      }, 3000);
+      }, 1000);
     }
   }, []);
 
