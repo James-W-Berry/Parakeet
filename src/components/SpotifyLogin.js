@@ -47,7 +47,7 @@ function SpotifyLogin() {
       uploadAccessTokens(tokens);
     } else {
       setTimeout(function() {
-        window.location.replace(loginUrl);
+        window.location.replace(devLoginUrl);
       }, 1000);
     }
   }, []);

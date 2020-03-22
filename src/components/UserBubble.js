@@ -33,8 +33,6 @@ function UserBubble(props) {
   const [user, setUser] = useState();
   const [isExpanded, setIsExpanded] = useState(false);
   const [parakeetImage, setParakeetImage] = useState();
-  const [isHovering, setIsHovering] = useState(false);
-  const [songBubbleWidth, setSongBubbleWidth] = useState("vw");
 
   useEffect(() => {
     if (props.user?.location) {
@@ -63,13 +61,7 @@ function UserBubble(props) {
             offsetTop={-10}
           >
             <MuiThemeProvider>
-              <Fab
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-                color="primary"
-                aria-label="add"
-                style={{ outline: "none" }}
-              >
+              <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
                 {user.profilePic ? (
                   <Avatar
                     alt={user.displayName}
@@ -85,7 +77,7 @@ function UserBubble(props) {
                 )}
               </Fab>
             </MuiThemeProvider>
-            {isHovering && user.displayNameVisible && (
+            {user.displayNameVisible && (
               <div
                 style={{
                   position: "absolute",
@@ -94,8 +86,9 @@ function UserBubble(props) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  padding: "5px",
                   color: "#37e0b6",
-                  fontSize: "20px",
+                  fontSize: "12px",
                   backgroundColor: "#252a2e",
                   fontFamily: "AntikorMonoLightItalic"
                 }}
@@ -115,11 +108,11 @@ function UserBubble(props) {
                   position: "absolute",
                   top: "0px",
                   left: "65px",
-                  fontSize: "20px",
+                  fontSize: "12px",
                   fontFamily: "AntikorMonoLightItalic",
                   color: "#37e0b6",
                   backgroundColor: "#252a2e",
-                  padding: "10px",
+                  padding: "5px",
                   borderRadius: "10px",
                   width: "minContent",
                   transition: "width 0.3s ease-in-out",

@@ -4,7 +4,6 @@ import pull_up from "../assets/pull_up.png";
 import pull_down from "../assets/pull_down.png";
 import { Avatar } from "material-ui";
 import { MuiThemeProvider } from "material-ui/styles";
-import ReactToolTip from "react-tooltip";
 
 function LocalMapButton(props) {
   const [open, setOpen] = useState(false);
@@ -37,16 +36,6 @@ function LocalMapButton(props) {
         >
           {open ? (
             <div style={{ outline: "none" }}>
-              <ReactToolTip place="right" id="mapButton">
-                <span
-                  style={{
-                    color: "#37e0b6",
-                    fontFamily: "AntikorMonoLightItalic"
-                  }}
-                >
-                  Close Map
-                </span>
-              </ReactToolTip>
               <Avatar
                 style={{
                   outline: "none",
@@ -59,16 +48,6 @@ function LocalMapButton(props) {
             </div>
           ) : (
             <div style={{ outline: "none" }}>
-              <ReactToolTip place="right" id="mapButton">
-                <span
-                  style={{
-                    color: "#37e0b6",
-                    fontFamily: "AntikorMonoLightItalic"
-                  }}
-                >
-                  Open Map
-                </span>
-              </ReactToolTip>
               <Avatar
                 style={{
                   outline: "none",
