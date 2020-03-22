@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Fab from "@material-ui/core/Fab";
 import { Avatar } from "material-ui";
-import "./UserBubble.css";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import firebase from "../firebase";
 import "firebase/auth";
 import { Marker } from "react-mapbox-gl";
-
-var Marquee = require("react-marquee");
+import Typography from "material-ui/styles/typography";
 
 function uploadSelectedSong(selectedSong) {
   const userId = firebase.auth().currentUser.uid;
@@ -78,7 +76,6 @@ function UserBubble(props) {
         >
           <MuiThemeProvider>
             <div>
-              {" "}
               <Fab color="primary" aria-label="add" style={{ outline: "none" }}>
                 {user.profilePic ? (
                   <Avatar
@@ -103,52 +100,29 @@ function UserBubble(props) {
                   style={{
                     display: "flex",
                     justifyContent: "flexStart",
+                    flexDirection: "column",
                     position: "absolute",
-                    maxWidth: "20vw",
                     left: "65px",
                     top: "0.25vh",
                     fontSize: "20",
                     fontFamily: "AntikorMonoLightItalic",
                     color: "#37e0b6",
                     backgroundColor: "#252a2e",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    whiteSpace: "nowrap"
                   }}
                 >
-                  <Marquee
-                    text={
-                      user.currentlyListeningTo?.name
-                        ? user.currentlyListeningTo.name
-                        : "No music yet"
-                    }
-                    hoverToStop={false}
-                    loop={false}
-                  />
-                </div>
+                  {user.currentlyListeningTo?.name ? (
+                    <div>{user.currentlyListeningTo.name}</div>
+                  ) : (
+                    <div>No music yet</div>
+                  )}
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flexStart",
-                    position: "absolute",
-                    left: "65px",
-                    top: "2.25vh",
-                    fontSize: "20",
-                    maxWidth: "20vw",
-                    fontFamily: "AntikorMonoLightItalic",
-                    color: "#37e0b6",
-                    backgroundColor: "#252a2e",
-                    cursor: "pointer"
-                  }}
-                >
-                  <Marquee
-                    text={
-                      user.currentlyListeningTo?.artists
-                        ? user.currentlyListeningTo?.artists
-                        : ""
-                    }
-                    hoverToStop={false}
-                    loop={false}
-                  />
+                  {user.currentlyListeningTo?.artists ? (
+                    <div>{user.currentlyListeningTo.artists}</div>
+                  ) : (
+                    <div />
+                  )}
                 </div>
               </div>
             </div>

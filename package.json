@@ -24,6 +24,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-scrollbars-custom": "^4.0.21",
+    "react-smooth-marquee": "^1.0.0",
     "react-spinners": "^0.8.1",
     "react-spotify-web-playback": "^0.6.0",
     "react-uuid": "^1.0.2",
