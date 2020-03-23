@@ -70,3 +70,8 @@ Next, ensure the application will refer to the local authentication server when 
 yarn start # application running at http://localhost:3000.com
 ```
 
+## Project Status
+Parakeet is under active development
+
+## License
+MIT
