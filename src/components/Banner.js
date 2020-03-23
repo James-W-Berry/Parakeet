@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import bannerLogo from "../assets/parakeet-nomusic-red.png";
+import settings from "../assets/settings.png";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import firebase from "../firebase";
 import "firebase/auth";
@@ -317,10 +317,10 @@ function Banner(props) {
       >
         <img
           onClick={handleClickOpen}
-          src={bannerLogo}
+          src={settings}
           alt=""
           height="60"
-          width="60"
+          width="84"
           style={{ flex: 1 }}
         />
       </div>
