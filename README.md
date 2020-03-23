@@ -7,8 +7,23 @@ Application build with the following key technologies:
 * [Spotify API](https://developer.spotify.com/documentation/general/guides/)
 * [Mapbox](https://www.mapbox.com/)
 
+
 ## Applicaton Screenshots
+Landing Page
 ![Parakeet](readmeAssets/landingPage.gif)
+
+|               Sign In               |               Sign Up               |              Forgot Password               |
+| :---------------------------------: | :---------------------------------: | :----------------------------------------: |
+| ![Sign In](readmeAssets/signin.png) | ![Sign Up](readmeAssets/signup.png) | ![Forgot](readmeAssets/forgotpassword.png) |
+
+Home Screen
+![Home](readmeAssets/homePage.png)
+
+Map View
+![Map](readmeAssets/mapView.png)
+
+Settings
+![Home](readmeAssets/settings.png)
 
 
 ## Developer Installation and Setup
@@ -54,3 +69,4 @@ Next, ensure the application will refer to the local authentication server when 
 ```bash
 yarn start # application running at http://localhost:3000.com
 ```
+
