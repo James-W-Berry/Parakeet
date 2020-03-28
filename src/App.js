@@ -10,17 +10,7 @@ import LandingPage from "./components/LandingPage";
 import ForgottenPassword from "./components/ForgottenPassword";
 import SpotifyLogin from "./components/SpotifyLogin";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import posed, { PoseGroup } from "react-pose";
-
-const AuthFeature = posed.div({
-  enter: { opacity: 1 },
-  exit: { opacity: 0 }
-});
-
-const Feature = posed.div({
-  enter: { opacity: 1 },
-  exit: { opacity: 0 }
-});
+import { motion } from "framer-motion";
 
 const UserContext = React.createContext({});
 const UserProvider = UserContext.Provider;
@@ -48,17 +38,21 @@ function App() {
   const AuthRoutes = () => (
     <Route
       render={({ location }) => (
-        <PoseGroup>
-          <AuthFeature key={location.pathname}>
-            <Switch location={location}>
-              <Route path="/home" exact component={LandingPage} />
-              <Route path="/signin" component={SignIn} />
-              <Route path="/signup" component={SignUp} />
-              <Route path="/forgotpassword" component={ForgottenPassword} />
-              <Redirect to="/home" />
-            </Switch>
-          </AuthFeature>
-        </PoseGroup>
+        <motion.div
+          key={location.pathname}
+          animate={{
+            opacity: [0, 1.0]
+          }}
+          transition={{ duration: 1 }}
+        >
+          <Switch location={location}>
+            <Route path="/home" exact component={LandingPage} />
+            <Route path="/signin" component={SignIn} />
+            <Route path="/signup" component={SignUp} />
+            <Route path="/forgotpassword" component={ForgottenPassword} />
+            <Redirect to="/home" />
+          </Switch>
+        </motion.div>
       )}
     />
   );
@@ -66,15 +60,20 @@ function App() {
   const FeatureRoutes = () => (
     <Route
       render={({ location }) => (
-        <PoseGroup>
-          <Feature id="content" key={location.pathname}>
-            <Switch location={location}>
-              <Route path="/spotifylogin" component={SpotifyLogin} />
-              <Route path="/pandemonium" component={Main} />
-              <Redirect to="/spotifylogin" />
-            </Switch>
-          </Feature>
-        </PoseGroup>
+        <motion.div
+          id="content"
+          key={location.pathname}
+          animate={{
+            opacity: [0, 1.0]
+          }}
+          transition={{ duration: 1 }}
+        >
+          <Switch location={location}>
+            <Route path="/spotifylogin" component={SpotifyLogin} />
+            <Route path="/pandemonium" component={Main} />
+            <Redirect to="/spotifylogin" />
+          </Switch>
+        </motion.div>
       )}
     />
   );
@@ -98,8 +97,12 @@ function App() {
 
   if (!user.loggedIn) {
     return (
-      <div style={{ backgroundColor: "#252a2e" }}>
-        <BrowserRouter>{AuthRoutes()}</BrowserRouter>
+      <div
+        style={{
+          backgroundColor: "#252a2e"
+        }}
+      >
+        <BrowserRouter>{AuthRoutes()}</BrowserRouter>;
       </div>
     );
   }

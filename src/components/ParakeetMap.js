@@ -21,6 +21,7 @@ function ParakeetMap(props) {
   const [center, setCenter] = useState([-83.0562526, 42.333456]);
   const [zoom, setZoom] = useState([8]);
   const [nearbyUsers, setNearbyUsers] = useState();
+  const [nearbyPeopleInGroup, setNearbyPeopleInGroup] = useState();
   const [user, setUser] = useState();
 
   useEffect(() => {
@@ -40,10 +41,16 @@ function ParakeetMap(props) {
     }
   }, [props.nearbyPeople]);
 
+  useEffect(() => {
+    if (props.nearbyPeopleInGroup) {
+      setNearbyPeopleInGroup(props.nearbyPeopleInGroup);
+    }
+  }, [props.nearbyPeopleInGroup]);
+
   function createPersonBubble(person) {
     if (person?.location?.longitude) {
       return (
-        <div key={person.spotifyId}>
+        <div key={person.id}>
           <UserBubble user={person} />
         </div>
       );
@@ -63,7 +70,10 @@ function ParakeetMap(props) {
       }}
       center={center}
     >
-      {nearbyUsers && nearbyUsers.map(person => createPersonBubble(person))}
+      {props.filterByGroup
+        ? nearbyPeopleInGroup &&
+          nearbyPeopleInGroup.map(person => createPersonBubble(person))
+        : nearbyUsers && nearbyUsers.map(person => createPersonBubble(person))}
     </Map>
   );
 }

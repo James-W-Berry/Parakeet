@@ -7,6 +7,31 @@ import firebase from "../firebase";
 import { usePosition } from "use-position";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import ParakeetMap from "./ParakeetMap";
+import Checkbox from "@material-ui/core/Checkbox";
+import { MuiThemeProvider } from "material-ui/styles";
+import { FormControlLabel } from "@material-ui/core";
+
+function useNearbyPeopleInGroup(user) {
+  const [nearbyPeopleInGroup, setNearbyPeopleInGroup] = useState([]);
+  useEffect(() => {
+    if (user.group) {
+      const unsubscribe = firebase
+        .firestore()
+        .collection("users")
+        .where("group", "==", user.group)
+        .onSnapshot(snapshot => {
+          const retrievedUsers = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+
+          setNearbyPeopleInGroup(retrievedUsers);
+          return () => unsubscribe();
+        });
+    }
+  }, [user]);
+  return nearbyPeopleInGroup;
+}
 
 function useNearbyPeople(user) {
   const [nearbyPeople, setNearbyPeople] = useState([]);
@@ -15,7 +40,6 @@ function useNearbyPeople(user) {
       const unsubscribe = firebase
         .firestore()
         .collection("users")
-        .where("group", "==", user.group)
         .onSnapshot(snapshot => {
           const retrievedUsers = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -96,11 +120,13 @@ function uploadPosition(position) {
 function Main() {
   const user = useUser();
   const nearbyPeople = useNearbyPeople(user);
+  const nearbyPeopleInGroup = useNearbyPeopleInGroup(user);
   const { latitude, longitude, timestamp, accuracy, error } = usePosition(true);
   const groups = useGroups();
   const [userGroupName, setUserGroupName] = useState();
   const [mapHeight, setMapHeight] = useState("20vh");
   const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
+  const [filterByGroup, setFilterByGroup] = useState(false);
 
   useEffect(() => {
     let location = {
@@ -120,6 +146,10 @@ function Main() {
       }
     });
   }, [groups, user.group]);
+
+  const handleGroupFilterChange = event => {
+    setFilterByGroup(event.target.checked);
+  };
 
   function toggleMapHeight() {
     if (mapHeight === "20vh") {
@@ -153,7 +183,11 @@ function Main() {
           flex: 2
         }}
       >
-        <WhatsTrendingController group={user.group} groupName={userGroupName} />
+        <WhatsTrendingController
+          group={user.group}
+          groupName={userGroupName}
+          groups={groups}
+        />
       </div>
 
       <div
@@ -194,23 +228,30 @@ function Main() {
                 width: "100vw"
               }}
             >
-              <span
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  width: "50vw",
-                  fontSize: 24,
-                  fontFamily: "AntikorDisplayLight",
-                  color: "#252a2e"
-                }}
-              >
-                {userGroupName}
-              </span>
+              <MuiThemeProvider>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      style={{ color: "#f7f7f5" }}
+                      checked={filterByGroup}
+                      onChange={handleGroupFilterChange}
+                      inputProps={{ fontFamily: "AntikorMonoLightItalic" }}
+                    />
+                  }
+                  label={`Only show people in ${userGroupName}`}
+                  style={{ fontFamily: "AntikorMonoLightItalic" }}
+                />
+              </MuiThemeProvider>
 
               <div
                 style={{ height: "65vh", width: "90vw", borderRadius: "100px" }}
               >
-                <ParakeetMap user={user} nearbyPeople={nearbyPeople} />
+                <ParakeetMap
+                  user={user}
+                  nearbyPeople={nearbyPeople}
+                  nearbyPeopleInGroup={nearbyPeopleInGroup}
+                  filterByGroup={filterByGroup}
+                />
               </div>
             </div>
           ) : (

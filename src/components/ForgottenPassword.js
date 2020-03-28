@@ -1,16 +1,30 @@
 import React, { useState } from "react";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import logo from "../assets/logo.png";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import ScaleLoader from "react-spinners/ScaleLoader";
 import firebase from "../firebase";
 import "firebase/auth";
 import { NavLink } from "react-router-dom";
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import ScaleLoader from "react-spinners/ScaleLoader";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
+  heading: {
+    fontFamily: "AntikorMonoLightItalic",
+    color: "#f7f7f5"
+  },
+  text: {
+    fontFamily: "AntikorMonoLightItalic",
+    color: "#e54750",
+    "&:hover": {
+      color: "#f7f7f5"
+    }
+  },
   textInput: {
-    width: "100%",
-    marginTop: "20px",
     "& label ": {
       color: "#f7f7f5",
       fontFamily: "AntikorMonoLightItalic"
@@ -23,28 +37,40 @@ const useStyles = makeStyles({
       borderBottomColor: "#e54750"
     }
   },
-  root: {
-    "&:hover": {
-      color: "#f7f7f5"
-    },
-    fontFamily: "AntikorMonoLightItalic",
-    border: 0,
-    borderRadius: 3,
-    fontSize: "20px",
-    color: "#e54750",
-    height: 48,
-    padding: "0 30px"
-  },
   input: {
     fontFamily: "AntikorMonoLightItalic",
-    color: "#e54750",
-    fontSize: "24px"
+    color: "#f7f7f5"
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1)
+  },
+  submit: {
+    margin: theme.spacing(6, 0, 2),
+    "&:hover": {
+      color: "#f7f7f5",
+      backgroundColor: "#e5475080"
+    },
+    fontFamily: "AntikorMonoLightItalic",
+    backgroundColor: "#e54750",
+    color: "#f7f7f5"
+  },
+  loader: {
+    margin: theme.spacing(6, 0, 2)
   }
-});
+}));
 
-function ForgottenPassword() {
+export default function ForgottenPassword() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [failure, setFailure] = useState(false);
   const classes = useStyles();
 
   function onResetPassword(email) {
@@ -53,95 +79,142 @@ function ForgottenPassword() {
       .sendPasswordResetEmail(email)
       .then(function() {
         setIsLoading(false);
-        alert("Check your email to reset your password.");
+        setFailure(false);
+        setSuccess(true);
       })
       .catch(function(error) {
         setIsLoading(false);
-        console.log("error resetting password ");
-        alert(
-          "Could not send email, please enter your email address and try again."
-        );
+        setSuccess(false);
+        setFailure(true);
       });
   }
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100vw",
-        background: "#252a2e",
-        alignSelf: "center",
-        display: "flex",
-        flex: 1
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+
+      <div className={classes.paper}>
         <NavLink
+          className={classes.text}
           style={{
             textDecoration: "none"
           }}
-          to="/signin"
+          to="/"
         >
-          <Button className={classes.root}>{"< Back"}</Button>
+          <img src={logo} alt="" height="80" width="80" style={{ flex: 1 }} />
         </NavLink>
-      </div>
-      <div
-        style={{
-          flex: 2,
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          alignItems: "center"
-        }}
-      >
-        <TextField
-          className={classes.textInput}
-          id="standard-email-input"
-          label="Email"
-          type="email"
-          autoComplete="email"
-          InputProps={{
-            className: classes.input
-          }}
-          onChange={event => {
-            setEmail(event.target.value);
-          }}
-        />
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        {isLoading ? (
-          <ScaleLoader color={"#e54750"} />
-        ) : (
-          <Button
-            onClick={() => {
-              setIsLoading(true);
-              onResetPassword(email);
+        <Typography className={classes.heading} component="h1" variant="h5">
+          Forgotten Password
+        </Typography>
+        <form className={classes.form} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                className={classes.textInput}
+                InputProps={{
+                  className: classes.input
+                }}
+                margin="normal"
+                required
+                fullWidth
+                name="email"
+                label="Email Address"
+                type="email"
+                id="email"
+                autoComplete="email"
+                onChange={event => {
+                  setEmail(event.target.value);
+                }}
+              />
+            </Grid>
+          </Grid>
+          {success && (
+            <div
+              className={classes.loader}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <Typography
+                className={classes.heading}
+                component="h1"
+                variant="body2"
+              >
+                Check your email for the reset link
+              </Typography>
+            </div>
+          )}
+          {failure && (
+            <div
+              className={classes.loader}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <Typography
+                className={classes.heading}
+                style={{ color: "#e54750" }}
+                component="h1"
+                variant="body2"
+              >
+                {`No user found, please check the entered email`}
+              </Typography>
+            </div>
+          )}
+          {isLoading ? (
+            <div
+              className={classes.loader}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <ScaleLoader color={"#e54750"} />
+            </div>
+          ) : (
+            !success && (
+              <Button
+                fullWidth
+                variant="contained"
+                className={classes.submit}
+                onClick={() => {
+                  onResetPassword(email);
+                }}
+              >
+                Reset Password
+              </Button>
+            )
+          )}
+          <Grid
+            container
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "30px"
             }}
-            className={classes.root}
           >
-            Reset Password >
-          </Button>
-        )}
+            <Grid item>
+              <NavLink
+                className={classes.text}
+                variant="body2"
+                style={{
+                  textDecoration: "none"
+                }}
+                to="/signin"
+              >
+                {"Remembered? Sign in"}
+              </NavLink>
+            </Grid>
+          </Grid>
+        </form>
       </div>
-    </div>
+    </Container>
   );
 }
-
-export default ForgottenPassword;

@@ -9,6 +9,24 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
+  groupSelector: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "100%",
+    color: "#252a2e",
+    fontFamily: "AntikorDisplayLight",
+    menuStyle: {
+      border: "1px solid black",
+      borderRadius: "5%"
+    },
+    "& .MuiInput-underline:before": {
+      border: "0px"
+    },
+    "& .MuiInput-underline:after": {
+      border: "0px"
+    }
+  },
   selector: {
     color: "#252a2e",
     fontFamily: "AntikorMonoLightItalic",
@@ -18,8 +36,11 @@ const useStyles = makeStyles({
       backgroundColor: "lightgrey"
     },
     marginTop: "20px",
+    "& .MuiInput-underline:before": {
+      border: "0px"
+    },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#f7f7f5"
+      border: "0px"
     }
   },
   dropdownStyle: {
@@ -53,12 +74,7 @@ function usePastSongs(trendingRange, groupId) {
             id: doc.id,
             ...doc.data()
           }));
-
-          let sortedRetrievedSongs = retrievedSongs.sort((a, b) =>
-            a.totalListens > b.totalListens ? -1 : 1
-          );
-
-          setPastSongs(sortedRetrievedSongs);
+          setPastSongs(retrievedSongs);
         });
       return () => unsubscribe();
     }
@@ -67,14 +83,111 @@ function usePastSongs(trendingRange, groupId) {
   return pastSongs;
 }
 
+function updateGroup(groupId) {
+  const userId = firebase.auth().currentUser.uid;
+  const docRef = firebase
+    .firestore()
+    .collection("users")
+    .doc(userId);
+
+  return docRef
+    .set(
+      {
+        group: groupId
+      },
+      { merge: true }
+    )
+    .then(function() {
+      console.log("successfully updated group");
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
+
 function WhatsTrendingController(props) {
   const [trendingRange, setTrendingRange] = useState(3600000);
+  const [group, setGroup] = useState("yW06i5L3vi8FipmaltGo");
+  const [groupName, setGroupName] = useState();
+  const [availableGroups, setAvailableGroups] = useState();
   const songList = usePastSongs(trendingRange, props.group);
+  const [sortedSongList, setSortedSongList] = useState([]);
   const classes = useStyles();
+
+  useEffect(() => {
+    if (props.group) {
+      setGroup(props.group);
+    }
+  }, [props.group]);
+
+  useEffect(() => {
+    if (props.groupName) {
+      setGroupName(props.groupName);
+    }
+  }, [props.groupName]);
+
+  useEffect(() => {
+    if (props.groups.length > 0) {
+      setAvailableGroups(props.groups);
+    }
+  }, [props.groups]);
+
+  useEffect(() => {
+    const sortedSongs = sortSongList(songList);
+    setSortedSongList(sortedSongs);
+  }, [songList]);
+
+  function sortSongList(songList) {
+    let sortedRetrievedSongs = songList.sort((a, b) =>
+      a.totalListens > b.totalListens ? -1 : 1
+    );
+    return sortedRetrievedSongs;
+  }
 
   const handleTrendingRangeChange = event => {
     setTrendingRange(event.target.value);
   };
+
+  const handleGroupChange = event => {
+    console.log(event);
+    updateGroup(event.target.value);
+  };
+
+  function createGroupMenuItem(group) {
+    if (group.name) {
+      return (
+        <MenuItem
+          key={group.id}
+          style={{
+            color: "#252a2e",
+            fontFamily: "AntikorMonoLightItalic"
+          }}
+          value={group.id}
+        >
+          {group.name}
+        </MenuItem>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  function createGroupSelector(group, groupName, groups) {
+    return (
+      <MuiThemeProvider>
+        <FormControl className={classes.groupSelector}>
+          <Select
+            className={classes.groupSelector}
+            MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+            value={group}
+            onChange={handleGroupChange}
+          >
+            {groups.map(map => createGroupMenuItem(map))}
+          </Select>
+        </FormControl>
+      </MuiThemeProvider>
+    );
+  }
 
   return (
     <div
@@ -113,24 +226,17 @@ function WhatsTrendingController(props) {
             padding: "30px"
           }}
         >
+          {group && groupName && availableGroups
+            ? createGroupSelector(group, groupName, availableGroups)
+            : null}
+
           <span
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               fontSize: "100%",
-              color: "#252a2e",
-              fontFamily: "AntikorDisplayLight"
-            }}
-          >
-            {props.groupName}
-          </span>
-          <span
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "100%",
+              marginTop: "20px",
               fontFamily: "AntikorMonoLightItalic"
             }}
           >
@@ -186,7 +292,7 @@ function WhatsTrendingController(props) {
           justifyContent: "center"
         }}
       >
-        {songList ? (
+        {sortedSongList ? (
           <div
             style={{
               display: "flex",
@@ -195,7 +301,7 @@ function WhatsTrendingController(props) {
               justifyContent: "center"
             }}
           >
-            <TrendingList songList={songList} />
+            <TrendingList songList={sortedSongList} />
           </div>
         ) : (
           <div

@@ -54,7 +54,7 @@ function UserBubble(props) {
   return (
     <div>
       {user ? (
-        <div key={user.spotifyId} onClick={() => toggleSongBubble()}>
+        <div key={user.id} onClick={() => toggleSongBubble()}>
           <Marker
             coordinates={[user.location.longitude, user.location.latitude]}
             offsetLeft={-20}
@@ -100,6 +100,7 @@ function UserBubble(props) {
               <div
                 onClick={() => {
                   uploadSelectedSong(user.currentlyListeningTo);
+                  console.log(user);
                 }}
                 style={{
                   display: "flex",
