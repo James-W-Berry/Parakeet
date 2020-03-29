@@ -9,7 +9,19 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import ParakeetMap from "./ParakeetMap";
 import Checkbox from "@material-ui/core/Checkbox";
 import { MuiThemeProvider } from "material-ui/styles";
-import { FormControlLabel } from "@material-ui/core";
+import { FormControlLabel, Grid } from "@material-ui/core";
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  paper: {
+    marginTop: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  }
+}));
 
 function useNearbyPeopleInGroup(user) {
   const [nearbyPeopleInGroup, setNearbyPeopleInGroup] = useState([]);
@@ -127,6 +139,7 @@ function Main() {
   const [mapHeight, setMapHeight] = useState("20vh");
   const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
   const [filterByGroup, setFilterByGroup] = useState(false);
+  const classes = useStyles();
 
   useEffect(() => {
     let location = {
@@ -162,121 +175,140 @@ function Main() {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        width: "100vw",
-        background: "#252a2e",
-        color: "#f7f7f5"
-      }}
-    >
-      <div id="header" style={{ height: "75px" }}>
-        <Banner user={user} groups={groups} groupName={userGroupName} />
-      </div>
+    <div>
+      <Container component="main" xl={12} lg={12} md={12}>
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Grid
+            container
+            spacing={5}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <Grid item>
+              <Banner user={user} groups={groups} groupName={userGroupName} />
+            </Grid>
 
-      <div
-        id="body"
+            <Grid item xl={12} lg={12} md={12}>
+              <WhatsTrendingController
+                group={user.group}
+                groupName={userGroupName}
+                groups={groups}
+              />
+            </Grid>
+          </Grid>
+        </div>
+      </Container>
+
+      <Grid
+        container
         style={{
           display: "flex",
-          flex: 2
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative"
         }}
       >
-        <WhatsTrendingController
-          group={user.group}
-          groupName={userGroupName}
-          groups={groups}
-        />
-      </div>
-
-      <div
-        id="footer"
-        style={{
-          flex: 1,
-          bottom: 0,
-          left: 0,
-          width: "100vw",
-          height: "20vh"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100vw",
-            height: mapHeight,
-            borderTopLeftRadius: "120px",
-            background: "#e54750",
-            transition: "height 0.3s ease-in-out",
-            minHeight: "100px"
-          }}
-        >
-          <LocalMapButton slideCallback={() => toggleMapHeight()} />
-
-          {userBubblesOpacity ? (
+        <Grid item lg={12}>
+          <div
+            id="footer"
+            style={{
+              flex: 1,
+              marginTop: "60px",
+              width: "100vw",
+              height: "30vh"
+            }}
+          >
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "2vh",
-                width: "100vw"
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                width: "100vw",
+                height: mapHeight,
+                borderTopLeftRadius: "120px",
+                background: "#e54750",
+                transition: "height 0.3s ease-in-out",
+                minHeight: "100px"
               }}
             >
-              <MuiThemeProvider>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      style={{ color: "#f7f7f5" }}
-                      checked={filterByGroup}
-                      onChange={handleGroupFilterChange}
-                      inputProps={{ fontFamily: "AntikorMonoLightItalic" }}
+              <LocalMapButton slideCallback={() => toggleMapHeight()} />
+
+              {userBubblesOpacity ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "2vh",
+                    width: "100vw"
+                  }}
+                >
+                  <MuiThemeProvider>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          style={{ color: "#f7f7f5" }}
+                          checked={filterByGroup}
+                          onChange={handleGroupFilterChange}
+                          inputProps={{
+                            fontFamily: "AntikorMonoLightItalic"
+                          }}
+                        />
+                      }
+                      label={`Only show people in ${userGroupName}`}
+                      style={{ fontFamily: "AntikorMonoLightItalic" }}
                     />
-                  }
-                  label={`Only show people in ${userGroupName}`}
-                  style={{ fontFamily: "AntikorMonoLightItalic" }}
-                />
-              </MuiThemeProvider>
+                  </MuiThemeProvider>
 
-              <div
-                style={{ height: "65vh", width: "90vw", borderRadius: "100px" }}
-              >
-                <ParakeetMap
-                  user={user}
-                  nearbyPeople={nearbyPeople}
-                  nearbyPeopleInGroup={nearbyPeopleInGroup}
-                  filterByGroup={filterByGroup}
-                />
-              </div>
+                  <div
+                    style={{
+                      height: "65vh",
+                      width: "90vw",
+                      borderRadius: "100px"
+                    }}
+                  >
+                    <ParakeetMap
+                      user={user}
+                      nearbyPeople={nearbyPeople}
+                      nearbyPeopleInGroup={nearbyPeopleInGroup}
+                      filterByGroup={filterByGroup}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div />
+              )}
             </div>
-          ) : (
-            <div />
-          )}
-        </div>
 
-        {user.tokens ? (
-          <SpotifyPlayerUI
-            tokens={user.tokens}
-            selectedSong={user.selectedSong}
-            group={user.group}
-          />
-        ) : (
-          <div
-            style={{
-              position: "absolute",
-              bottom: "7vh",
-              left: "47%"
-            }}
-          >
-            <ScaleLoader color={"#252a2e"} />
+            {user.tokens ? (
+              <SpotifyPlayerUI
+                tokens={user.tokens}
+                selectedSong={user.selectedSong}
+                group={user.group}
+              />
+            ) : (
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "7vh",
+                  left: "47%"
+                }}
+              >
+                <ScaleLoader color={"#252a2e"} />
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </Grid>
+      </Grid>
     </div>
   );
 }

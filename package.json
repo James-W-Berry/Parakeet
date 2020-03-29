@@ -17,6 +17,7 @@
     "material-ui": "^0.20.2",
     "material-ui-search-bar": "^0.4.2",
     "react": "^16.12.0",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.12.0",
     "react-lottie": "^1.2.3",
     "react-mapbox-gl": "^4.8.3",
@@ -28,6 +29,7 @@
     "react-spotify-web-playback": "^0.6.0",
     "react-tooltip": "^4.1.2",
     "react-uuid": "^1.0.2",
+    "react-virtualized": "^9.21.2",
     "use-position": "0.0.6"
   },
   "scripts": {

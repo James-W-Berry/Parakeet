@@ -9,7 +9,8 @@ import uuid from "react-uuid";
 import { Typography } from "@material-ui/core";
 import firebase from "../firebase";
 import "firebase/auth";
-import Scrollbar from "react-scrollbars-custom";
+import { Scrollbars } from "react-custom-scrollbars";
+import { AutoSizer } from "react-virtualized";
 
 function uploadSelectedSong(selectedSong) {
   const userId = firebase.auth().currentUser.uid;
@@ -38,6 +39,12 @@ function TrendingList(props) {
     if (song !== undefined) {
       return (
         <ListItem
+          style={{
+            marginBottom: "5px",
+            backgroundColor: "#252a2e",
+            width: "90%",
+            borderRadius: "5px"
+          }}
           key={uuid()}
           button={true}
           onClick={() => {
@@ -82,10 +89,34 @@ function TrendingList(props) {
   }
 
   return (
-    <div style={{ height: "50%", width: "100%" }}>
-      <Scrollbar style={{ height: "60vh", width: "50vw" }}>
-        <List>{props.songList.map(song => createSongItem(song))}</List>
-      </Scrollbar>
+    <div style={{ flex: 1, width: "100%" }}>
+      {props.songList.length > 0 ? (
+        <Scrollbars autoHeight autoHeightMin={"50vh"}>
+          <List
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              borderRadius: "10px",
+              backgroundColor: "#37e0b610"
+            }}
+          >
+            {props.songList.map(song => createSongItem(song))}
+          </List>
+        </Scrollbars>
+      ) : (
+        <Typography
+          align="center"
+          style={{
+            padding: "5px",
+            color: "#f7f7f5",
+            fontFamily: "AntikorMonoLightItalic"
+          }}
+        >
+          {`No songs for this group over the selected range`}
+        </Typography>
+      )}
     </div>
   );
 }

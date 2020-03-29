@@ -2,13 +2,21 @@ import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import trending from "../assets/trending.png";
 import TrendingList from "./TrendingList";
-import { FormControl, Select } from "@material-ui/core";
-import { MenuItem } from "material-ui";
+import { FormControl, Select, Container, Grid } from "@material-ui/core";
+import { MenuItem, Paper } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { Typography } from "@material-ui/core";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    // flexDirection: "column",
+    alignItems: "center"
+  },
   groupSelector: {
     display: "flex",
     justifyContent: "center",
@@ -53,7 +61,7 @@ const useStyles = makeStyles({
     borderRadius: "5%",
     backgroundColor: "#37e0b6"
   }
-});
+}));
 
 function usePastSongs(trendingRange, groupId) {
   const [pastSongs, setPastSongs] = useState([]);
@@ -111,7 +119,7 @@ function WhatsTrendingController(props) {
   const [groupName, setGroupName] = useState();
   const [availableGroups, setAvailableGroups] = useState();
   const songList = usePastSongs(trendingRange, props.group);
-  const [sortedSongList, setSortedSongList] = useState([]);
+  const [sortedSongList, setSortedSongList] = useState();
   const classes = useStyles();
 
   useEffect(() => {
@@ -145,6 +153,7 @@ function WhatsTrendingController(props) {
   }
 
   const handleTrendingRangeChange = event => {
+    console.log(event.target);
     setTrendingRange(event.target.value);
   };
 
@@ -190,35 +199,25 @@ function WhatsTrendingController(props) {
   }
 
   return (
-    <div
+    <Grid
+      container
+      spacing={5}
       style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100%",
-        width: "100%",
-        minHeight: "448px"
+        marginTop: "15px"
       }}
     >
-      <div
-        style={{
-          flex: 1,
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <Grid item xl={6} lg={6} md={6} s={12} xs={12}>
         <div
           style={{
             fontSize: 40,
             border: "1px solid black",
             borderRadius: "30px",
             display: "flex",
+            flex: 1,
             backgroundColor: "#37e0b6",
-            height: "75%",
-            width: "75%",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
@@ -230,18 +229,19 @@ function WhatsTrendingController(props) {
             ? createGroupSelector(group, groupName, availableGroups)
             : null}
 
-          <span
+          <Typography
+            align="center"
             style={{
-              display: "flex",
               justifyContent: "center",
               alignItems: "center",
               fontSize: "100%",
               marginTop: "20px",
+              color: "#f7f7f5",
               fontFamily: "AntikorMonoLightItalic"
             }}
           >
             Top Songs
-          </span>
+          </Typography>
           <img src={trending} alt="" height="54" width="43" />
           <MuiThemeProvider>
             <FormControl className={classes.selector}>
@@ -258,51 +258,37 @@ function WhatsTrendingController(props) {
                   }}
                   value={3600000}
                 >
-                  over the past hour
+                  past hour
                 </MenuItem>
                 <MenuItem
                   style={{
                     color: "#252a2e",
                     fontFamily: "AntikorMonoLightItalic"
                   }}
+                  name="during the last day"
                   value={86400000}
                 >
-                  over the past day
+                  past day
                 </MenuItem>
                 <MenuItem
                   style={{
                     color: "#252a2e",
                     fontFamily: "AntikorMonoLightItalic"
                   }}
+                  name="during the last week"
                   value={604800000}
                 >
-                  over the past week
+                  past week
                 </MenuItem>
               </Select>
             </FormControl>
           </MuiThemeProvider>
         </div>
-      </div>
+      </Grid>
 
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <Grid item xl={6} lg={6} md={6} s={12} xs={12}>
         {sortedSongList ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <TrendingList songList={sortedSongList} />
-          </div>
+          <TrendingList songList={sortedSongList} />
         ) : (
           <div
             style={{
@@ -315,8 +301,8 @@ function WhatsTrendingController(props) {
             <ScaleLoader color={"#e54750"} />
           </div>
         )}
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 }
 
