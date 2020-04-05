@@ -10,7 +10,6 @@ import { Typography } from "@material-ui/core";
 import firebase from "../firebase";
 import "firebase/auth";
 import { Scrollbars } from "react-custom-scrollbars";
-import { AutoSizer } from "react-virtualized";
 
 function uploadSelectedSong(selectedSong) {
   const userId = firebase.auth().currentUser.uid;

@@ -59,11 +59,32 @@ REACT_APP_MAPBOX_STYLE_URL=***
 ### Setup Local Authentication Server
 Parakeet utilizes Cloud Functions from Google Cloud Platform to enable authentication with Spotify. Instead of invoking this function during development, it is recommended to setup an authentication server on a local machine.
 
-The authentication server source code can be found at Parakeet/dev/. Before developing a new feature for Parakeet on a local development machine, start the authentication server. You should see confirmation of the authentication server listening on port 8888.
+The authentication server source code can be found at `dev/`. Before developing a new feature for Parakeet on a local development machine, start the authentication server. You should see confirmation of the authentication server listening on port 8888.
 ```bash
 node dev/spotify-auth-server/authorization_code/app.js
 ```
-Next, ensure the application will refer to the local authentication server when trying to retrieve a new Spotify access token. Review the SpotifyPlayerUI and SpotifyLogin components located in src/components and set the appropriate variable for the local development server.
+Next, ensure the application will refer to the local authentication server when trying to retrieve a new Spotify access token. Review the SpotifyPlayerUI and SpotifyLogin components located in `src/components/` and set the appropriate variable for the local development server.
+
+### Create Firebase Configuration
+Create a Firebase configuration file at the `src/firebase.js`. Include the following configuration details. Please reach out to the [project owner](https://github.com/James-W-Berry) for configuration secrets.
+```javascript
+import firebase from "firebase";
+import "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: ***,
+  authDomain: ***,
+  databaseURL: ***,
+  projectId: ***,
+  storageBucket: ***,
+  messagingSenderId: ***,
+  appId: ***,
+  measurementId: ***,
+};
+
+firebase.initializeApp(firebaseConfig);
+export default firebase;
+```
 
 ### Start the application
 ```bash

@@ -2,19 +2,17 @@ import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import trending from "../assets/trending.png";
 import TrendingList from "./TrendingList";
-import { FormControl, Select, Container, Grid } from "@material-ui/core";
-import { MenuItem, Paper } from "material-ui";
+import { FormControl, Select, Grid } from "@material-ui/core";
+import { MenuItem } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
-    // flexDirection: "column",
     alignItems: "center"
   },
   groupSelector: {

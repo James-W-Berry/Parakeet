@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactMapboxGl from "react-mapbox-gl";
 import UserBubble from "./UserBubble";
-import MyLocationIcon from "@material-ui/icons/MyLocation";
 
 const dotenv = require("dotenv");
 dotenv.config();
