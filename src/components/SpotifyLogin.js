@@ -12,25 +12,22 @@ const devLoginUrl = process.env.REACT_APP_DEV_LOGIN_URL;
 
 function uploadAccessTokens(tokens) {
   const userId = firebase.auth().currentUser.uid;
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return docRef
     .set(
       {
         tokens: {
           access_token: tokens.access_token,
-          refresh_token: tokens.refresh_token
-        }
+          refresh_token: tokens.refresh_token,
+        },
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully set tokens");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 }
@@ -46,8 +43,8 @@ function SpotifyLogin() {
       setTokens(tokens);
       uploadAccessTokens(tokens);
     } else {
-      setTimeout(function() {
-        window.location.replace(loginUrl);
+      setTimeout(function () {
+        window.location.replace(devLoginUrl);
       }, 250);
     }
   }, []);
@@ -75,7 +72,7 @@ function SpotifyLogin() {
           justifyContent: "center",
           alignItems: "center",
           display: "flex",
-          flex: 1
+          flex: 1,
         }}
       >
         <ScaleLoader color={"#e54750"} />
@@ -92,7 +89,7 @@ function SpotifyLogin() {
         justifyContent: "center",
         alignItems: "center",
         display: "flex",
-        flex: 1
+        flex: 1,
       }}
     >
       <ScaleLoader color={"#e54750"} />

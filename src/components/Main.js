@@ -14,13 +14,13 @@ import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 }));
 
 function useNearbyPeopleInGroup(user) {
@@ -31,10 +31,10 @@ function useNearbyPeopleInGroup(user) {
         .firestore()
         .collection("users")
         .where("group", "==", user.group)
-        .onSnapshot(snapshot => {
-          const retrievedUsers = snapshot.docs.map(doc => ({
+        .onSnapshot((snapshot) => {
+          const retrievedUsers = snapshot.docs.map((doc) => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           }));
 
           setNearbyPeopleInGroup(retrievedUsers);
@@ -52,10 +52,10 @@ function useNearbyPeople(user) {
       const unsubscribe = firebase
         .firestore()
         .collection("users")
-        .onSnapshot(snapshot => {
-          const retrievedUsers = snapshot.docs.map(doc => ({
+        .onSnapshot((snapshot) => {
+          const retrievedUsers = snapshot.docs.map((doc) => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           }));
 
           setNearbyPeople(retrievedUsers);
@@ -74,7 +74,7 @@ function useUser() {
       .firestore()
       .collection("users")
       .doc(firebase.auth().currentUser.uid)
-      .onSnapshot(snapshot => {
+      .onSnapshot((snapshot) => {
         const retrievedUser = { ...snapshot.data() };
         setUser(retrievedUser);
       });
@@ -91,10 +91,10 @@ function useGroups() {
     const unsubscribe = firebase
       .firestore()
       .collection("groups")
-      .onSnapshot(snapshot => {
-        const retrievedGroups = snapshot.docs.map(doc => ({
+      .onSnapshot((snapshot) => {
+        const retrievedGroups = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
 
         setGroups(retrievedGroups);
@@ -108,22 +108,19 @@ function useGroups() {
 function uploadPosition(position) {
   if (position.latitude) {
     const userId = firebase.auth().currentUser.uid;
-    const docRef = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId);
+    const docRef = firebase.firestore().collection("users").doc(userId);
 
     return docRef
       .set(
         {
-          location: position
+          location: position,
         },
         { merge: true }
       )
-      .then(function() {
+      .then(function () {
         console.log("successfully updated location");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
@@ -136,7 +133,7 @@ function Main() {
   const { latitude, longitude, timestamp, accuracy, error } = usePosition(true);
   const groups = useGroups();
   const [userGroupName, setUserGroupName] = useState();
-  const [mapHeight, setMapHeight] = useState("20vh");
+  const [mapHeight, setMapHeight] = useState("120px");
   const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
   const [filterByGroup, setFilterByGroup] = useState(false);
   const classes = useStyles();
@@ -147,29 +144,29 @@ function Main() {
       longitude: longitude,
       timestamp: timestamp,
       accuracy: accuracy,
-      error: error
+      error: error,
     };
     uploadPosition(location);
   }, [latitude, longitude, timestamp, accuracy, error]);
 
   useEffect(() => {
-    groups.forEach(group => {
+    groups.forEach((group) => {
       if (group.id === user.group) {
         setUserGroupName(group.name);
       }
     });
   }, [groups, user.group]);
 
-  const handleGroupFilterChange = event => {
+  const handleGroupFilterChange = (event) => {
     setFilterByGroup(event.target.checked);
   };
 
   function toggleMapHeight() {
-    if (mapHeight === "20vh") {
-      setMapHeight("95vh");
+    if (mapHeight === "120px") {
+      setMapHeight("90vh");
       setUserBubblesOpacity(1);
     } else {
-      setMapHeight("20vh");
+      setMapHeight("120px");
       setUserBubblesOpacity(0);
     }
   }
@@ -186,7 +183,7 @@ function Main() {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <Grid item>
@@ -211,7 +208,8 @@ function Main() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          position: "relative"
+          position: "fixed",
+          bottom: 0,
         }}
       >
         <Grid item lg={12}>
@@ -221,7 +219,8 @@ function Main() {
               flex: 1,
               marginTop: "60px",
               width: "100vw",
-              height: "30vh"
+              height: "30vh",
+              maxHeight: "100px",
             }}
           >
             <div
@@ -236,7 +235,7 @@ function Main() {
                 borderTopLeftRadius: "120px",
                 background: "#e54750",
                 transition: "height 0.3s ease-in-out",
-                minHeight: "100px"
+                minHeight: "100px",
               }}
             >
               <LocalMapButton slideCallback={() => toggleMapHeight()} />
@@ -249,7 +248,7 @@ function Main() {
                     justifyContent: "center",
                     alignItems: "center",
                     marginTop: "2vh",
-                    width: "100vw"
+                    width: "100vw",
                   }}
                 >
                   <MuiThemeProvider>
@@ -260,7 +259,7 @@ function Main() {
                           checked={filterByGroup}
                           onChange={handleGroupFilterChange}
                           inputProps={{
-                            fontFamily: "AntikorMonoLightItalic"
+                            fontFamily: "AntikorMonoLightItalic",
                           }}
                         />
                       }
@@ -273,7 +272,7 @@ function Main() {
                     style={{
                       height: "65vh",
                       width: "90vw",
-                      borderRadius: "100px"
+                      borderRadius: "100px",
                     }}
                   >
                     <ParakeetMap
@@ -300,7 +299,7 @@ function Main() {
                 style={{
                   position: "absolute",
                   bottom: "7vh",
-                  left: "47%"
+                  left: "47%",
                 }}
               >
                 <ScaleLoader color={"#252a2e"} />
