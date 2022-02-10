@@ -9,62 +9,62 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import firebase from "../firebase";
+import app from "../firebase";
 import "firebase/auth";
 import { NavLink } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   heading: {
     fontFamily: "AntikorMonoLightItalic",
-    color: "#f7f7f5"
+    color: "#f7f7f5",
   },
   text: {
     fontFamily: "AntikorMonoLightItalic",
     color: "#e54750",
     "&:hover": {
-      color: "#f7f7f5"
-    }
+      color: "#f7f7f5",
+    },
   },
   textInput: {
     "& label ": {
       color: "#f7f7f5",
-      fontFamily: "AntikorMonoLightItalic"
+      fontFamily: "AntikorMonoLightItalic",
     },
     "& label.Mui-focused": {
       fontFamily: "AntikorMonoLightItalic",
-      color: "#f7f7f580"
+      color: "#f7f7f580",
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#e54750"
-    }
+      borderBottomColor: "#e54750",
+    },
   },
   input: {
     fontFamily: "AntikorMonoLightItalic",
-    color: "#f7f7f5"
+    color: "#f7f7f5",
   },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
     margin: theme.spacing(6, 0, 2),
     "&:hover": {
       color: "#f7f7f5",
-      backgroundColor: "#e5475080"
+      backgroundColor: "#e5475080",
     },
     fontFamily: "AntikorMonoLightItalic",
     backgroundColor: "#e54750",
-    color: "#f7f7f5"
+    color: "#f7f7f5",
   },
   loader: {
-    margin: theme.spacing(6, 0, 2)
-  }
+    margin: theme.spacing(6, 0, 2),
+  },
 }));
 
 export default function SignUp() {
@@ -78,28 +78,28 @@ export default function SignUp() {
 
   function onSignUp(username, email, password) {
     setIsLoading(true);
-    const db = firebase.firestore();
+    const db = app.firestore();
 
-    firebase
+    app
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(function() {
-        var userId = firebase.auth().currentUser.uid;
+      .then(function () {
+        var userId = app.auth().currentUser.uid;
 
         db.collection("users")
           .doc(userId)
           .set({
             displayName: username,
             displayNameVisible: false,
-            group: "ETVOvDEqnWL9I7fURN3D"
+            group: "ETVOvDEqnWL9I7fURN3D",
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log(error);
           });
 
         console.log("sign up successful");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         var errorMessage = error.message;
         setIsLoading(false);
         setFailure(true);
@@ -114,7 +114,7 @@ export default function SignUp() {
         <NavLink
           className={classes.text}
           style={{
-            textDecoration: "none"
+            textDecoration: "none",
           }}
           to="/"
         >
@@ -137,9 +137,9 @@ export default function SignUp() {
                 id="userName"
                 label="User name"
                 InputProps={{
-                  className: classes.input
+                  className: classes.input,
                 }}
-                onChange={event => {
+                onChange={(event) => {
                   setUsername(event.target.value);
                 }}
               />
@@ -148,7 +148,7 @@ export default function SignUp() {
               <TextField
                 className={classes.textInput}
                 InputProps={{
-                  className: classes.input
+                  className: classes.input,
                 }}
                 margin="normal"
                 required
@@ -158,7 +158,7 @@ export default function SignUp() {
                 type="email"
                 id="email"
                 autoComplete="email"
-                onChange={event => {
+                onChange={(event) => {
                   setEmail(event.target.value);
                 }}
               />
@@ -175,9 +175,9 @@ export default function SignUp() {
                 id="password"
                 autoComplete="current-password"
                 InputProps={{
-                  className: classes.input
+                  className: classes.input,
                 }}
-                onChange={event => {
+                onChange={(event) => {
                   setPassword(event.target.value);
                 }}
               />
@@ -189,7 +189,7 @@ export default function SignUp() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
               }}
             >
               <Typography
@@ -208,7 +208,7 @@ export default function SignUp() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
               }}
             >
               <ScaleLoader color={"#e54750"} />
@@ -234,7 +234,7 @@ export default function SignUp() {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              marginTop: "30px"
+              marginTop: "30px",
             }}
           >
             <Grid item>
@@ -242,7 +242,7 @@ export default function SignUp() {
                 className={classes.text}
                 variant="body2"
                 style={{
-                  textDecoration: "none"
+                  textDecoration: "none",
                 }}
                 to="/signin"
               >
