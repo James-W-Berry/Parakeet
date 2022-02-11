@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from "react";
-import WhatsTrendingController from "./WhatsTrendingController";
+import { Box, FormControlLabel, Grid, useMediaQuery } from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
+import { makeStyles } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "material-ui/styles";
+import React, { useEffect, useState } from "react";
+import ScaleLoader from "react-spinners/ScaleLoader";
+import { usePosition } from "use-position";
+import firebase from "../firebase";
 import Banner from "./Banner";
 import LocalMapButton from "./LocalMapButton";
-import SpotifyPlayerUI from "./SpotifyPlayerUI";
-import firebase from "../firebase";
-import { usePosition } from "use-position";
-import ScaleLoader from "react-spinners/ScaleLoader";
 import ParakeetMap from "./ParakeetMap";
-import Checkbox from "@material-ui/core/Checkbox";
-import { MuiThemeProvider } from "material-ui/styles";
-import { FormControlLabel, Grid } from "@material-ui/core";
-import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { makeStyles } from "@material-ui/core/styles";
+import SpotifyPlayerUI from "./SpotifyPlayerUI";
+import TrendingList from "./TrendingList";
+import WhatsTrendingController from "./WhatsTrendingController";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -133,10 +132,11 @@ function Main() {
   const { latitude, longitude, timestamp, accuracy, error } = usePosition(true);
   const groups = useGroups();
   const [userGroupName, setUserGroupName] = useState();
-  const [mapHeight, setMapHeight] = useState("120px");
+  const [mapHeight, setMapHeight] = useState("100%");
   const [userBubblesOpacity, setUserBubblesOpacity] = useState(0);
   const [filterByGroup, setFilterByGroup] = useState(false);
   const classes = useStyles();
+  const [sortedSongList, setSortedSongList] = useState();
 
   useEffect(() => {
     let location = {
@@ -157,158 +157,170 @@ function Main() {
     });
   }, [groups, user.group]);
 
+  const isMobile = useMediaQuery("(max-width:599px)");
+
   const handleGroupFilterChange = (event) => {
     setFilterByGroup(event.target.checked);
   };
 
   function toggleMapHeight() {
-    if (mapHeight === "120px") {
-      setMapHeight("90vh");
+    if (mapHeight === "100%") {
+      setMapHeight("calc(100vh - 154px)");
       setUserBubblesOpacity(1);
     } else {
-      setMapHeight("120px");
+      setMapHeight("100%");
       setUserBubblesOpacity(0);
     }
   }
 
+  const handleUpdatedSortedSongList = (songList) => {
+    setSortedSongList(songList);
+  };
+
   return (
-    <div>
-      <Container component="main" xl={12} lg={12} md={12}>
-        <CssBaseline />
-        <div className={classes.paper}>
+    <Grid
+      container
+      style={{
+        maxWidth: "100vw",
+        minHeight: "100vh",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <Banner user={user} groups={groups} groupName={userGroupName} />
+
+      {userBubblesOpacity ? null : (
+        <Grid
+          container
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 4,
+          }}
+        >
           <Grid
-            container
-            spacing={5}
+            item
+            xs={10}
+            sm={6}
+            md={6}
+            lg={6}
+            xl={6}
             style={{
               display: "flex",
-              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              padding: "24px",
             }}
           >
-            <Grid item>
-              <Banner user={user} groups={groups} groupName={userGroupName} />
-            </Grid>
-
-            <Grid item xl={12} lg={12} md={12}>
-              <WhatsTrendingController
-                group={user.group}
-                groupName={userGroupName}
-                groups={groups}
-              />
-            </Grid>
+            <WhatsTrendingController
+              group={user.group}
+              groupName={userGroupName}
+              groups={groups}
+              handleUpdatedSortedSongList={handleUpdatedSortedSongList}
+            />
           </Grid>
-        </div>
-      </Container>
 
-      <Grid
-        container
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          position: "fixed",
-          bottom: 0,
-        }}
-      >
-        <Grid item lg={12}>
-          <div
-            id="footer"
-            style={{
-              flex: 1,
-              marginTop: "60px",
-              width: "100vw",
-              height: "30vh",
-              maxHeight: "100px",
-            }}
+          <Grid
+            item
+            xs={10}
+            xs={6}
+            sm={6}
+            md={6}
+            lg={6}
+            xl={6}
+            style={{ padding: "24px" }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: "100vw",
-                height: mapHeight,
-                borderTopLeftRadius: "120px",
-                background: "#e54750",
-                transition: "height 0.3s ease-in-out",
-                minHeight: "100px",
-              }}
-            >
-              <LocalMapButton slideCallback={() => toggleMapHeight()} />
-
-              {userBubblesOpacity ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: "2vh",
-                    width: "100vw",
-                  }}
-                >
-                  <MuiThemeProvider>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          style={{ color: "#f7f7f5" }}
-                          checked={filterByGroup}
-                          onChange={handleGroupFilterChange}
-                          inputProps={{
-                            fontFamily: "AntikorMonoLightItalic",
-                          }}
-                        />
-                      }
-                      label={`Only show people in ${userGroupName}`}
-                      style={{ fontFamily: "AntikorMonoLightItalic" }}
-                    />
-                  </MuiThemeProvider>
-
-                  <div
-                    style={{
-                      height: "65vh",
-                      width: "90vw",
-                      borderRadius: "100px",
-                    }}
-                  >
-                    <ParakeetMap
-                      user={user}
-                      nearbyPeople={nearbyPeople}
-                      nearbyPeopleInGroup={nearbyPeopleInGroup}
-                      filterByGroup={filterByGroup}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div />
-              )}
-            </div>
-
-            {user.tokens ? (
-              <SpotifyPlayerUI
-                tokens={user.tokens}
-                selectedSong={user.selectedSong}
-                group={user.group}
-              />
+            {sortedSongList ? (
+              <TrendingList songList={sortedSongList} />
             ) : (
               <div
                 style={{
-                  position: "absolute",
-                  bottom: "7vh",
-                  left: "47%",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <ScaleLoader color={"#252a2e"} />
+                <ScaleLoader color={"#e54750"} />
               </div>
             )}
-          </div>
+          </Grid>
         </Grid>
+      )}
+
+      <Grid
+        container
+        item
+        style={{
+          flex: 1,
+          minHeight: "125px",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          borderTopLeftRadius:
+            isMobile && !userBubblesOpacity ? "0px" : "120px",
+          background: "#e54750",
+          width: "100vw",
+        }}
+      >
+        <Box id="footer" style={{ flex: 1 }}>
+          <LocalMapButton slideCallback={() => toggleMapHeight()} />
+          {userBubblesOpacity ? (
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "15px",
+                width: "100vw",
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    style={{ color: "#f7f7f5" }}
+                    checked={filterByGroup}
+                    onChange={handleGroupFilterChange}
+                    inputProps={{
+                      fontFamily: "AntikorMonoLightItalic",
+                    }}
+                  />
+                }
+                label={`Only show people in ${userGroupName}`}
+                style={{ fontFamily: "AntikorMonoLightItalic" }}
+              />
+
+              <Box
+                style={{
+                  borderRadius: "100px",
+                  height: mapHeight,
+                  width: "100%",
+                  transition: "height 0.3s ease-in-out",
+                }}
+              >
+                <ParakeetMap
+                  user={user}
+                  nearbyPeople={nearbyPeople}
+                  nearbyPeopleInGroup={nearbyPeopleInGroup}
+                  filterByGroup={filterByGroup}
+                />
+              </Box>
+            </Box>
+          ) : null}
+        </Box>
+        {user.tokens ? (
+          <SpotifyPlayerUI
+            tokens={user.tokens}
+            selectedSong={user.selectedSong}
+            group={user.group}
+            isBackgroundOpaque={userBubblesOpacity}
+          />
+        ) : (
+          <ScaleLoader />
+        )}
       </Grid>
-    </div>
+    </Grid>
   );
 }
 

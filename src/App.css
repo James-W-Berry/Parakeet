@@ -124,3 +124,8 @@ select:-webkit-autofill:focus {
   flex: 1;
   background-color: #252a2e;
 }
+
+iframe {
+  width: 0% !important;
+  height: 0% !important;
+}

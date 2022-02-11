@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import Main from "./components/Main";
-import firebase from "./firebase";
 import "firebase/auth";
+import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import ScaleLoader from "react-spinners/ScaleLoader";
+import "./App.css";
+import ForgottenPassword from "./components/ForgottenPassword";
+import LandingPage from "./components/LandingPage";
+import Main from "./components/Main";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
-import LandingPage from "./components/LandingPage";
-import ForgottenPassword from "./components/ForgottenPassword";
 import SpotifyLogin from "./components/SpotifyLogin";
-import ScaleLoader from "react-spinners/ScaleLoader";
-import { motion } from "framer-motion";
+import firebase from "./firebase";
 
 const UserContext = React.createContext({});
 const UserProvider = UserContext.Provider;
 
 function onAuthStateChange(callback) {
-  firebase.auth().onAuthStateChanged(user => {
+  firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       callback({ loggedIn: true, email: user.email, isLoading: false });
     } else {
@@ -41,7 +41,7 @@ function App() {
         <motion.div
           key={location.pathname}
           animate={{
-            opacity: [0, 1.0]
+            opacity: [0, 1.0],
           }}
           transition={{ duration: 1 }}
         >
@@ -64,7 +64,7 @@ function App() {
           id="content"
           key={location.pathname}
           animate={{
-            opacity: [0, 1.0]
+            opacity: [0, 1.0],
           }}
           transition={{ duration: 1 }}
         >
@@ -87,7 +87,7 @@ function App() {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
-          width: "100vw"
+          width: "100vw",
         }}
       >
         <ScaleLoader color={"#e54750"} />
@@ -99,7 +99,7 @@ function App() {
     return (
       <div
         style={{
-          backgroundColor: "#252a2e"
+          backgroundColor: "#252a2e",
         }}
       >
         <BrowserRouter>{AuthRoutes()}</BrowserRouter>;
@@ -110,7 +110,7 @@ function App() {
     <UserProvider value={user}>
       <div
         style={{
-          backgroundColor: "#252a2e"
+          backgroundColor: "#252a2e",
         }}
       >
         <BrowserRouter>{FeatureRoutes()}</BrowserRouter>

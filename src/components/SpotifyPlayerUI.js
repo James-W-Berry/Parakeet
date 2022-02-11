@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { Box, useMediaQuery } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import SpotifyWebPlayer from "react-spotify-web-playback";
 import firebase from "../firebase";
-
-const dotenv = require("dotenv");
-
-dotenv.config();
 
 const prodLoginUrl = process.env.REACT_APP_LOGIN_URL;
 const devLoginUrl = process.env.REACT_APP_DEV_LOGIN_URL;
@@ -13,11 +10,11 @@ function getSpotifyUserInfo(tokens) {
   fetch(`https://api.spotify.com/v1/me/`, {
     headers: {
       Authorization: `Bearer ${tokens.access_token}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    method: "GET"
+    method: "GET",
   })
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
         return response.json();
       } else {
@@ -28,12 +25,12 @@ function getSpotifyUserInfo(tokens) {
         throw error;
       }
     })
-    .then(data => {
+    .then((data) => {
       if (data.id) {
         uploadSpotifyInfo(data);
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.log(`error: ${error}`);
       return false;
     });
@@ -41,24 +38,20 @@ function getSpotifyUserInfo(tokens) {
 
 function uploadSpotifyInfo(info) {
   const userId = firebase.auth().currentUser.uid;
-
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return docRef
     .set(
       {
         profilePic: info.images[0].url || undefined,
-        spotifyId: info.id
+        spotifyId: info.id,
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully set profile picture and spotify id");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 }
@@ -69,22 +62,19 @@ function uploadCurrentlyListeningTo(
   groupId
 ) {
   const userId = firebase.auth().currentUser.uid;
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   docRef
     .set(
       {
-        currentlyListeningTo: currentlyListeningTo
+        currentlyListeningTo: currentlyListeningTo,
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully updated currently listening to");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 
@@ -102,14 +92,14 @@ function uploadCurrentlyListeningTo(
         {
           pastSong: currentlyListeningTo,
           listenDate: now,
-          totalListens: firebase.firestore.FieldValue.increment(1)
+          totalListens: firebase.firestore.FieldValue.increment(1),
         },
         { merge: true }
       )
-      .then(function() {
+      .then(function () {
         console.log("successfully added song to past group songs");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
@@ -123,8 +113,8 @@ function playSelectedSong(uri, tokens, playerInstance) {
       body: JSON.stringify({ uris: [uri] }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${tokens.access_token}`
-      }
+        Authorization: `Bearer ${tokens.access_token}`,
+      },
     }
   );
 }
@@ -134,6 +124,7 @@ function SpotifyPlayerUI(props) {
   const [previouslySelectedSong, setPreviouslySelectedSong] = useState();
   const [previousToken, setPreviousToken] = useState();
   const [previouslyListeningTo, setPreviouslyListeningTo] = useState();
+  const isMobile = useMediaQuery("(max-width:599px)");
 
   useEffect(() => {
     if (props.tokens?.access_token !== previousToken) {
@@ -151,25 +142,23 @@ function SpotifyPlayerUI(props) {
     props.selectedSong,
     props.tokens,
     playerInstance,
-    previouslySelectedSong
+    previouslySelectedSong,
   ]);
 
   return (
-    <div
+    <Box
       style={{
         display: "flex",
-        direction: "row",
-        position: "absolute",
-        bottom: "5vh",
-        left: "10vw",
         justifyContent: "center",
         alignItems: "center",
-        width: "80vw"
+        width: "95vw",
+        maxWidth: "800px",
+        paddingBottom: isMobile ? "0px" : "50px",
       }}
     >
       <SpotifyWebPlayer
         styles={{
-          bgColor: "#e54750",
+          bgColor: props.isBackgroundOpaque ? "#252a2e" : "#e54750",
           trackNameColor: "#f7f7f5",
           trackArtistColor: "#f7f7f5",
           sliderTrackColor: "#f7f7f580",
@@ -179,15 +168,15 @@ function SpotifyPlayerUI(props) {
           magnifySliderOnHover: "true",
           showSaveIcon: "true",
           persistDeviceSelection: "true",
-          fontFamily: "AntikorMonoLightItalic"
+          fontFamily: "AntikorMonoLightItalic",
         }}
         name="Parakeet"
         token={props.tokens.access_token}
-        callback={state => {
+        callback={(state) => {
           if (state.track.uri !== "") {
             let currentlyListeningTo = {
               timestamp: Date.now().toString(),
-              ...state.track
+              ...state.track,
             };
 
             uploadCurrentlyListeningTo(
@@ -201,7 +190,7 @@ function SpotifyPlayerUI(props) {
           if (state.errorType === "authentication_error") {
             console.log(state);
             console.log("need to get refresh token");
-            setTimeout(function() {
+            setTimeout(function () {
               window.location.replace(prodLoginUrl);
             }, 2000);
           }
@@ -212,20 +201,20 @@ function SpotifyPlayerUI(props) {
                 fetch(`https://api.spotify.com/v1/me/player`, {
                   body: JSON.stringify({
                     device_ids: [state.devices[device].id],
-                    play: true
+                    play: true,
                   }),
                   headers: {
                     Authorization: `Bearer ${props.tokens.access_token}`,
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                   },
-                  method: "PUT"
+                  method: "PUT",
                 });
               }
             }
           }
         }}
       />
-    </div>
+    </Box>
   );
 }
 

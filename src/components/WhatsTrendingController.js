@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import trending from "../assets/trending.png";
-import TrendingList from "./TrendingList";
-import { FormControl, Select, Grid } from "@material-ui/core";
+import { FormControl, Select, Grid, Box } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   groupSelector: {
     display: "flex",
@@ -24,14 +23,14 @@ const useStyles = makeStyles(theme => ({
     fontFamily: "AntikorDisplayLight",
     menuStyle: {
       border: "1px solid black",
-      borderRadius: "5%"
+      borderRadius: "5%",
     },
     "& .MuiInput-underline:before": {
-      border: "0px"
+      border: "0px",
     },
     "& .MuiInput-underline:after": {
-      border: "0px"
-    }
+      border: "0px",
+    },
   },
   selector: {
     color: "#252a2e",
@@ -39,26 +38,26 @@ const useStyles = makeStyles(theme => ({
     menuStyle: {
       border: "1px solid black",
       borderRadius: "5%",
-      backgroundColor: "lightgrey"
+      backgroundColor: "lightgrey",
     },
     marginTop: "20px",
     "& .MuiInput-underline:before": {
-      border: "0px"
+      border: "0px",
     },
     "& .MuiInput-underline:after": {
-      border: "0px"
-    }
+      border: "0px",
+    },
   },
   dropdownStyle: {
     root: {
       color: "#252a2e",
-      fontFamily: "AntikorMonoLightItalic"
+      fontFamily: "AntikorMonoLightItalic",
     },
     fontFamily: "AntikorMonoLightItalic",
     border: "1px solid black",
     borderRadius: "5%",
-    backgroundColor: "#37e0b6"
-  }
+    backgroundColor: "#37e0b6",
+  },
 }));
 
 function usePastSongs(trendingRange, groupId) {
@@ -75,10 +74,10 @@ function usePastSongs(trendingRange, groupId) {
         .doc(groupId)
         .collection("pastSongs")
         .where("listenDate", ">=", range)
-        .onSnapshot(snapshot => {
-          const retrievedSongs = snapshot.docs.map(doc => ({
+        .onSnapshot((snapshot) => {
+          const retrievedSongs = snapshot.docs.map((doc) => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           }));
           setPastSongs(retrievedSongs);
         });
@@ -91,22 +90,19 @@ function usePastSongs(trendingRange, groupId) {
 
 function updateGroup(groupId) {
   const userId = firebase.auth().currentUser.uid;
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return docRef
     .set(
       {
-        group: groupId
+        group: groupId,
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully updated group");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 }
@@ -117,7 +113,6 @@ function WhatsTrendingController(props) {
   const [groupName, setGroupName] = useState();
   const [availableGroups, setAvailableGroups] = useState();
   const songList = usePastSongs(trendingRange, props.group);
-  const [sortedSongList, setSortedSongList] = useState();
   const classes = useStyles();
 
   useEffect(() => {
@@ -140,7 +135,7 @@ function WhatsTrendingController(props) {
 
   useEffect(() => {
     const sortedSongs = sortSongList(songList);
-    setSortedSongList(sortedSongs);
+    props.handleUpdatedSortedSongList(sortedSongs);
   }, [songList]);
 
   function sortSongList(songList) {
@@ -150,12 +145,12 @@ function WhatsTrendingController(props) {
     return sortedRetrievedSongs;
   }
 
-  const handleTrendingRangeChange = event => {
+  const handleTrendingRangeChange = (event) => {
     console.log(event.target);
     setTrendingRange(event.target.value);
   };
 
-  const handleGroupChange = event => {
+  const handleGroupChange = (event) => {
     console.log(event);
     updateGroup(event.target.value);
   };
@@ -167,7 +162,7 @@ function WhatsTrendingController(props) {
           key={group.id}
           style={{
             color: "#252a2e",
-            fontFamily: "AntikorMonoLightItalic"
+            fontFamily: "AntikorMonoLightItalic",
           }}
           value={group.id}
         >
@@ -189,7 +184,7 @@ function WhatsTrendingController(props) {
             value={group}
             onChange={handleGroupChange}
           >
-            {groups.map(map => createGroupMenuItem(map))}
+            {groups.map((map) => createGroupMenuItem(map))}
           </Select>
         </FormControl>
       </MuiThemeProvider>
@@ -197,110 +192,80 @@ function WhatsTrendingController(props) {
   }
 
   return (
-    <Grid
-      container
-      spacing={5}
-      style={{
+    <Box
+      sx={{
+        fontSize: 40,
+        border: "1px solid black",
+        borderRadius: "30px",
         display: "flex",
+        flex: 1,
+        backgroundColor: "#37e0b6",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: "15px"
+        color: "#f7f7f5",
+        padding: "30px",
       }}
     >
-      <Grid item xl={6} lg={6} md={6} s={12} xs={12}>
-        <div
-          style={{
-            fontSize: 40,
-            border: "1px solid black",
-            borderRadius: "30px",
-            display: "flex",
-            flex: 1,
-            backgroundColor: "#37e0b6",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "#f7f7f5",
-            padding: "30px"
-          }}
-        >
-          {group && groupName && availableGroups
-            ? createGroupSelector(group, groupName, availableGroups)
-            : null}
+      {group && groupName && availableGroups
+        ? createGroupSelector(group, groupName, availableGroups)
+        : null}
 
-          <Typography
-            align="center"
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "100%",
-              marginTop: "20px",
-              color: "#f7f7f5",
-              fontFamily: "AntikorMonoLightItalic"
-            }}
+      <Typography
+        align="center"
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: "100%",
+          marginTop: "20px",
+          color: "#f7f7f5",
+          fontFamily: "AntikorMonoLightItalic",
+        }}
+      >
+        Top Songs
+      </Typography>
+      <img src={trending} alt="" height="54" width="43" />
+      <MuiThemeProvider>
+        <FormControl className={classes.selector}>
+          <Select
+            className={classes.selector}
+            MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+            value={trendingRange}
+            onChange={handleTrendingRangeChange}
           >
-            Top Songs
-          </Typography>
-          <img src={trending} alt="" height="54" width="43" />
-          <MuiThemeProvider>
-            <FormControl className={classes.selector}>
-              <Select
-                className={classes.selector}
-                MenuProps={{ classes: { paper: classes.dropdownStyle } }}
-                value={trendingRange}
-                onChange={handleTrendingRangeChange}
-              >
-                <MenuItem
-                  style={{
-                    color: "#252a2e",
-                    fontFamily: "AntikorMonoLightItalic"
-                  }}
-                  value={3600000}
-                >
-                  past hour
-                </MenuItem>
-                <MenuItem
-                  style={{
-                    color: "#252a2e",
-                    fontFamily: "AntikorMonoLightItalic"
-                  }}
-                  name="during the last day"
-                  value={86400000}
-                >
-                  past day
-                </MenuItem>
-                <MenuItem
-                  style={{
-                    color: "#252a2e",
-                    fontFamily: "AntikorMonoLightItalic"
-                  }}
-                  name="during the last week"
-                  value={604800000}
-                >
-                  past week
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </MuiThemeProvider>
-        </div>
-      </Grid>
-
-      <Grid item xl={6} lg={6} md={6} s={12} xs={12}>
-        {sortedSongList ? (
-          <TrendingList songList={sortedSongList} />
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <ScaleLoader color={"#e54750"} />
-          </div>
-        )}
-      </Grid>
-    </Grid>
+            <MenuItem
+              style={{
+                color: "#252a2e",
+                fontFamily: "AntikorMonoLightItalic",
+              }}
+              value={3600000}
+            >
+              past hour
+            </MenuItem>
+            <MenuItem
+              style={{
+                color: "#252a2e",
+                fontFamily: "AntikorMonoLightItalic",
+              }}
+              name="during the last day"
+              value={86400000}
+            >
+              past day
+            </MenuItem>
+            <MenuItem
+              style={{
+                color: "#252a2e",
+                fontFamily: "AntikorMonoLightItalic",
+              }}
+              name="during the last week"
+              value={604800000}
+            >
+              past week
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </MuiThemeProvider>
+    </Box>
   );
 }
 

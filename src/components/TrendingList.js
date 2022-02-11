@@ -1,34 +1,31 @@
-import React from "react";
+import { Box, Typography } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import audio_wave from "../assets/audio_wave.png";
-import uuid from "react-uuid";
-import { Typography } from "@material-ui/core";
-import firebase from "../firebase";
+import ListItemText from "@material-ui/core/ListItemText";
 import "firebase/auth";
+import React from "react";
 import { Scrollbars } from "react-custom-scrollbars";
+import uuid from "react-uuid";
+import audio_wave from "../assets/audio_wave.png";
+import firebase from "../firebase";
 
 function uploadSelectedSong(selectedSong) {
   const userId = firebase.auth().currentUser.uid;
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return docRef
     .set(
       {
-        selectedSong: selectedSong
+        selectedSong: selectedSong,
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully updated selected song");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 }
@@ -42,7 +39,7 @@ function TrendingList(props) {
             marginBottom: "5px",
             backgroundColor: "#252a2e",
             width: "90%",
-            borderRadius: "5px"
+            borderRadius: "5px",
           }}
           key={uuid()}
           button={true}
@@ -63,7 +60,7 @@ function TrendingList(props) {
                 style={{
                   fontFamily: "AntikorMonoLightItalic",
                   color: "#f7f7f5",
-                  fontSize: "100%"
+                  fontSize: "100%",
                 }}
               >
                 {song.pastSong.name}
@@ -75,7 +72,7 @@ function TrendingList(props) {
                 style={{
                   fontSize: "100%",
                   fontFamily: "AntikorMonoLightItalic",
-                  color: "#f7f7f5"
+                  color: "#f7f7f5",
                 }}
               >
                 {song.pastSong.artists}
@@ -88,7 +85,7 @@ function TrendingList(props) {
   }
 
   return (
-    <div style={{ flex: 1, width: "100%" }}>
+    <Box style={{ flex: 1 }}>
       {props.songList.length > 0 ? (
         <Scrollbars autoHeight autoHeightMin={"50vh"}>
           <List
@@ -98,10 +95,10 @@ function TrendingList(props) {
               alignItems: "center",
               flexDirection: "column",
               borderRadius: "10px",
-              backgroundColor: "#37e0b610"
+              backgroundColor: "#37e0b610",
             }}
           >
-            {props.songList.map(song => createSongItem(song))}
+            {props.songList.map((song) => createSongItem(song))}
           </List>
         </Scrollbars>
       ) : (
@@ -110,13 +107,13 @@ function TrendingList(props) {
           style={{
             padding: "5px",
             color: "#f7f7f5",
-            fontFamily: "AntikorMonoLightItalic"
+            fontFamily: "AntikorMonoLightItalic",
           }}
         >
           {`No songs for this group over the selected range`}
         </Typography>
       )}
-    </div>
+    </Box>
   );
 }
 

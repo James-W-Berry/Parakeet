@@ -1,69 +1,67 @@
-import React, { useCallback, useState, useEffect } from "react";
-import settings from "../assets/settings.png";
-import LogoutIcon from "@material-ui/icons/ExitToApp";
-import firebase from "../firebase";
-import "firebase/auth";
-import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
+import { Box } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
-import { withStyles } from "@material-ui/core/styles";
-import Scrollbar from "react-scrollbars-custom";
+import Checkbox from "@material-ui/core/Checkbox";
+import Dialog from "@material-ui/core/Dialog";
+import MuiDialogActions from "@material-ui/core/DialogActions";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import groupIcon from "../assets/groupIcon.png";
 import ListItemText from "@material-ui/core/ListItemText";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import CloseIcon from "@material-ui/icons/Close";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
+import "firebase/auth";
+import React, { useCallback, useEffect, useState } from "react";
+import Scrollbar from "react-scrollbars-custom";
+import groupIcon from "../assets/groupIcon.png";
+import settings from "../assets/settings.png";
+import firebase from "../firebase";
 
-import { makeStyles } from "@material-ui/core/styles";
-
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     margin: 0,
     backgroundColor: "#252a2e",
     padding: theme.spacing(2),
     "&:hover": {
-      color: "#f7f7f5"
+      color: "#f7f7f5",
     },
     fontFamily: "AntikorMonoLightItalic",
     border: 0,
-    color: "#e54750"
+    color: "#e54750",
   },
   closeButton: {
     position: "absolute",
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: "#e54750"
+    color: "#e54750",
   },
   textInput: {
     width: "100%",
     "& label ": {
       color: "#f7f7f5",
-      fontFamily: "AntikorMonoLightItalic"
+      fontFamily: "AntikorMonoLightItalic",
     },
     "& label.Mui-focused": {
       fontFamily: "AntikorMonoLightItalic",
-      color: "#f7f7f580"
+      color: "#f7f7f580",
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#e54750"
-    }
+      borderBottomColor: "#e54750",
+    },
   },
   input: {
     fontFamily: "AntikorMonoLightItalic",
     color: "#e54750",
-    fontSize: "24px"
-  }
+    fontSize: "24px",
+  },
 });
 
 const useStyles = makeStyles({
@@ -71,32 +69,32 @@ const useStyles = makeStyles({
     "& label ": {
       color: "#f7f7f580",
       fontFamily: "AntikorMonoLightItalic",
-      fontSize: "16px"
+      fontSize: "16px",
     },
     "& label.Mui-focused": {
       fontFamily: "AntikorMonoLightItalic",
-      color: "#f7f7f580"
+      color: "#f7f7f580",
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#e54750"
-    }
+      borderBottomColor: "#e54750",
+    },
   },
   root: {
     "&:hover": {
-      color: "#f7f7f5"
+      color: "#f7f7f5",
     },
     fontFamily: "AntikorMonoLightItalic",
     border: 0,
     borderRadius: 3,
     color: "#e54750",
     height: 48,
-    padding: "0 30px"
+    padding: "0 30px",
   },
   input: {
     fontFamily: "AntikorMonoLightItalic",
     color: "#e54750",
-    fontSize: "24px"
-  }
+    fontSize: "24px",
+  },
 });
 
 function logout() {
@@ -105,94 +103,82 @@ function logout() {
 
 function updateDisplayName(displayName, oldName) {
   const userId = firebase.auth().currentUser.uid;
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return docRef
     .set(
       {
-        displayName: displayName
+        displayName: displayName,
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully updated display name");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 }
 
 function updateDisplayNameVisibility(isVisible) {
   const userId = firebase.auth().currentUser.uid;
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return docRef
     .set(
       {
-        displayNameVisible: isVisible
+        displayNameVisible: isVisible,
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully updated display name visibility");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 }
 
 function updateGroup(groupId) {
   const userId = firebase.auth().currentUser.uid;
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return docRef
     .set(
       {
-        group: groupId
+        group: groupId,
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully updated group");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 }
 
 function addNewGroup(groupName) {
   if (groupName) {
-    const docRef = firebase
-      .firestore()
-      .collection("groups")
-      .doc();
+    const docRef = firebase.firestore().collection("groups").doc();
 
     return docRef
       .set(
         {
-          name: groupName
+          name: groupName,
         },
         { merge: true }
       )
-      .then(function() {
+      .then(function () {
         console.log("successfully added new group");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
 }
 
-const DialogTitle = withStyles(styles)(props => {
+const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
@@ -215,20 +201,20 @@ const DialogTitle = withStyles(styles)(props => {
   );
 });
 
-const DialogContent = withStyles(theme => ({
+const DialogContent = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
     backgroundColor: "#252a2e",
-    color: "#f7f7f5"
-  }
+    color: "#f7f7f5",
+  },
 }))(MuiDialogContent);
 
-const DialogActions = withStyles(theme => ({
+const DialogActions = withStyles((theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(1),
-    backgroundColor: "#252a2e"
-  }
+    backgroundColor: "#252a2e",
+  },
 }))(MuiDialogActions);
 
 function Banner(props) {
@@ -249,7 +235,7 @@ function Banner(props) {
   function createGroupItem(group) {
     if (group !== undefined) {
       return (
-        <div key={group.id}>
+        <Box key={group.id}>
           <ListItem
             key={group.id}
             style={{ backgroundColor: "#252a2e", marginBottom: "1px" }}
@@ -270,7 +256,7 @@ function Banner(props) {
                   variant="h6"
                   style={{
                     fontFamily: "AntikorMonoLightItalic",
-                    color: "#f7f7f5"
+                    color: "#f7f7f5",
                   }}
                 >
                   {group.name}
@@ -278,7 +264,7 @@ function Banner(props) {
               }
             />
           </ListItem>
-        </div>
+        </Box>
       );
     }
   }
@@ -290,7 +276,7 @@ function Banner(props) {
     setOpen(true);
   };
 
-  const handleDisplayNameVisibleChange = event => {
+  const handleDisplayNameVisibleChange = (event) => {
     setDisplayNameVisible(event.target.checked);
     updateDisplayNameVisibility(event.target.checked);
   };
@@ -300,19 +286,16 @@ function Banner(props) {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center"
-      }}
-    >
-      <div
+    <Box>
+      <Box
         style={{
-          position: "absolute",
-          right: "2vw",
-          top: "2vh",
+          display: "flex",
+          flex: 1,
+          justifyContent: "flex-end",
+          paddingTop: "10px",
+          paddingRight: "10px",
           cursor: "pointer",
-          boxShadow: "10px"
+          boxShadow: "10px",
         }}
       >
         <img
@@ -321,10 +304,8 @@ function Banner(props) {
           alt=""
           height="60"
           width="84"
-          style={{ flex: 1 }}
         />
-      </div>
-
+      </Box>
       <Dialog
         fullScreen={fullScreen}
         fullWidth={true}
@@ -337,7 +318,7 @@ function Banner(props) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "#252a2e"
+            backgroundColor: "#252a2e",
           }}
         >
           <DialogTitle id="customized-dialog-title" onClose={handleClose}>
@@ -350,7 +331,7 @@ function Banner(props) {
             style={{
               display: "flex",
               alignItems: "center",
-              flexDirection: "column"
+              flexDirection: "column",
             }}
           >
             <Typography
@@ -364,7 +345,7 @@ function Banner(props) {
                 color: "#f7f7f5",
                 fontSize: "16px",
                 fontFamily: "AntikorMonoLightItalic",
-                marginBottom: "10px"
+                marginBottom: "10px",
               }}
               gutterBottom
             >
@@ -374,7 +355,7 @@ function Banner(props) {
           <div style={{ backgroundColor: "#f7f7f5" }}>
             <Scrollbar style={{ height: "30vh", width: "100%" }}>
               <List style={{ borderRadius: "10px" }}>
-                {props.groups.map(group => createGroupItem(group))}
+                {props.groups.map((group) => createGroupItem(group))}
               </List>
             </Scrollbar>
           </div>
@@ -383,13 +364,13 @@ function Banner(props) {
               display: "flex",
               alignItems: "center",
               flexDirection: "column",
-              marginTop: "30px"
+              marginTop: "30px",
             }}
           >
             <Typography
               style={{
                 color: "#f7f7f5",
-                fontFamily: "AntikorMonoLightItalic"
+                fontFamily: "AntikorMonoLightItalic",
               }}
               gutterBottom
             >
@@ -400,9 +381,9 @@ function Banner(props) {
                 className={classes.textInput}
                 label="New group name"
                 InputProps={{
-                  className: classes.input
+                  className: classes.input,
                 }}
-                onChange={event => {
+                onChange={(event) => {
                   setNewGroupName(event.target.value);
                 }}
               />
@@ -412,7 +393,7 @@ function Banner(props) {
                   marginLeft: "10px",
                   backgroundColor: "#37e0b6",
                   color: "#f7f7f5",
-                  fontFamily: "AntikorMonoLightItalic"
+                  fontFamily: "AntikorMonoLightItalic",
                 }}
                 onClick={() => {
                   addNewGroup(newGroupName);
@@ -429,7 +410,7 @@ function Banner(props) {
               display: "flex",
               alignItems: "center",
               flexDirection: "column",
-              marginTop: "60px"
+              marginTop: "60px",
             }}
           >
             <Typography
@@ -446,9 +427,9 @@ function Banner(props) {
                 label="Display name"
                 value={newDisplayName}
                 InputProps={{
-                  className: classes.input
+                  className: classes.input,
                 }}
-                onChange={event => {
+                onChange={(event) => {
                   setNewDisplayName(event.target.value);
                 }}
               />
@@ -457,7 +438,7 @@ function Banner(props) {
                   marginLeft: "10px",
                   backgroundColor: "#37e0b6",
                   color: "#f7f7f5",
-                  fontFamily: "AntikorMonoLightItalic"
+                  fontFamily: "AntikorMonoLightItalic",
                 }}
                 onClick={() => {
                   updateDisplayName(newDisplayName, props.user.displayName);
@@ -489,14 +470,14 @@ function Banner(props) {
               flex: 1,
               marginTop: "20px",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             <Button
               style={{
                 backgroundColor: "#e54750",
                 color: "#f7f7f5",
-                fontFamily: "AntikorMonoLightItalic"
+                fontFamily: "AntikorMonoLightItalic",
               }}
               onClick={requestLogout}
             >
@@ -506,7 +487,7 @@ function Banner(props) {
           </div>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }
 
