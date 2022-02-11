@@ -153,7 +153,7 @@ function SpotifyPlayerUI(props) {
         alignItems: "center",
         width: "100vw",
         maxWidth: isMobile || props.isBackgroundOpaque ? "100vw" : "800px",
-        paddingBottom: isMobile ? "0px" : "20px",
+        paddingBottom: isMobile || props.isBackgroundOpaque ? "0px" : "20px",
         position: props.isBackgroundOpaque ? "absolute" : "relative",
         bottom: "0px",
       }}

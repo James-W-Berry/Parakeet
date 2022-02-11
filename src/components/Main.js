@@ -223,7 +223,6 @@ function Main() {
           <Grid
             item
             xs={10}
-            xs={6}
             sm={6}
             md={6}
             lg={6}

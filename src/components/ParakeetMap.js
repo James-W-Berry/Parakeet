@@ -66,6 +66,7 @@ function ParakeetMap(props) {
         width: "100%",
       }}
       center={center}
+      attributionControl={false}
     >
       {props.filterByGroup
         ? nearbyPeopleInGroup &&

@@ -129,3 +129,7 @@ iframe {
   width: 0% !important;
   height: 0% !important;
 }
+
+a.mapboxgl-ctrl-logo {
+  display: none !important;
+}

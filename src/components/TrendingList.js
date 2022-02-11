@@ -87,7 +87,7 @@ function TrendingList(props) {
   return (
     <Box style={{ flex: 1 }}>
       {props.songList.length > 0 ? (
-        <Scrollbars autoHeight autoHeightMin={"50vh"}>
+        <Scrollbars autoHeight autoHeightMax={"75vh"} autoHeightMin={"200px"}>
           <List
             style={{
               display: "flex",
