@@ -151,9 +151,11 @@ function SpotifyPlayerUI(props) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: "95vw",
-        maxWidth: "800px",
-        paddingBottom: isMobile ? "0px" : "50px",
+        width: "100vw",
+        maxWidth: isMobile || props.isBackgroundOpaque ? "100vw" : "800px",
+        paddingBottom: isMobile ? "0px" : "20px",
+        position: props.isBackgroundOpaque ? "absolute" : "relative",
+        bottom: "0px",
       }}
     >
       <SpotifyWebPlayer
